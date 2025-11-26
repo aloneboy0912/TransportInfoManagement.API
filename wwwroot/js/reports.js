@@ -37,6 +37,11 @@ window.loadReports = function() {
                         </div>
                     </div>
                     <div id="clientsByServiceResult" class="report-result"></div>
+                    <div id="clientsByServiceExport" style="display: none; margin-top: 1rem;">
+                        <button class="btn btn-success" onclick="exportClientsByService()">
+                            <i class="fas fa-file-excel"></i> Export to Excel
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -63,6 +68,11 @@ window.loadReports = function() {
                         </div>
                     </div>
                     <div id="employeesByServiceResult" class="report-result"></div>
+                    <div id="employeesByServiceExport" style="display: none; margin-top: 1rem;">
+                        <button class="btn btn-success" onclick="exportEmployeesByService()">
+                            <i class="fas fa-file-excel"></i> Export to Excel
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -100,6 +110,11 @@ window.loadReports = function() {
                         </button>
                     </div>
                     <div id="paymentsReportResult" class="report-result"></div>
+                    <div id="paymentsReportExport" style="display: none; margin-top: 1rem;">
+                        <button class="btn btn-success" onclick="exportPaymentsReport()">
+                            <i class="fas fa-file-excel"></i> Export to Excel
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -118,6 +133,11 @@ window.loadReports = function() {
                         </button>
                     </div>
                     <div id="overduePaymentsReportResult" class="report-result"></div>
+                    <div id="overduePaymentsExport" style="display: none; margin-top: 1rem;">
+                        <button class="btn btn-success" onclick="exportOverduePaymentsReport()">
+                            <i class="fas fa-file-excel"></i> Export to Excel
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -187,7 +207,7 @@ window.loadClientsByService = async function() {
                 </div>
             </div>
             <div class="table-container">
-                <table class="table">
+                <table class="table" id="clientsByServiceTable">
                     <thead>
                         <tr>
                             <th>Client ID</th>
@@ -202,19 +222,23 @@ window.loadClientsByService = async function() {
                     <tbody>
                         ${clients.map(c => `
                             <tr>
-                                <td><span class="badge badge-primary">${c.id}</span></td>
-                                <td><strong>${c.companyName}</strong></td>
+                                <td>${c.id}</td>
+                                <td>${c.companyName}</td>
                                 <td>${c.contactPerson}</td>
-                                <td><a href="mailto:${c.email}">${c.email}</a></td>
+                                <td>${c.email}</td>
                                 <td>${c.phone}</td>
                                 <td>${new Date(c.startDate).toLocaleDateString('en-US')}</td>
-                                <td><span class="badge badge-info">${c.numberOfEmployees}</span></td>
+                                <td>${c.numberOfEmployees}</td>
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
             </div>
         `;
+        
+        // Store data for export and show export button
+        window.clientsByServiceData = clients;
+        document.getElementById('clientsByServiceExport').style.display = 'block';
     } catch (error) {
         console.error('Error loading clients by service:', error);
         container.innerHTML = `
@@ -264,7 +288,7 @@ window.loadEmployeesByService = async function() {
                 </div>
             </div>
             <div class="table-container">
-                <table class="table">
+                <table class="table" id="employeesByServiceTable">
                     <thead>
                         <tr>
                             <th>Employee Code</th>
@@ -279,12 +303,12 @@ window.loadEmployeesByService = async function() {
                     <tbody>
                         ${employees.map(e => `
                             <tr>
-                                <td><span class="badge badge-primary">${e.employeeCode}</span></td>
-                                <td><strong>${e.fullName}</strong></td>
-                                <td><a href="mailto:${e.email}">${e.email}</a></td>
+                                <td>${e.employeeCode}</td>
+                                <td>${e.fullName}</td>
+                                <td>${e.email}</td>
                                 <td>${e.phone}</td>
                                 <td>${e.position}</td>
-                                <td><span class="badge badge-secondary">${e.departmentName}</span></td>
+                                <td>${e.departmentName}</td>
                                 <td>${new Date(e.hireDate).toLocaleDateString('en-US')}</td>
                             </tr>
                         `).join('')}
@@ -292,6 +316,10 @@ window.loadEmployeesByService = async function() {
                 </table>
             </div>
         `;
+        
+        // Store data for export and show export button
+        window.employeesByServiceData = employees;
+        document.getElementById('employeesByServiceExport').style.display = 'block';
     } catch (error) {
         console.error('Error loading employees by service:', error);
         container.innerHTML = `
@@ -373,7 +401,7 @@ window.loadPaymentsReport = async function() {
                 </div>
             </div>
             <div class="table-container" style="margin-top: 1.5rem;">
-                <table class="table">
+                <table class="table" id="paymentsReportTable">
                     <thead>
                         <tr>
                             <th>Payment ID</th>
@@ -388,19 +416,23 @@ window.loadPaymentsReport = async function() {
                     <tbody>
                         ${(report.payments || []).map(p => `
                             <tr>
-                                <td><span class="badge badge-primary">${p.paymentCode}</span></td>
-                                <td><strong>${p.clientName}</strong></td>
-                                <td><strong>$${p.amount.toLocaleString()}</strong></td>
+                                <td>${p.paymentCode}</td>
+                                <td>${p.clientName}</td>
+                                <td>$${p.amount.toLocaleString()}</td>
                                 <td>${new Date(p.paymentDate).toLocaleDateString('en-US')}</td>
                                 <td>${new Date(p.dueDate).toLocaleDateString('en-US')}</td>
-                                <td><span class="badge badge-secondary">${p.paymentMethod}</span></td>
-                                <td>${getPaymentStatusBadge(p.status)}</td>
+                                <td>${p.paymentMethod}</td>
+                                <td>${p.status}</td>
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
             </div>
         `;
+        
+        // Store data for export and show export button
+        window.paymentsReportData = report;
+        document.getElementById('paymentsReportExport').style.display = 'block';
     } catch (error) {
         console.error('Error loading payments report:', error);
         container.innerHTML = `
@@ -454,7 +486,7 @@ window.loadOverduePaymentsReport = async function() {
                 </div>
             </div>
             <div class="table-container" style="margin-top: 1.5rem;">
-                <table class="table">
+                <table class="table" id="overduePaymentsTable">
                     <thead>
                         <tr>
                             <th>Payment ID</th>
@@ -469,19 +501,23 @@ window.loadOverduePaymentsReport = async function() {
                     <tbody>
                         ${(report.payments || []).map(p => `
                             <tr>
-                                <td><span class="badge badge-danger">${p.paymentCode}</span></td>
-                                <td><strong>${p.clientName}</strong></td>
-                                <td><a href="mailto:${p.clientEmail}">${p.clientEmail}</a></td>
+                                <td>${p.paymentCode}</td>
+                                <td>${p.clientName}</td>
+                                <td>${p.clientEmail}</td>
                                 <td>${p.clientPhone}</td>
-                                <td><strong>$${p.amount.toLocaleString()}</strong></td>
+                                <td>$${p.amount.toLocaleString()}</td>
                                 <td>${new Date(p.dueDate).toLocaleDateString('en-US')}</td>
-                                <td><span class="badge badge-danger">${p.daysOverdue} days</span></td>
+                                <td>${p.daysOverdue} days</td>
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
             </div>
         `;
+        
+        // Store data for export and show export button
+        window.overduePaymentsData = report;
+        document.getElementById('overduePaymentsExport').style.display = 'block';
     } catch (error) {
         console.error('Error loading overdue payments report:', error);
         container.innerHTML = `
@@ -506,3 +542,121 @@ function getPaymentStatusBadge(status) {
     const badgeClass = statusMap[status] || 'badge-secondary';
     return `<span class="badge ${badgeClass}">${status}</span>`;
 }
+
+// Export Functions
+window.exportClientsByService = function() {
+    if (!window.clientsByServiceData || window.clientsByServiceData.length === 0) {
+        if (window.showToast) {
+            window.showToast('No data to export', 'warning');
+        }
+        return;
+    }
+    
+    const columns = [
+        { key: 'id', label: 'Client ID' },
+        { key: 'companyName', label: 'Company Name' },
+        { key: 'contactPerson', label: 'Contact Person' },
+        { key: 'email', label: 'Email' },
+        { key: 'phone', label: 'Phone' },
+        { key: 'startDate', label: 'Start Date', type: 'date' },
+        { key: 'numberOfEmployees', label: 'Employee Count' }
+    ];
+    
+    const serviceSelect = document.getElementById('reportServiceId');
+    const serviceName = serviceSelect.options[serviceSelect.selectedIndex]?.text || 'All Services';
+    const filename = `Clients_By_Service_${serviceName.replace(/[^a-zA-Z0-9]/g, '_')}`;
+    
+    window.exportToXLSX(window.clientsByServiceData, columns, filename);
+};
+
+window.exportEmployeesByService = function() {
+    if (!window.employeesByServiceData || window.employeesByServiceData.length === 0) {
+        if (window.showToast) {
+            window.showToast('No data to export', 'warning');
+        }
+        return;
+    }
+    
+    const columns = [
+        { key: 'employeeCode', label: 'Employee Code' },
+        { key: 'fullName', label: 'Full Name' },
+        { key: 'email', label: 'Email' },
+        { key: 'phone', label: 'Phone' },
+        { key: 'position', label: 'Position' },
+        { key: 'departmentName', label: 'Department' },
+        { key: 'hireDate', label: 'Hire Date', type: 'date' }
+    ];
+    
+    const serviceSelect = document.getElementById('reportServiceIdEmployees');
+    const serviceName = serviceSelect.options[serviceSelect.selectedIndex]?.text || 'All Services';
+    const filename = `Employees_By_Service_${serviceName.replace(/[^a-zA-Z0-9]/g, '_')}`;
+    
+    window.exportToXLSX(window.employeesByServiceData, columns, filename);
+};
+
+window.exportPaymentsReport = function() {
+    if (!window.paymentsReportData || !window.paymentsReportData.payments || window.paymentsReportData.payments.length === 0) {
+        if (window.showToast) {
+            window.showToast('No data to export', 'warning');
+        }
+        return;
+    }
+    
+    const columns = [
+        { key: 'paymentCode', label: 'Payment ID' },
+        { key: 'clientName', label: 'Client' },
+        { key: 'amount', label: 'Amount', type: 'currency' },
+        { key: 'paymentDate', label: 'Payment Date', type: 'date' },
+        { key: 'dueDate', label: 'Due Date', type: 'date' },
+        { key: 'paymentMethod', label: 'Payment Method' },
+        { key: 'status', label: 'Status' }
+    ];
+    
+    const summary = {
+        'Total Payments': window.paymentsReportData.totalPayments || 0,
+        'Total Amount': `$${(window.paymentsReportData.totalAmount || 0).toLocaleString()}`,
+        'Paid Amount': `$${(window.paymentsReportData.paidAmount || 0).toLocaleString()}`,
+        'Pending Amount': `$${(window.paymentsReportData.pendingAmount || 0).toLocaleString()}`,
+        'Overdue Amount': `$${(window.paymentsReportData.overdueAmount || 0).toLocaleString()}`
+    };
+    
+    const startDate = document.getElementById('reportStartDate')?.value || '';
+    const endDate = document.getElementById('reportEndDate')?.value || '';
+    const status = document.getElementById('reportStatus')?.value || '';
+    
+    let filename = 'Payments_Report';
+    if (startDate || endDate) {
+        filename += `_${startDate || 'all'}_to_${endDate || 'all'}`;
+    }
+    if (status) {
+        filename += `_${status}`;
+    }
+    
+    window.exportReportToXLSX(window.paymentsReportData.payments, columns, filename, summary);
+};
+
+window.exportOverduePaymentsReport = function() {
+    if (!window.overduePaymentsData || !window.overduePaymentsData.payments || window.overduePaymentsData.payments.length === 0) {
+        if (window.showToast) {
+            window.showToast('No data to export', 'warning');
+        }
+        return;
+    }
+    
+    const columns = [
+        { key: 'paymentCode', label: 'Payment ID' },
+        { key: 'clientName', label: 'Client' },
+        { key: 'clientEmail', label: 'Email' },
+        { key: 'clientPhone', label: 'Phone' },
+        { key: 'amount', label: 'Amount', type: 'currency' },
+        { key: 'dueDate', label: 'Due Date', type: 'date' },
+        { key: 'daysOverdue', label: 'Days Overdue' }
+    ];
+    
+    const summary = {
+        'Total Overdue Payments': window.overduePaymentsData.totalOverdue || 0,
+        'Total Overdue Amount': `$${(window.overduePaymentsData.totalAmount || 0).toLocaleString()}`
+    };
+    
+    window.exportReportToXLSX(window.overduePaymentsData.payments, columns, 'Overdue_Payments_Report', summary);
+};

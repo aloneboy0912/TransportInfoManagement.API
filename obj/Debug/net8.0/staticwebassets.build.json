@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "CN7ZkptqzJoTLEqGAjeD+Mu8a8+4rrRFoejKayXn6qQ=",
+  "Hash": "9TrgljzzNfblkPtXvCD+nQvxrIDaT4gEEiTzUP1sXEM=",
   "Source": "TransportInfoManagement.API",
   "BasePath": "_content/TransportInfoManagement.API",
   "Mode": "Default",
@@ -414,6 +414,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\ui-helpers.js"
+    },
+    {
+      "Identity": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\xlsx-export.js",
+      "SourceId": "TransportInfoManagement.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\",
+      "BasePath": "_content/TransportInfoManagement.API",
+      "RelativePath": "js/xlsx-export.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\xlsx-export.js"
     },
     {
       "Identity": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\login.html",

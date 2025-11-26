@@ -8,9 +8,14 @@ window.loadEmployees = async function() {
     content.innerHTML = `
         <div class="page-header">
             <h1><i class="fas fa-users"></i> Employee Management</h1>
-            <button class="btn btn-primary" onclick="showEmployeeModal()">
-                <i class="fas fa-plus"></i> Add Employee
-            </button>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-success" onclick="exportEmployeesToXLSX()" id="exportEmployeesBtn" style="display: none;">
+                    <i class="fas fa-file-excel"></i> Export to Excel
+                </button>
+                <button class="btn btn-primary" onclick="showEmployeeModal()">
+                    <i class="fas fa-plus"></i> Add Employee
+                </button>
+            </div>
         </div>
         <div class="card">
             <div class="search-bar">
@@ -91,10 +96,39 @@ async function loadEmployeesData() {
                 </td>
             </tr>
         `).join('');
+        
+        // Store data for export and show export button
+        window.employeesData = employees;
+        const exportBtn = document.getElementById('exportEmployeesBtn');
+        if (exportBtn && employees && employees.length > 0) {
+            exportBtn.style.display = 'block';
+        }
     } catch (error) {
         console.error('Error loading employees:', error);
     }
 }
+
+window.exportEmployeesToXLSX = function() {
+    if (!window.employeesData || window.employeesData.length === 0) {
+        if (window.showToast) {
+            window.showToast('No data to export', 'warning');
+        }
+        return;
+    }
+    
+    const columns = [
+        { key: 'employeeCode', label: 'Employee Code' },
+        { key: 'fullName', label: 'Full Name' },
+        { key: 'email', label: 'Email' },
+        { key: 'phone', label: 'Phone' },
+        { key: 'position', label: 'Position' },
+        { key: 'service.name', label: 'Service' },
+        { key: 'department.name', label: 'Department' },
+        { key: 'hireDate', label: 'Hire Date', type: 'date' }
+    ];
+    
+    window.exportToXLSX(window.employeesData, columns, 'Employees_List');
+};
 
 async function showEmployeeModal(empId = null) {
     // Fetch data when needed

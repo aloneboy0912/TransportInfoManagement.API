@@ -85,6 +85,10 @@
       "PackagePath": "staticwebassets\\js\\ui-helpers.js"
     },
     {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\xlsx-export.js",
+      "PackagePath": "staticwebassets\\js\\xlsx-export.js"
+    },
+    {
       "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\login.html",
       "PackagePath": "staticwebassets\\login.html"
     },

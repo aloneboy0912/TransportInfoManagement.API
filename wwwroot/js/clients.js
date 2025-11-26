@@ -9,9 +9,14 @@ window.loadClients = async function() {
     content.innerHTML = `
         <div class="page-header">
             <h1><i class="fas fa-user-tie"></i> Client Management</h1>
-            <button class="btn btn-primary" onclick="showClientModal()">
-                <i class="fas fa-plus"></i> Add Client
-            </button>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-success" onclick="exportClientsToXLSX()" id="exportClientsBtn" style="display: none;">
+                    <i class="fas fa-file-excel"></i> Export to Excel
+                </button>
+                <button class="btn btn-primary" onclick="showClientModal()">
+                    <i class="fas fa-plus"></i> Add Client
+                </button>
+            </div>
         </div>
         <div class="card">
             <div class="search-bar">
@@ -68,12 +73,43 @@ async function loadClientsData() {
                 </td>
             </tr>
         `).join('');
+        
+        // Store data for export and show export button
+        window.clientsData = clients;
+        const exportBtn = document.getElementById('exportClientsBtn');
+        if (exportBtn && clients && clients.length > 0) {
+            exportBtn.style.display = 'block';
+        }
     } catch (error) {
         console.error('Error loading clients:', error);
         document.querySelector('#clientsTable tbody').innerHTML = 
             '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Error loading clients. Please try again.</td></tr>';
     }
 }
+
+window.exportClientsToXLSX = function() {
+    if (!window.clientsData || window.clientsData.length === 0) {
+        if (window.showToast) {
+            window.showToast('No data to export', 'warning');
+        }
+        return;
+    }
+    
+    const columns = [
+        { key: 'clientCode', label: 'Client Code' },
+        { key: 'companyName', label: 'Company Name' },
+        { key: 'contactPerson', label: 'Contact Person' },
+        { key: 'email', label: 'Email' },
+        { key: 'phone', label: 'Phone' },
+        { key: 'address', label: 'Address' },
+        { key: 'city', label: 'City' },
+        { key: 'country', label: 'Country' },
+        { key: 'isActive', label: 'Status', type: 'status' },
+        { key: 'createdAt', label: 'Created At', type: 'date' }
+    ];
+    
+    window.exportToXLSX(window.clientsData, columns, 'Clients_List');
+};
 
 function showAdvancedSearch() {
     const modal = createModal('advancedSearchModal', 'Advanced Search', `

@@ -115,9 +115,10 @@ public class ReportsController : ControllerBase
     [HttpGet("overdue-payments")]
     public async Task<ActionResult<object>> GetOverduePaymentsReport()
     {
+        var now = DateTime.UtcNow;
         var overduePayments = await _context.Payments
             .Include(p => p.Client)
-            .Where(p => p.Status == "Overdue" || (p.DueDate < DateTime.UtcNow && p.Status == "Pending"))
+            .Where(p => p.Status == "Overdue" || (p.DueDate < now && p.Status == "Pending"))
             .OrderBy(p => p.DueDate)
             .Select(p => new
             {
@@ -128,16 +129,29 @@ public class ReportsController : ControllerBase
                 ClientPhone = p.Client.Phone,
                 p.Amount,
                 p.DueDate,
-                DaysOverdue = (DateTime.UtcNow - p.DueDate).Days,
                 p.Status
             })
             .ToListAsync();
 
+        // Calculate days overdue after materializing the query
+        var result = overduePayments.Select(p => new
+        {
+            p.Id,
+            p.PaymentCode,
+            p.ClientName,
+            p.ClientEmail,
+            p.ClientPhone,
+            p.Amount,
+            p.DueDate,
+            DaysOverdue = (now - p.DueDate).Days,
+            p.Status
+        }).ToList();
+
         return Ok(new
         {
-            TotalOverdue = overduePayments.Count,
-            TotalAmount = overduePayments.Sum(p => p.Amount),
-            Payments = overduePayments
+            TotalOverdue = result.Count,
+            TotalAmount = result.Sum(p => p.Amount),
+            Payments = result
         });
     }
 
