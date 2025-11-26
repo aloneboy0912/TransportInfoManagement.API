@@ -1,0 +1,113 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\css\\style.css",
+      "PackagePath": "staticwebassets\\css\\style.css"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\analytics.js",
+      "PackagePath": "staticwebassets\\js\\analytics.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\api.js",
+      "PackagePath": "staticwebassets\\js\\api.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\app.js",
+      "PackagePath": "staticwebassets\\js\\app.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\auth.js",
+      "PackagePath": "staticwebassets\\js\\auth.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\client-services.js",
+      "PackagePath": "staticwebassets\\js\\client-services.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\clients.js",
+      "PackagePath": "staticwebassets\\js\\clients.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\dashboard.js",
+      "PackagePath": "staticwebassets\\js\\dashboard.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\departments.js",
+      "PackagePath": "staticwebassets\\js\\departments.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\employees.js",
+      "PackagePath": "staticwebassets\\js\\employees.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\login.js",
+      "PackagePath": "staticwebassets\\js\\login.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\notifications.js",
+      "PackagePath": "staticwebassets\\js\\notifications.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\payments.js",
+      "PackagePath": "staticwebassets\\js\\payments.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\products.js",
+      "PackagePath": "staticwebassets\\js\\products.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\reports.js",
+      "PackagePath": "staticwebassets\\js\\reports.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\services.js",
+      "PackagePath": "staticwebassets\\js\\services.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\settings.js",
+      "PackagePath": "staticwebassets\\js\\settings.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\sidebar.js",
+      "PackagePath": "staticwebassets\\js\\sidebar.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\toast.js",
+      "PackagePath": "staticwebassets\\js\\toast.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\ui-helpers.js",
+      "PackagePath": "staticwebassets\\js\\ui-helpers.js"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\login.html",
+      "PackagePath": "staticwebassets\\login.html"
+    },
+    {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\user.html",
+      "PackagePath": "staticwebassets\\user.html"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.TransportInfoManagement.API.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.TransportInfoManagement.API.props",
+      "PackagePath": "build\\TransportInfoManagement.API.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.TransportInfoManagement.API.props",
+      "PackagePath": "buildMultiTargeting\\TransportInfoManagement.API.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.TransportInfoManagement.API.props",
+      "PackagePath": "buildTransitive\\TransportInfoManagement.API.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
