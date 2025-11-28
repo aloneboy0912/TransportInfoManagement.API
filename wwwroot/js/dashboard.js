@@ -190,9 +190,12 @@ window.loadDashboard = async function() {
 
     try {
         const stats = await api.get('/reports/dashboard');
+        
+        // Load payment data (both real and mock)
+        await loadPaymentDataForDashboard(stats);
+        
         displayDashboardStats(stats);
         displayQuickStats(stats);
-        displayPaymentStatus(stats);
         displayRecentActivity(stats);
     } catch (error) {
         console.error('Error loading dashboard:', error);
@@ -203,6 +206,105 @@ window.loadDashboard = async function() {
         }
     }
 };
+
+async function loadPaymentDataForDashboard(stats) {
+    try {
+        // Get real payments from API
+        let realPayments = [];
+        try {
+            const paymentsResponse = await api.get('/payments');
+            if (paymentsResponse && Array.isArray(paymentsResponse)) {
+                realPayments = paymentsResponse;
+            }
+        } catch (error) {
+            console.warn('Failed to load real payments:', error);
+        }
+        
+        // Get mock payments (from payments.js)
+        const mockPayments = window.mockPayments || [];
+        
+        // Calculate totals for real payments
+        const realTotal = realPayments.length;
+        const realPaid = realPayments.filter(p => p.status === 'Paid').length;
+        const realPending = realPayments.filter(p => p.status === 'Pending').length;
+        const realOverdue = realPayments.filter(p => p.status === 'Overdue').length;
+        const realTotalAmount = realPayments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+        
+        // Calculate totals for mock payments
+        const mockTotal = mockPayments.length;
+        const mockPaid = mockPayments.filter(p => p.status === 'Paid').length;
+        const mockPending = mockPayments.filter(p => p.status === 'Pending').length;
+        const mockOverdue = mockPayments.filter(p => p.status === 'Overdue').length;
+        const mockTotalAmount = mockPayments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+        
+        // Combine totals
+        const combinedTotal = realTotal + mockTotal;
+        const combinedPaid = realPaid + mockPaid;
+        const combinedPending = realPending + mockPending;
+        const combinedOverdue = realOverdue + mockOverdue;
+        const combinedTotalAmount = realTotalAmount + mockTotalAmount;
+        
+        // Update stats with payment data
+        stats.payments = {
+            total: combinedTotal,
+            paid: combinedPaid,
+            pending: combinedPending,
+            overdue: combinedOverdue,
+            realTotal: realTotal,
+            mockTotal: mockTotal,
+            realAmount: realTotalAmount,
+            mockAmount: mockTotalAmount,
+            totalAmount: combinedTotalAmount
+        };
+        
+        // Display payment status with both totals
+        displayPaymentStatus(stats);
+        
+        // Update the Payments stat card
+        updatePaymentsStatCard(stats);
+        
+    } catch (error) {
+        console.error('Error loading payment data:', error);
+        // Fallback to stats from API
+        displayPaymentStatus(stats);
+    }
+}
+
+function updatePaymentsStatCard(stats) {
+    const paymentsCard = document.querySelector('.stat-card-warning');
+    if (paymentsCard) {
+        const payments = stats.payments || {};
+        paymentsCard.innerHTML = `
+            <div class="stat-card-header">
+                <h3>Payments</h3>
+                <div class="stat-icon" style="background: linear-gradient(135deg, var(--warning-color), #d97706);">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+            </div>
+            <div class="stat-value">${payments.total || 0}</div>
+            <div class="stat-footer">
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="stat-badge stat-badge-warning">
+                            <i class="fas fa-clock"></i> ${payments.pending || 0} Pending
+                        </span>
+                        <span class="stat-badge stat-badge-danger">
+                            <i class="fas fa-exclamation-triangle"></i> ${payments.overdue || 0} Overdue
+                        </span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                        <span style="color: #3b82f6;">
+                            <i class="fas fa-circle" style="font-size: 0.5rem;"></i> Real: ${payments.realTotal || 0}
+                        </span>
+                        <span style="color: #9ca3af;">
+                            <i class="far fa-circle" style="font-size: 0.5rem;"></i> Mock: ${payments.mockTotal || 0}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}
 
 function displayDashboardStats(stats) {
     const statsHtml = `
@@ -336,12 +438,42 @@ function displayQuickStats(stats) {
 }
 
 function displayPaymentStatus(stats) {
-    const total = stats.payments?.total || 0;
-    const pending = stats.payments?.pending || 0;
-    const paid = stats.payments?.paid || (total - pending - (stats.payments?.overdue || 0));
-    const overdue = stats.payments?.overdue || 0;
+    const payments = stats.payments || {};
+    const total = payments.total || 0;
+    const pending = payments.pending || 0;
+    const paid = payments.paid || (total - pending - (payments.overdue || 0));
+    const overdue = payments.overdue || 0;
+    const realTotal = payments.realTotal || 0;
+    const mockTotal = payments.mockTotal || 0;
+    const realAmount = payments.realAmount || 0;
+    const mockAmount = payments.mockAmount || 0;
+    const totalAmount = payments.totalAmount || 0;
 
     const paymentStatusHtml = `
+        <div style="margin-bottom: 1rem; padding: 0.75rem; background: var(--bg-secondary); border-radius: var(--radius-md);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span style="font-weight: 600; color: var(--text-primary);">Total Payments</span>
+                <span style="font-size: 1.25rem; font-weight: 700; color: var(--primary-color);">${total}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem;">
+                <span style="color: #3b82f6;">
+                    <i class="fas fa-circle" style="font-size: 0.5rem;"></i> Real: ${realTotal}
+                </span>
+                <span style="color: #9ca3af;">
+                    <i class="far fa-circle" style="font-size: 0.5rem;"></i> Mock: ${mockTotal}
+                </span>
+            </div>
+            <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border-color);">
+                <div style="display: flex; justify-content: space-between; font-size: 0.875rem; color: var(--text-secondary);">
+                    <span>Total Amount:</span>
+                    <span style="font-weight: 600; color: var(--success-color);">$${totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">
+                    <span>Real: $${realAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    <span>Mock: $${mockAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
+            </div>
+        </div>
         <div class="payment-status-item">
             <div class="payment-status-header">
                 <span class="payment-status-label">Paid</span>

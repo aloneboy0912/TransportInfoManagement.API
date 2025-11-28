@@ -33,6 +33,10 @@
       "PackagePath": "staticwebassets\\js\\clients.js"
     },
     {
+      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\contacts.js",
+      "PackagePath": "staticwebassets\\js\\contacts.js"
+    },
+    {
       "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\dashboard.js",
       "PackagePath": "staticwebassets\\js\\dashboard.js"
     },

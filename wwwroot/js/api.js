@@ -43,7 +43,35 @@ class ApiClient {
                 throw new Error(error.message || `HTTP error! status: ${response.status}`);
             }
 
-            return await response.json();
+            // Handle empty responses (204 No Content, or empty body)
+            const contentType = response.headers.get('content-type');
+            if (response.status === 204 || !contentType || !contentType.includes('application/json')) {
+                // Check if response has any content
+                const text = await response.text();
+                if (!text || text.trim() === '') {
+                    return null; // Return null for empty responses
+                }
+                // Try to parse as JSON if there's content
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    // If it's not JSON, return the text
+                    return text;
+                }
+            }
+
+            // Parse JSON response
+            const text = await response.text();
+            if (!text || text.trim() === '') {
+                return null; // Return null for empty JSON responses
+            }
+            
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.warn('Failed to parse JSON response, returning null:', e);
+                return null;
+            }
         } catch (error) {
             console.error('API request failed:', error);
             throw error;

@@ -28,7 +28,9 @@ D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Microsoft.Ide
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Microsoft.OpenApi.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Mono.TextTemplating.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\MySqlConnector.dll
+D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Newtonsoft.Json.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll
+D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Stripe.net.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
@@ -38,7 +40,9 @@ D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\System.Compos
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\System.Composition.Hosting.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\System.Composition.Runtime.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\System.Composition.TypedParts.dll
+D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll

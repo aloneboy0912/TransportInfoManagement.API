@@ -27,6 +27,7 @@ function loadPage(page) {
         'clients': window.loadClients,
         'client-services': window.loadClientServices,
         'products': window.loadProducts,
+        'contacts': window.loadContacts,
         'payments': window.loadPayments,
         'reports': window.loadReports,
         'analytics': window.loadAnalytics,

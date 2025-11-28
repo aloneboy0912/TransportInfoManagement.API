@@ -1,5 +1,5 @@
 // Mock data for payments
-const mockPayments = [
+window.mockPayments = [
     { id: 1, paymentCode: "PAY001", clientId: 1, client: { id: 1, companyName: "Tech Solutions Inc." }, amount: 15000.00, paymentDate: "2024-11-15T00:00:00Z", dueDate: "2024-11-30T00:00:00Z", paymentMethod: "Bank Transfer", status: "Paid", notes: "Monthly service fee" },
     { id: 2, paymentCode: "PAY002", clientId: 2, client: { id: 2, companyName: "Global Enterprises Ltd." }, amount: 25000.50, paymentDate: "2024-12-01T00:00:00Z", dueDate: "2024-12-15T00:00:00Z", paymentMethod: "Credit Card", status: "Paid", notes: "Q4 payment" },
     { id: 3, paymentCode: "PAY003", clientId: 3, client: { id: 3, companyName: "Digital Innovations Corp." }, amount: 18000.00, paymentDate: null, dueDate: "2024-12-20T00:00:00Z", paymentMethod: "Bank Transfer", status: "Pending", notes: "Awaiting payment" },
@@ -21,6 +21,9 @@ const mockPayments = [
     { id: 19, paymentCode: "PAY019", clientId: 7, client: { id: 7, companyName: "Strategic Solutions LLC" }, amount: 28000.00, paymentDate: null, dueDate: "2024-12-25T00:00:00Z", paymentMethod: "Bank Transfer", status: "Pending", notes: "Holiday payment" },
     { id: 20, paymentCode: "PAY020", clientId: 8, client: { id: 8, companyName: "Prime Consulting Group" }, amount: 19500.00, paymentDate: "2024-11-05T00:00:00Z", dueDate: "2024-11-20T00:00:00Z", paymentMethod: "Cash", status: "Overdue", notes: "Needs follow-up" }
 ];
+
+// Also keep a local reference for backward compatibility
+const mockPayments = window.mockPayments;
 
 window.loadPayments = async function() {
     // Check authentication before loading payments
@@ -52,12 +55,16 @@ window.loadPayments = async function() {
                     <option value="Paid">Paid</option>
                     <option value="Overdue">Overdue</option>
                 </select>
+                <div style="margin-left: auto; display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
+                    <span style="color: #3b82f6;">●</span> Real Payment
+                    <span style="color: #9ca3af; margin-left: 1rem;">○</span> Mock Data
+                </div>
             </div>
             <div class="table-container">
                 <table id="paymentsTable">
                     <thead>
                         <tr>
-                            <th>Payment ID</th>
+                            <th>PAY</th>
                             <th>Client</th>
                             <th>Amount</th>
                             <th>Payment Date</th>
@@ -78,6 +85,27 @@ window.loadPayments = async function() {
             <button class="btn btn-warning" onclick="loadOverduePayments()">View Overdue Payments</button>
             <div id="overduePayments" style="margin-top: 1rem;"></div>
         </div>
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-envelope"></i> Recent Contacts</h2>
+            </div>
+            <div class="table-container">
+                <table id="contactsTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Company</th>
+                            <th>Subject</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
     `;
 
     // Local variable for this page
@@ -89,6 +117,148 @@ window.loadPayments = async function() {
     });
 
     await loadPaymentsData();
+    await loadContactsData();
+}
+
+async function loadContactsData() {
+    try {
+        const contacts = await api.get('/contact');
+        
+        // Handle null or empty response
+        if (!contacts || !Array.isArray(contacts)) {
+            const tbody = document.querySelector('#contactsTable tbody');
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No contacts found.</td></tr>';
+            }
+            return;
+        }
+        
+        // Show only recent contacts (last 10)
+        const recentContacts = contacts.slice(0, 10);
+        
+        const tbody = document.querySelector('#contactsTable tbody');
+        if (recentContacts.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No contacts found.</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = recentContacts.map(contact => {
+            const date = new Date(contact.createdAt);
+            const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            return `
+                <tr>
+                    <td>${contact.name || 'N/A'}</td>
+                    <td>${contact.email || 'N/A'}</td>
+                    <td>${contact.company || 'N/A'}</td>
+                    <td>${contact.subject || 'N/A'}</td>
+                    <td>${formattedDate}</td>
+                    <td>${contact.isProcessed ? '<span style="color: #10b981;">Processed</span>' : '<span style="color: #f59e0b;">New</span>'}</td>
+                    <td class="actions">
+                        <button class="btn-icon btn-view" onclick="viewContactInPayments(${contact.id})" title="View">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error('Error loading contacts:', error);
+        const tbody = document.querySelector('#contactsTable tbody');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Error loading contacts.</td></tr>';
+        }
+    }
+}
+
+async function viewContactInPayments(id) {
+    try {
+        const contact = await api.get(`/api/contact/${id}`);
+        const date = new Date(contact.createdAt);
+        const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        const modal = createModal('viewContactModal', 'Contact Details', `
+            <div style="max-width: 600px;">
+                <div class="form-group">
+                    <label><strong>Name:</strong></label>
+                    <p>${contact.name || 'N/A'}</p>
+                </div>
+                <div class="form-group">
+                    <label><strong>Email:</strong></label>
+                    <p>${contact.email || 'N/A'}</p>
+                </div>
+                <div class="form-group">
+                    <label><strong>Company:</strong></label>
+                    <p>${contact.company || 'N/A'}</p>
+                </div>
+                <div class="form-group">
+                    <label><strong>Phone:</strong></label>
+                    <p>${contact.phone || 'N/A'}</p>
+                </div>
+                <div class="form-group">
+                    <label><strong>Subject:</strong></label>
+                    <p>${contact.subject || 'N/A'}</p>
+                </div>
+                <div class="form-group">
+                    <label><strong>Message:</strong></label>
+                    <p style="white-space: pre-wrap; background: var(--bg-secondary); padding: 1rem; border-radius: 0.5rem;">${contact.message || 'N/A'}</p>
+                </div>
+                <div class="form-group">
+                    <label><strong>Status:</strong></label>
+                    <p>${contact.isProcessed ? 'Processed' : 'New'}</p>
+                </div>
+                <div class="form-group">
+                    <label><strong>Date:</strong></label>
+                    <p>${formattedDate}</p>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                    <button type="button" class="btn" onclick="closeModal('viewContactModal')">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="createPaymentFromContact(${contact.id}); closeModal('viewContactModal');">Create Payment</button>
+                </div>
+            </div>
+        `);
+    } catch (error) {
+        console.error('Error loading contact:', error);
+        if (window.showToast) {
+            window.showToast('Error loading contact details', 'error');
+        }
+    }
+}
+
+async function createPaymentFromContact(contactId) {
+    try {
+        const contact = await api.get(`/contact/${contactId}`);
+        if (!contact) {
+            if (window.showToast) {
+                window.showToast('Contact not found', 'error');
+            }
+            return;
+        }
+        
+        // Pre-fill payment form with contact information
+        const paymentData = {
+            clientId: 0, // Will need to select or create client
+            paymentCode: `PAY${Date.now()}`,
+            amount: 0,
+            paymentDate: new Date().toISOString(),
+            dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+            paymentMethod: 'Bank Transfer',
+            status: 'Pending',
+            notes: `Contact from: ${contact.name} (${contact.email})${contact.phone ? ` - Phone: ${contact.phone}` : ''}\nSubject: ${contact.subject}\nMessage: ${contact.message}`
+        };
+        
+        // Open payment modal with pre-filled data
+        showPaymentModal(null, paymentData);
+        
+        if (window.showToast) {
+            window.showToast('Payment form opened with contact information', 'success');
+        }
+    } catch (error) {
+        console.error('Error creating payment from contact:', error);
+        if (window.showToast) {
+            window.showToast('Error creating payment from contact', 'error');
+        }
+    }
 }
 
 async function loadPaymentsData() {
@@ -102,26 +272,64 @@ async function loadPaymentsData() {
         if (status) params.append('status', status);
         if (params.toString()) url += '?' + params.toString();
         
-        let payments;
+        // Get real payments from API
+        let realPayments = [];
         try {
-            payments = await api.get(url);
+            const paymentsResponse = await api.get(url);
+            // Handle null or empty response
+            if (paymentsResponse && Array.isArray(paymentsResponse)) {
+                // Transform API payment format to match display format
+                realPayments = paymentsResponse.map(p => ({
+                id: p.id,
+                paymentCode: p.paymentCode,
+                clientId: p.clientId,
+                client: p.client ? { id: p.client.id, companyName: p.client.companyName } : null,
+                amount: parseFloat(p.amount),
+                paymentDate: p.paymentDate,
+                dueDate: p.dueDate,
+                paymentMethod: p.paymentMethod,
+                status: p.status,
+                notes: p.notes,
+                isReal: true // Mark as real payment
+                }));
+            }
         } catch (error) {
-            // Fallback to mock data if API fails
-            console.warn('API call failed, using mock data:', error);
-            payments = [...mockPayments];
+            console.warn('API call failed, will use mock data only:', error);
         }
         
-        // Apply filters to mock data if using mock data
-        if (payments === mockPayments || (Array.isArray(payments) && payments.length === 0 && mockPayments.length > 0)) {
-            payments = [...mockPayments];
-            
-            if (clientId) {
-                payments = payments.filter(p => p.clientId === parseInt(clientId));
+        // Get mock payments and mark them
+        let allMockPayments = mockPayments.map(p => ({ ...p, isReal: false }));
+        
+        // Merge real and mock payments
+        let allPayments = [...realPayments, ...allMockPayments];
+        
+        // Remove duplicates based on paymentCode (if real payment has same code as mock)
+        const seenCodes = new Set();
+        allPayments = allPayments.filter(p => {
+            if (seenCodes.has(p.paymentCode)) {
+                // If duplicate, prefer real payment over mock
+                return p.isReal;
             }
-            if (status) {
-                payments = payments.filter(p => p.status === status);
-            }
+            seenCodes.add(p.paymentCode);
+            return true;
+        });
+        
+        // Apply filters
+        if (clientId) {
+            allPayments = allPayments.filter(p => p.clientId === parseInt(clientId));
         }
+        if (status) {
+            allPayments = allPayments.filter(p => p.status === status);
+        }
+        
+        // Sort by payment date (most recent first)
+        allPayments.sort((a, b) => {
+            const dateA = a.paymentDate ? new Date(a.paymentDate) : new Date(0);
+            const dateB = b.paymentDate ? new Date(b.paymentDate) : new Date(0);
+            return dateB - dateA;
+        });
+        
+        const payments = allPayments;
         
         const tbody = document.querySelector('#paymentsTable tbody');
         if (!payments || payments.length === 0) {
@@ -132,33 +340,54 @@ async function loadPaymentsData() {
             return;
         }
         
-        tbody.innerHTML = payments.map(payment => `
+        tbody.innerHTML = payments.map(payment => {
+            // Format amount - handle both number and decimal
+            const amount = typeof payment.amount === 'number' ? payment.amount : parseFloat(payment.amount);
+            const formattedAmount = amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            
+            // Format dates
+            const paymentDate = payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString('en-US') : 'N/A';
+            const dueDate = new Date(payment.dueDate).toLocaleDateString('en-US');
+            
+            // Determine status color
+            const statusColor = payment.status === 'Paid' ? '#10b981' : 
+                               payment.status === 'Overdue' ? '#ef4444' : '#f59e0b';
+            const statusText = payment.status === 'Paid' ? 'Paid' : 
+                              payment.status === 'Overdue' ? 'Overdue' : 'Pending Payment';
+            
+            // Add indicator for real vs mock payments
+            const dataSource = payment.isReal ? 
+                '<span style="font-size: 0.75rem; color: #3b82f6; margin-left: 0.25rem;" title="Real Payment from Database">●</span>' : 
+                '<span style="font-size: 0.75rem; color: #9ca3af; margin-left: 0.25rem;" title="Mock Data">○</span>';
+            
+            return `
             <tr>
-                <td>${payment.paymentCode}</td>
+                <td>${payment.paymentCode}${dataSource}</td>
                 <td>${payment.client?.companyName || 'N/A'}</td>
-                <td>$${payment.amount.toLocaleString()}</td>
-                <td>${payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString('vi-VN') : 'N/A'}</td>
-                <td>${new Date(payment.dueDate).toLocaleDateString('vi-VN')}</td>
+                <td>$${formattedAmount}</td>
+                <td>${paymentDate}</td>
+                <td>${dueDate}</td>
                 <td>${payment.paymentMethod}</td>
                 <td>
-                    <span style="padding: 0.25rem 0.5rem; border-radius: 4px; background-color: ${
-                        payment.status === 'Paid' ? '#10b981' : 
-                        payment.status === 'Overdue' ? '#ef4444' : '#f59e0b'
-                    }; color: white;">
-                        ${payment.status === 'Paid' ? 'Paid' : 
-                          payment.status === 'Overdue' ? 'Overdue' : 'Pending Payment'}
+                    <span style="padding: 0.25rem 0.5rem; border-radius: 4px; background-color: ${statusColor}; color: white;">
+                        ${statusText}
                     </span>
                 </td>
                 <td class="actions">
-                    <button class="btn-icon btn-edit" onclick="editPayment(${payment.id})" title="Edit">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn-icon btn-delete" onclick="deletePayment(${payment.id})" title="Delete">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    ${payment.isReal ? `
+                        <button class="btn-icon btn-edit" onclick="editPayment(${payment.id})" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon btn-delete" onclick="deletePayment(${payment.id})" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    ` : `
+                        <span style="color: #9ca3af; font-size: 0.75rem;">Mock</span>
+                    `}
                 </td>
             </tr>
-        `).join('');
+        `;
+        }).join('');
         
         // Store data for export and show export button
         window.paymentsData = payments;
@@ -169,35 +398,38 @@ async function loadPaymentsData() {
     } catch (error) {
         console.error('Error loading payments:', error);
         // Use mock data as fallback
-        const payments = [...mockPayments];
+        const payments = mockPayments.map(p => ({ ...p, isReal: false }));
         const tbody = document.querySelector('#paymentsTable tbody');
-        tbody.innerHTML = payments.map(payment => `
+        tbody.innerHTML = payments.map(payment => {
+            const amount = typeof payment.amount === 'number' ? payment.amount : parseFloat(payment.amount);
+            const formattedAmount = amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const paymentDate = payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString('en-US') : 'N/A';
+            const dueDate = new Date(payment.dueDate).toLocaleDateString('en-US');
+            const statusColor = payment.status === 'Paid' ? '#10b981' : 
+                               payment.status === 'Overdue' ? '#ef4444' : '#f59e0b';
+            const statusText = payment.status === 'Paid' ? 'Paid' : 
+                              payment.status === 'Overdue' ? 'Overdue' : 'Pending Payment';
+            const dataSource = '<span style="font-size: 0.75rem; color: #9ca3af; margin-left: 0.25rem;" title="Mock Data">○</span>';
+            
+            return `
             <tr>
-                <td>${payment.paymentCode}</td>
+                <td>${payment.paymentCode}${dataSource}</td>
                 <td>${payment.client?.companyName || 'N/A'}</td>
-                <td>$${payment.amount.toLocaleString()}</td>
-                <td>${payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString('vi-VN') : 'N/A'}</td>
-                <td>${new Date(payment.dueDate).toLocaleDateString('vi-VN')}</td>
+                <td>$${formattedAmount}</td>
+                <td>${paymentDate}</td>
+                <td>${dueDate}</td>
                 <td>${payment.paymentMethod}</td>
                 <td>
-                    <span style="padding: 0.25rem 0.5rem; border-radius: 4px; background-color: ${
-                        payment.status === 'Paid' ? '#10b981' : 
-                        payment.status === 'Overdue' ? '#ef4444' : '#f59e0b'
-                    }; color: white;">
-                        ${payment.status === 'Paid' ? 'Paid' : 
-                          payment.status === 'Overdue' ? 'Overdue' : 'Pending Payment'}
+                    <span style="padding: 0.25rem 0.5rem; border-radius: 4px; background-color: ${statusColor}; color: white;">
+                        ${statusText}
                     </span>
                 </td>
                 <td class="actions">
-                    <button class="btn-icon btn-edit" onclick="editPayment(${payment.id})" title="Edit">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn-icon btn-delete" onclick="deletePayment(${payment.id})" title="Delete">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <span style="color: #9ca3af; font-size: 0.75rem;">Mock</span>
                 </td>
             </tr>
-        `).join('');
+        `;
+        }).join('');
         window.paymentsData = payments;
         const exportBtn = document.getElementById('exportPaymentsBtn');
         if (exportBtn) exportBtn.style.display = 'block';
@@ -227,21 +459,62 @@ window.exportPaymentsToXLSX = function() {
 
 async function loadOverduePayments() {
     try {
-        let overdue;
+        // Get real overdue payments from API
+        let realOverdue = [];
         try {
-            overdue = await api.get('/payments/overdue');
+            const overdueResponse = await api.get('/payments/overdue');
+            // Handle null or empty response
+            if (overdueResponse && Array.isArray(overdueResponse)) {
+                realOverdue = overdueResponse.map(p => ({
+                id: p.id,
+                paymentCode: p.paymentCode,
+                clientId: p.clientId,
+                client: p.client ? { id: p.client.id, companyName: p.client.companyName } : null,
+                amount: parseFloat(p.amount),
+                paymentDate: p.paymentDate,
+                dueDate: p.dueDate,
+                paymentMethod: p.paymentMethod,
+                status: p.status,
+                notes: p.notes,
+                isReal: true
+                }));
+            }
         } catch (error) {
-            // Fallback to mock data
-            console.warn('API call failed, using mock data:', error);
-            const today = new Date();
-            overdue = mockPayments.filter(p => {
-                const dueDate = new Date(p.dueDate);
-                return p.status === 'Overdue' || (dueDate < today && p.status !== 'Paid');
-            }).map(p => ({
-                ...p,
-                daysOverdue: Math.floor((today - new Date(p.dueDate)) / (1000 * 60 * 60 * 24))
-            }));
+            console.warn('API call failed, will use mock data only:', error);
         }
+        
+        // Get mock overdue payments
+        const today = new Date();
+        const mockOverdue = mockPayments.filter(p => {
+            const dueDate = new Date(p.dueDate);
+            return p.status === 'Overdue' || (dueDate < today && p.status !== 'Paid');
+        }).map(p => ({
+            ...p,
+            isReal: false,
+            daysOverdue: Math.floor((today - new Date(p.dueDate)) / (1000 * 60 * 60 * 24))
+        }));
+        
+        // Merge real and mock overdue payments
+        let overdue = [...realOverdue, ...mockOverdue];
+        
+        // Calculate days overdue for real payments if not present
+        overdue = overdue.map(p => ({
+            ...p,
+            daysOverdue: p.daysOverdue || Math.floor((today - new Date(p.dueDate)) / (1000 * 60 * 60 * 24))
+        }));
+        
+        // Remove duplicates based on paymentCode
+        const seenCodes = new Set();
+        overdue = overdue.filter(p => {
+            if (seenCodes.has(p.paymentCode)) {
+                return p.isReal;
+            }
+            seenCodes.add(p.paymentCode);
+            return true;
+        });
+        
+        // Sort by days overdue (most overdue first)
+        overdue.sort((a, b) => b.daysOverdue - a.daysOverdue);
         
         const container = document.getElementById('overduePayments');
         if (!overdue || overdue.length === 0) {
@@ -249,19 +522,12 @@ async function loadOverduePayments() {
             return;
         }
         
-        // Calculate days overdue if not present
-        const today = new Date();
-        overdue = overdue.map(p => ({
-            ...p,
-            daysOverdue: p.daysOverdue || Math.floor((today - new Date(p.dueDate)) / (1000 * 60 * 60 * 24))
-        }));
-        
         container.innerHTML = `
             <div class="table-container">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Payment ID</th>
+                            <th>PAY</th>
                             <th>Client</th>
                             <th>Amount</th>
                             <th>Due Date</th>
@@ -269,15 +535,22 @@ async function loadOverduePayments() {
                         </tr>
                     </thead>
                     <tbody>
-                        ${overdue.map(p => `
+                        ${overdue.map(p => {
+                            const amount = typeof p.amount === 'number' ? p.amount : parseFloat(p.amount);
+                            const formattedAmount = amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                            const dataSource = p.isReal ? 
+                                '<span style="font-size: 0.75rem; color: #3b82f6; margin-left: 0.25rem;" title="Real Payment">●</span>' : 
+                                '<span style="font-size: 0.75rem; color: #9ca3af; margin-left: 0.25rem;" title="Mock Data">○</span>';
+                            return `
                             <tr>
-                                <td>${p.paymentCode}</td>
+                                <td>${p.paymentCode}${dataSource}</td>
                                 <td>${p.client?.companyName || 'N/A'}</td>
-                                <td>$${p.amount.toLocaleString()}</td>
-                                <td>${new Date(p.dueDate).toLocaleDateString('vi-VN')}</td>
+                                <td>$${formattedAmount}</td>
+                                <td>${new Date(p.dueDate).toLocaleDateString('en-US')}</td>
                                 <td><span style="color: #ef4444; font-weight: bold;">${p.daysOverdue} days</span></td>
                             </tr>
-                        `).join('')}
+                        `;
+                        }).join('')}
                     </tbody>
                 </table>
             </div>
@@ -291,6 +564,7 @@ async function loadOverduePayments() {
             return p.status === 'Overdue' || (dueDate < today && p.status !== 'Paid');
         }).map(p => ({
             ...p,
+            isReal: false,
             daysOverdue: Math.floor((today - new Date(p.dueDate)) / (1000 * 60 * 60 * 24))
         }));
         
@@ -305,7 +579,7 @@ async function loadOverduePayments() {
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Payment ID</th>
+                            <th>PAY</th>
                             <th>Client</th>
                             <th>Amount</th>
                             <th>Due Date</th>
@@ -313,15 +587,20 @@ async function loadOverduePayments() {
                         </tr>
                     </thead>
                     <tbody>
-                        ${overdue.map(p => `
+                        ${overdue.map(p => {
+                            const amount = typeof p.amount === 'number' ? p.amount : parseFloat(p.amount);
+                            const formattedAmount = amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                            const dataSource = '<span style="font-size: 0.75rem; color: #9ca3af; margin-left: 0.25rem;" title="Mock Data">○</span>';
+                            return `
                             <tr>
-                                <td>${p.paymentCode}</td>
+                                <td>${p.paymentCode}${dataSource}</td>
                                 <td>${p.client?.companyName || 'N/A'}</td>
-                                <td>$${p.amount.toLocaleString()}</td>
-                                <td>${new Date(p.dueDate).toLocaleDateString('vi-VN')}</td>
+                                <td>$${formattedAmount}</td>
+                                <td>${new Date(p.dueDate).toLocaleDateString('en-US')}</td>
                                 <td><span style="color: #ef4444; font-weight: bold;">${p.daysOverdue} days</span></td>
                             </tr>
-                        `).join('')}
+                        `;
+                        }).join('')}
                     </tbody>
                 </table>
             </div>
@@ -329,56 +608,60 @@ async function loadOverduePayments() {
     }
 }
 
-async function showPaymentModal(paymentId = null) {
+async function showPaymentModal(paymentId = null, prefillData = null) {
     // Fetch clients when needed
     const clients = await api.get('/clients');
     const payment = paymentId ? await api.get(`/payments/${paymentId}`) : null;
-    const modal = createModal('paymentModal', paymentId ? 'Edit Payment' : 'Add Payment', `
+    
+    // Use prefillData if provided (from contact form)
+    const data = payment || prefillData || {};
+    const modalTitle = paymentId ? 'Edit Payment' : (prefillData ? 'Create Payment from Contact' : 'Add Payment');
+    const modal = createModal('paymentModal', modalTitle, `
         <form id="paymentForm">
             <div class="form-row">
                 <div class="form-group">
                     <label>Payment Code</label>
-                    <input type="text" id="paymentCode" value="${payment?.paymentCode || ''}">
+                    <input type="text" id="paymentCode" value="${data?.paymentCode || ''}">
                 </div>
                 <div class="form-group">
                     <label>Client</label>
                     <select id="paymentClientId" required>
                         <option value="">Select Client</option>
-                        ${clients.map(c => `<option value="${c.id}" ${payment?.clientId === c.id ? 'selected' : ''}>${c.companyName}</option>`).join('')}
+                        ${clients.map(c => `<option value="${c.id}" ${data?.clientId === c.id ? 'selected' : ''}>${c.companyName}</option>`).join('')}
                     </select>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>Amount</label>
-                    <input type="number" id="paymentAmount" value="${payment?.amount || ''}" step="0.01" required>
+                    <input type="number" id="paymentAmount" value="${data?.amount || ''}" step="0.01" required>
                 </div>
                 <div class="form-group">
                     <label>Due Date</label>
-                    <input type="date" id="paymentDueDate" value="${payment ? new Date(payment.dueDate).toISOString().split('T')[0] : ''}" required>
+                    <input type="date" id="paymentDueDate" value="${data?.dueDate ? new Date(data.dueDate).toISOString().split('T')[0] : ''}" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>Payment Method</label>
                     <select id="paymentMethod" required>
-                        <option value="Cash" ${payment?.paymentMethod === 'Cash' ? 'selected' : ''}>Cash</option>
-                        <option value="Bank Transfer" ${payment?.paymentMethod === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
-                        <option value="Credit Card" ${payment?.paymentMethod === 'Credit Card' ? 'selected' : ''}>Credit Card</option>
+                        <option value="Cash" ${data?.paymentMethod === 'Cash' ? 'selected' : ''}>Cash</option>
+                        <option value="Bank Transfer" ${data?.paymentMethod === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
+                        <option value="Credit Card" ${data?.paymentMethod === 'Credit Card' ? 'selected' : ''}>Credit Card</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Status</label>
                     <select id="paymentStatus" required>
-                        <option value="Pending" ${payment?.status === 'Pending' ? 'selected' : ''}>Pending Payment</option>
-                        <option value="Paid" ${payment?.status === 'Paid' ? 'selected' : ''}>Paid</option>
-                        <option value="Overdue" ${payment?.status === 'Overdue' ? 'selected' : ''}>Overdue</option>
+                        <option value="Pending" ${data?.status === 'Pending' ? 'selected' : ''}>Pending Payment</option>
+                        <option value="Paid" ${data?.status === 'Paid' ? 'selected' : ''}>Paid</option>
+                        <option value="Overdue" ${data?.status === 'Overdue' ? 'selected' : ''}>Overdue</option>
                     </select>
                 </div>
             </div>
             <div class="form-group">
                 <label>Notes</label>
-                <textarea id="paymentNotes" rows="3">${payment?.notes || ''}</textarea>
+                <textarea id="paymentNotes" rows="3">${data?.notes || ''}</textarea>
             </div>
             <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
                 <button type="button" class="btn" onclick="closeModal('paymentModal')">Cancel</button>

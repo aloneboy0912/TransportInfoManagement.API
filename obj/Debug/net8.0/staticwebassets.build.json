@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "9TrgljzzNfblkPtXvCD+nQvxrIDaT4gEEiTzUP1sXEM=",
+  "Hash": "jaAzWWNEEB/gUvF0n8O/sYVo0B3XDD0H6c+L9yVF+H0=",
   "Source": "TransportInfoManagement.API",
   "BasePath": "_content/TransportInfoManagement.API",
   "Mode": "Default",
@@ -167,6 +167,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\clients.js"
+    },
+    {
+      "Identity": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\contacts.js",
+      "SourceId": "TransportInfoManagement.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\",
+      "BasePath": "_content/TransportInfoManagement.API",
+      "RelativePath": "js/contacts.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\contacts.js"
     },
     {
       "Identity": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\dashboard.js",

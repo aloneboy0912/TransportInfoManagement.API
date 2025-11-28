@@ -6,7 +6,6 @@ using TransportInfoManagement.API.Models;
 
 namespace TransportInfoManagement.API.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class PaymentsController : ControllerBase

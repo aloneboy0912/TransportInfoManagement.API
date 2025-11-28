@@ -64,7 +64,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// CORS must be before authentication
 app.UseCors("AllowAll");
+
+// Configure authentication/authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -150,7 +153,67 @@ app.MapFallback(context =>
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.EnsureCreated();
+    // Note: Using manual table creation instead of EnsureCreated() to avoid conflicts with existing tables
+    
+    // Ensure Contacts table exists (for existing databases that were created before Contact model was added)
+    try
+    {
+        db.Database.ExecuteSqlRaw(@"
+            CREATE TABLE IF NOT EXISTS `Contacts` (
+                `Id` int NOT NULL AUTO_INCREMENT,
+                `Name` varchar(200) NOT NULL,
+                `Email` varchar(200) NOT NULL,
+                `Company` varchar(200) NULL,
+                `Phone` varchar(50) NULL,
+                `Subject` varchar(200) NOT NULL,
+                `Message` text NOT NULL,
+                `CreatedAt` datetime(6) NOT NULL,
+                `IsProcessed` tinyint(1) NOT NULL DEFAULT 0,
+                PRIMARY KEY (`Id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    }
+    catch (Exception ex)
+    {
+        // Log error but don't fail startup - table might already exist
+        Console.WriteLine($"Warning: Could not create Contacts table: {ex.Message}");
+    }
+    
+    // Ensure CallLogs table exists
+    try
+    {
+        db.Database.ExecuteSqlRaw(@"
+            CREATE TABLE IF NOT EXISTS `CallLogs` (
+                `Id` int NOT NULL AUTO_INCREMENT,
+                `ClientId` int NULL,
+                `ContactId` int NULL,
+                `EmployeeId` int NULL,
+                `ServiceId` int NULL,
+                `CallDate` datetime(6) NOT NULL,
+                `CallDuration` int NOT NULL,
+                `CallType` varchar(50) NOT NULL,
+                `Outcome` varchar(50) NOT NULL,
+                `CustomerName` varchar(200) NOT NULL,
+                `CustomerPhone` varchar(50) NULL,
+                `CustomerEmail` varchar(200) NULL,
+                `Notes` text NULL,
+                `IsResolved` tinyint(1) NOT NULL DEFAULT 0,
+                `CreatedAt` datetime(6) NOT NULL,
+                PRIMARY KEY (`Id`),
+                INDEX `IX_CallLogs_ClientId` (`ClientId`),
+                INDEX `IX_CallLogs_ContactId` (`ContactId`),
+                INDEX `IX_CallLogs_EmployeeId` (`EmployeeId`),
+                INDEX `IX_CallLogs_ServiceId` (`ServiceId`),
+                CONSTRAINT `FK_CallLogs_Clients_ClientId` FOREIGN KEY (`ClientId`) REFERENCES `Clients` (`Id`) ON DELETE SET NULL,
+                CONSTRAINT `FK_CallLogs_Contacts_ContactId` FOREIGN KEY (`ContactId`) REFERENCES `Contacts` (`Id`) ON DELETE SET NULL,
+                CONSTRAINT `FK_CallLogs_Employees_EmployeeId` FOREIGN KEY (`EmployeeId`) REFERENCES `Employees` (`Id`) ON DELETE SET NULL,
+                CONSTRAINT `FK_CallLogs_Services_ServiceId` FOREIGN KEY (`ServiceId`) REFERENCES `Services` (`Id`) ON DELETE SET NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    }
+    catch (Exception ex)
+    {
+        // Log error but don't fail startup - table might already exist
+        Console.WriteLine($"Warning: Could not create CallLogs table: {ex.Message}");
+    }
     
     // Update existing service descriptions to English
     var services = db.Services.ToList();

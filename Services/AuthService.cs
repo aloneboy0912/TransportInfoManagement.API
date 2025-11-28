@@ -21,8 +21,16 @@ public class AuthService : IAuthService
 
     public async Task<LoginResponse?> LoginAsync(LoginRequest request)
     {
+        // Try to find user by username first
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Username == request.Username);
+
+        // If not found by username, try to find by email
+        if (user == null)
+        {
+            user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == request.Username);
+        }
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
@@ -99,31 +107,55 @@ public class AuthService : IAuthService
             };
         }
 
-        // Create new user
-        var user = new User
+        try
         {
-            Username = request.Username,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-            Email = request.Email,
-            FullName = request.FullName ?? request.Username,
-            Role = "User", // Default role for new users
-            CreatedAt = DateTime.UtcNow
-        };
+            // Create new user
+            var user = new User
+            {
+                Username = request.Username,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                Email = request.Email,
+                FullName = request.FullName ?? request.Username,
+                Role = "User", // Default role for new users
+                CreatedAt = DateTime.UtcNow
+            };
 
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
+            // Add user to database context
+            _context.Users.Add(user);
+            
+            // Save changes to database
+            await _context.SaveChangesAsync();
 
-        // Generate token
-        var token = GenerateJwtToken(user);
+            // Generate token
+            var token = GenerateJwtToken(user);
 
-        return new RegisterResponse
+            return new RegisterResponse
+            {
+                Success = true,
+                Message = "Registration successful. User has been saved to the database.",
+                Token = token,
+                Username = user.Username,
+                FullName = user.FullName
+            };
+        }
+        catch (DbUpdateException ex)
         {
-            Success = true,
-            Message = "Registration successful",
-            Token = token,
-            Username = user.Username,
-            FullName = user.FullName
-        };
+            // Handle database update errors (e.g., unique constraint violations)
+            return new RegisterResponse
+            {
+                Success = false,
+                Message = "Failed to save user to database. The username or email may already exist."
+            };
+        }
+        catch (Exception ex)
+        {
+            // Handle any other unexpected errors
+            return new RegisterResponse
+            {
+                Success = false,
+                Message = $"An error occurred during registration: {ex.Message}"
+            };
+        }
     }
 
     public string GenerateJwtToken(User user)

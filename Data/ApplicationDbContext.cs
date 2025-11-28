@@ -18,6 +18,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<Product> Products { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<ServiceFee> ServiceFees { get; set; }
+    public DbSet<Contact> Contacts { get; set; }
+    public DbSet<CallLog> CallLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -109,6 +111,47 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.Username).IsUnique();
+            entity.HasIndex(e => e.Email).IsUnique(); // Ensure email is unique
+        });
+
+        // Contact Configuration
+        modelBuilder.Entity<Contact>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Email).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Company).HasMaxLength(200);
+            entity.Property(e => e.Phone).HasMaxLength(50);
+            entity.Property(e => e.Subject).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Message).IsRequired().HasColumnType("text");
+        });
+
+        // CallLog Configuration
+        modelBuilder.Entity<CallLog>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.Client)
+                  .WithMany()
+                  .HasForeignKey(e => e.ClientId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(e => e.Contact)
+                  .WithMany()
+                  .HasForeignKey(e => e.ContactId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(e => e.Employee)
+                  .WithMany()
+                  .HasForeignKey(e => e.EmployeeId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(e => e.Service)
+                  .WithMany()
+                  .HasForeignKey(e => e.ServiceId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.Property(e => e.CallType).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.Outcome).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.CustomerName).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.CustomerPhone).HasMaxLength(50);
+            entity.Property(e => e.CustomerEmail).HasMaxLength(200);
+            entity.Property(e => e.Notes).HasColumnType("text");
         });
 
         // Seed initial data

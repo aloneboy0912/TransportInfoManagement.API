@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TransportInfoManagement.API.Models;
 using TransportInfoManagement.API.Services;
@@ -6,6 +7,7 @@ namespace TransportInfoManagement.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[AllowAnonymous] // Allow anonymous access to all auth endpoints
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
@@ -16,9 +18,10 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        if (string.IsNullOrEmpty(request.Username) || string.IsNullOrEmpty(request.Password))
+        if (request == null || string.IsNullOrEmpty(request.Username) || string.IsNullOrEmpty(request.Password))
         {
             return BadRequest(new { message = "Username and password are required" });
         }
@@ -26,18 +29,36 @@ public class AuthController : ControllerBase
         var response = await _authService.LoginAsync(request);
         if (response == null)
         {
-            return Unauthorized(new { message = "Tên đăng nhập hoặc mật khẩu không đúng" });
+            return Unauthorized(new { message = "Invalid username/email or password" });
         }
 
         return Ok(response);
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+    [AllowAnonymous]
+    public async Task<IActionResult> Register([FromBody] RegisterRequest? request)
     {
-        if (!ModelState.IsValid)
+        // Basic validation - service will do detailed validation
+        if (request == null)
         {
-            return BadRequest(ModelState);
+            return BadRequest(new { message = "Request body is required" });
+        }
+
+        // Validate required fields
+        if (string.IsNullOrWhiteSpace(request.Username))
+        {
+            return BadRequest(new { message = "Username is required" });
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Email))
+        {
+            return BadRequest(new { message = "Email is required" });
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Password))
+        {
+            return BadRequest(new { message = "Password is required" });
         }
 
         var response = await _authService.RegisterAsync(request);
