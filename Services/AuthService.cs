@@ -138,7 +138,7 @@ public class AuthService : IAuthService
                 FullName = user.FullName
             };
         }
-        catch (DbUpdateException ex)
+        catch (DbUpdateException)
         {
             // Handle database update errors (e.g., unique constraint violations)
             return new RegisterResponse

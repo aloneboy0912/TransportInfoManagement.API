@@ -19,7 +19,7 @@ public class StripeController : ControllerBase
     }
 
     [HttpPost("create-payment-intent")]
-    public async Task<ActionResult<object>> CreatePaymentIntent([FromBody] CreatePaymentIntentRequest request)
+    public ActionResult<object> CreatePaymentIntent([FromBody] CreatePaymentIntentRequest request)
     {
         try
         {

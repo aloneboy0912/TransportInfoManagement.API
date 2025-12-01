@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,29 +8,33 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <!-- Login Screen -->
     <div id="loginScreen" class="screen">
         <div class="login-container">
             <div class="login-box">
                 <div style="text-align: center; margin-bottom: 1rem;">
-                    <div style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary-color); font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">
+                    <div
+                        style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary-color); font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">
                         <i class="fas fa-headset"></i>
                         <span>Excell-On Services</span>
                     </div>
                 </div>
                 <h1>Login</h1>
                 <h2>Access Your System</h2>
-                
+
                 <!-- Login Form -->
                 <form id="loginForm" class="auth-form">
                     <div class="form-group">
                         <label for="username">Username</label>
-                        <input type="text" id="username" required placeholder="Enter username">
+                        <input type="text" id="username" name="username" required placeholder="Enter username"
+                            autocomplete="username">
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" required placeholder="Enter password">
+                        <input type="password" id="password" name="password" required placeholder="Enter password"
+                            autocomplete="current-password">
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">
                         <i class="fas fa-sign-in-alt"></i> Login
@@ -37,20 +42,52 @@
                     <div id="loginError" class="error-message"></div>
                 </form>
 
-                <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
-                    <p style="color: var(--text-secondary); font-size: 0.875rem; margin: 0;">
-                        <i class="fas fa-info-circle"></i> Login to access the management system
+                <div
+                    style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                        <i class="fas fa-bolt" style="color: var(--warning-color);"></i> Quick Login (Demo)
                     </p>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
+                        <button type="button" class="btn btn-outline-primary"
+                            style="padding: 0.5rem; font-size: 0.8rem; flex-direction: column; gap: 0.25rem;"
+                            onclick="fillLogin('admin', 'admin123', true)">
+                            <i class="fas fa-user-shield" style="font-size: 1.2rem;"></i>
+                            <span>Admin</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary"
+                            style="padding: 0.5rem; font-size: 0.8rem; flex-direction: column; gap: 0.25rem;"
+                            onclick="fillLogin('manager', 'manager123', true)">
+                            <i class="fas fa-user-tie" style="font-size: 1.2rem;"></i>
+                            <span>Manager</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-info"
+                            style="padding: 0.5rem; font-size: 0.8rem; flex-direction: column; gap: 0.25rem;"
+                            onclick="fillLogin('user', 'user123', true)">
+                            <i class="fas fa-user" style="font-size: 1.2rem;"></i>
+                            <span>User</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="js/api.js"></script>
-    <script src="js/login.js"></script>
+    <script src="js/login.js?v=1.0"></script>
+    <script>
+        // Fallback if login.js fails to load or run
+        if (typeof window.fillLogin === 'undefined') {
+            console.warn('login.js failed to define fillLogin, using fallback');
+            window.fillLogin = function (username, password, autoSubmit = false) {
+                document.getElementById('username').value = username;
+                document.getElementById('password').value = password;
+                if (autoSubmit) {
+                    const form = document.getElementById('loginForm');
+                    if (form) form.dispatchEvent(new Event('submit', { 'bubbles': true, 'cancelable': true }));
+                }
+            };
+        }
+    </script>
 </body>
+
 </html>
-
-
-
-

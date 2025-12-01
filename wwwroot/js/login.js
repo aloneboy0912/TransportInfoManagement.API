@@ -1,4 +1,31 @@
+// Helper function for demo accounts
+window.fillLogin = function (username, password, autoSubmit = false) {
+    console.log('fillLogin called', username, autoSubmit);
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+
+    if (usernameInput && passwordInput) {
+        usernameInput.value = username;
+        passwordInput.value = password;
+
+        if (autoSubmit) {
+            // Create and dispatch submit event
+            const form = document.getElementById('loginForm');
+            if (form) {
+                const submitEvent = new Event('submit', {
+                    'bubbles': true,
+                    'cancelable': true
+                });
+                form.dispatchEvent(submitEvent);
+            }
+        }
+    } else {
+        console.error('Login inputs not found');
+    }
+};
+
 // Login Page Handler
+console.log('login.js loaded');
 const loginForm = document.getElementById('loginForm');
 const loginError = document.getElementById('loginError');
 
@@ -13,20 +40,14 @@ if (loginForm) {
         try {
             const response = await api.post('/auth/login', { username, password });
             api.setToken(response.token);
-            
+
             // Store user info
             localStorage.setItem('userFullName', response.fullName);
             localStorage.setItem('userRole', response.role);
             localStorage.setItem('username', response.username);
-            
-            // Redirect based on role
-            if (response.role === 'Admin' || username.toLowerCase() === 'admin') {
-                // Admin redirect to admin panel
-                window.location.href = '/admin';
-            } else {
-                // Regular user redirect to user dashboard
-                window.location.href = '/user';
-            }
+
+            // Redirect to main dashboard
+            window.location.href = '/admin';
         } catch (error) {
             let errorMessage = 'Invalid username or password';
             try {
@@ -47,4 +68,22 @@ if (loginForm) {
         }
     });
 }
+
+// Helper function for demo accounts
+window.fillLogin = function (username, password, autoSubmit = false) {
+    document.getElementById('username').value = username;
+    document.getElementById('password').value = password;
+
+    if (autoSubmit) {
+        // Create and dispatch submit event
+        const form = document.getElementById('loginForm');
+        if (form) {
+            const submitEvent = new Event('submit', {
+                'bubbles': true,
+                'cancelable': true
+            });
+            form.dispatchEvent(submitEvent);
+        }
+    }
+};
 

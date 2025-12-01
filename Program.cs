@@ -101,19 +101,7 @@ app.MapGet("/login", async (context) =>
     }
 });
 
-// User dashboard route
-app.MapGet("/user", async (context) =>
-{
-    var userFilePath = Path.Combine(env.WebRootPath, "user.html");
-    if (File.Exists(userFilePath))
-    {
-        context.Response.ContentType = "text/html";
-        await context.Response.SendFileAsync(userFilePath);
-        return;
-    }
-    // Redirect to home if user.html doesn't exist
-    context.Response.Redirect("/");
-});
+
 
 // Admin panel route - also serve admin panel at /admin for compatibility
 app.MapGet("/admin", async (context) =>
@@ -127,9 +115,10 @@ app.MapGet("/admin", async (context) =>
 });
 
 // Root route - redirect to login page
-app.MapGet("/", async (context) =>
+app.MapGet("/", (context) =>
 {
     context.Response.Redirect("/login");
+    return Task.CompletedTask;
 });
 
 // Fallback for admin panel SPA routing (routes starting with /admin)
@@ -215,6 +204,35 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"Warning: Could not create CallLogs table: {ex.Message}");
     }
     
+    // Ensure mock department data exists
+    if (!db.Departments.Any())
+    {
+        var departments = new List<Department>
+        {
+            new Department { Id = 1, Name = "Human Resources", Description = "HR Department", IsActive = true, CreatedAt = DateTime.UtcNow },
+            new Department { Id = 2, Name = "Administration", Description = "Admin Department", IsActive = true, CreatedAt = DateTime.UtcNow },
+            new Department { Id = 3, Name = "Operations", Description = "Operations Department", IsActive = true, CreatedAt = DateTime.UtcNow },
+            new Department { Id = 4, Name = "Training", Description = "Training Department", IsActive = true, CreatedAt = DateTime.UtcNow },
+            new Department { Id = 5, Name = "Security", Description = "Security Department", IsActive = true, CreatedAt = DateTime.UtcNow },
+            new Department { Id = 6, Name = "Quality Assurance", Description = "QA Department", IsActive = true, CreatedAt = DateTime.UtcNow }
+        };
+        db.Departments.AddRange(departments);
+        db.SaveChanges();
+    }
+
+    // Ensure mock service data exists
+    if (!db.Services.Any())
+    {
+        var servicesList = new List<Service>
+        {
+            new Service { Id = 1, Name = "Inbound Support", Description = "Receiving calls from customers", IsActive = true, CreatedAt = DateTime.UtcNow },
+            new Service { Id = 2, Name = "Outbound Sales", Description = "Staff proactively calling customers", IsActive = true, CreatedAt = DateTime.UtcNow },
+            new Service { Id = 3, Name = "Telemarketing", Description = "Marketing and sales services via telephone", IsActive = true, CreatedAt = DateTime.UtcNow }
+        };
+        db.Services.AddRange(servicesList);
+        db.SaveChanges();
+    }
+
     // Update existing service descriptions to English
     var services = db.Services.ToList();
     foreach (var service in services)
@@ -307,6 +325,80 @@ using (var scope = app.Services.CreateScope())
         };
         db.ClientServices.AddRange(clientServices);
         db.SaveChanges();
+    }
+    // Ensure mock user data exists
+    if (!db.Users.Any())
+    {
+        var adminUser = new User
+        {
+            Username = "admin",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
+            Email = "admin@transportinfo.com",
+            FullName = "System Administrator",
+            Role = "Admin",
+            CreatedAt = DateTime.UtcNow
+        };
+        db.Users.Add(adminUser);
+        
+        var normalUser = new User
+        {
+            Username = "user",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("user123"),
+            Email = "user@transportinfo.com",
+            FullName = "Normal User",
+            Role = "User",
+            CreatedAt = DateTime.UtcNow
+        };
+        db.Users.Add(normalUser);
+
+        var managerUser = new User
+        {
+            Username = "manager",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("manager123"),
+            Email = "manager@transportinfo.com",
+            FullName = "Manager User",
+            Role = "Manager",
+            CreatedAt = DateTime.UtcNow
+        };
+        db.Users.Add(managerUser);
+
+        db.SaveChanges();
+    }
+    else
+    {
+        // Check and add missing roles if users table already has data but missing specific roles
+        if (!db.Users.Any(u => u.Username == "user"))
+        {
+            var normalUser = new User
+            {
+                Username = "user",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("user123"),
+                Email = "user@transportinfo.com",
+                FullName = "Normal User",
+                Role = "User",
+                CreatedAt = DateTime.UtcNow
+            };
+            db.Users.Add(normalUser);
+        }
+
+        if (!db.Users.Any(u => u.Username == "manager"))
+        {
+            var managerUser = new User
+            {
+                Username = "manager",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("manager123"),
+                Email = "manager@transportinfo.com",
+                FullName = "Manager User",
+                Role = "Manager",
+                CreatedAt = DateTime.UtcNow
+            };
+            db.Users.Add(managerUser);
+        }
+        
+        if (db.ChangeTracker.HasChanges())
+        {
+            db.SaveChanges();
+        }
     }
 }
 
