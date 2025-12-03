@@ -15,5 +15,9 @@ public class Employee
     public DateTime HireDate { get; set; } = DateTime.UtcNow;
     public bool IsActive { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    // Foreign Key to User (Optional - not all employees might have a login yet)
+    public int? UserId { get; set; }
+    public User? User { get; set; }
 }
 

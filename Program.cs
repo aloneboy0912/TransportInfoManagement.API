@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -54,6 +54,7 @@ builder.Services.AddAuthentication(options =>
 
 // Register services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 
@@ -220,40 +221,86 @@ using (var scope = app.Services.CreateScope())
         db.SaveChanges();
     }
 
-    // Ensure mock service data exists
+    // Ensure mock service data exists - Match frontend naming exactly
     if (!db.Services.Any())
     {
         var servicesList = new List<Service>
         {
-            new Service { Id = 1, Name = "Inbound Support", Description = "Receiving calls from customers", IsActive = true, CreatedAt = DateTime.UtcNow },
-            new Service { Id = 2, Name = "Outbound Sales", Description = "Staff proactively calling customers", IsActive = true, CreatedAt = DateTime.UtcNow },
-            new Service { Id = 3, Name = "Telemarketing", Description = "Marketing and sales services via telephone", IsActive = true, CreatedAt = DateTime.UtcNow }
+            new Service { Id = 1, Name = "In-bound Services", Description = "Receiving calls from customers", IsActive = true, CreatedAt = DateTime.UtcNow },
+            new Service { Id = 2, Name = "Out-bound Services", Description = "Staff proactively calling customers", IsActive = true, CreatedAt = DateTime.UtcNow },
+            new Service { Id = 3, Name = "Tele Marketing Services", Description = "Marketing and sales services via telephone", IsActive = true, CreatedAt = DateTime.UtcNow }
         };
         db.Services.AddRange(servicesList);
         db.SaveChanges();
     }
-
-    // Update existing service descriptions to English
-    var services = db.Services.ToList();
-    foreach (var service in services)
+    
+    // Update existing services to match frontend naming if they exist with old names
+    var existingServices = db.Services.ToList();
+    foreach (var service in existingServices)
     {
         switch (service.Id)
         {
             case 1:
-                if (service.Description.Contains("Nhận cuộc gọi"))
+                if (service.Name != "In-bound Services")
+                {
+                    service.Name = "In-bound Services";
                     service.Description = "Receiving calls from customers";
+                }
                 break;
             case 2:
-                if (service.Description.Contains("Nhân viên chủ động"))
+                if (service.Name != "Out-bound Services")
+                {
+                    service.Name = "Out-bound Services";
                     service.Description = "Staff proactively calling customers";
+                }
                 break;
             case 3:
-                if (service.Description.Contains("Dịch vụ tiếp thị"))
+                if (service.Name != "Tele Marketing Services")
+                {
+                    service.Name = "Tele Marketing Services";
                     service.Description = "Marketing and sales services via telephone";
+                }
                 break;
         }
     }
     db.SaveChanges();
+
+    // Ensure Service Fees match frontend pricing exactly
+    if (!db.ServiceFees.Any())
+    {
+        var serviceFees = new List<ServiceFee>
+        {
+            new ServiceFee { Id = 1, ServiceId = 1, FeePerDayPerEmployee = 4500.00m },
+            new ServiceFee { Id = 2, ServiceId = 2, FeePerDayPerEmployee = 6000.00m },
+            new ServiceFee { Id = 3, ServiceId = 3, FeePerDayPerEmployee = 5500.00m }
+        };
+        db.ServiceFees.AddRange(serviceFees);
+        db.SaveChanges();
+    }
+    else
+    {
+        // Update existing service fees to match frontend pricing
+        var serviceFees = db.ServiceFees.ToList();
+        foreach (var fee in serviceFees)
+        {
+            switch (fee.ServiceId)
+            {
+                case 1:
+                    if (fee.FeePerDayPerEmployee != 4500.00m)
+                        fee.FeePerDayPerEmployee = 4500.00m;
+                    break;
+                case 2:
+                    if (fee.FeePerDayPerEmployee != 6000.00m)
+                        fee.FeePerDayPerEmployee = 6000.00m;
+                    break;
+                case 3:
+                    if (fee.FeePerDayPerEmployee != 5500.00m)
+                        fee.FeePerDayPerEmployee = 5500.00m;
+                    break;
+            }
+        }
+        db.SaveChanges();
+    }
 
     // Ensure mock employee data exists
     if (!db.Employees.Any())

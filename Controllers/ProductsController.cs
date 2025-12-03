@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TransportInfoManagement.API.Data;
 using TransportInfoManagement.API.Models;
+using TransportInfoManagement.API.Services;
 
 namespace TransportInfoManagement.API.Controllers;
 
@@ -12,10 +13,17 @@ namespace TransportInfoManagement.API.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly IEmailService _emailService;
+    private readonly ILogger<ProductsController> _logger;
 
-    public ProductsController(ApplicationDbContext context)
+    public ProductsController(
+        ApplicationDbContext context, 
+        IEmailService emailService,
+        ILogger<ProductsController> logger)
     {
         _context = context;
+        _emailService = emailService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -54,7 +62,34 @@ public class ProductsController : ControllerBase
         product.CreatedAt = DateTime.UtcNow;
         _context.Products.Add(product);
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+
+        // Load the product with client information for email
+        var productWithClient = await _context.Products
+            .Include(p => p.Client)
+            .FirstOrDefaultAsync(p => p.Id == product.Id);
+
+        // Send confirmation email if client exists and has email
+        if (productWithClient?.Client != null && !string.IsNullOrEmpty(productWithClient.Client.Email))
+        {
+            try
+            {
+                await _emailService.SendProductRegistrationConfirmationAsync(
+                    clientEmail: productWithClient.Client.Email,
+                    clientName: productWithClient.Client.ContactPerson ?? productWithClient.Client.CompanyName,
+                    productName: productWithClient.ProductName,
+                    productCode: productWithClient.ProductCode,
+                    category: productWithClient.Category ?? "N/A"
+                );
+                _logger.LogInformation($"Product registration confirmation email sent to {productWithClient.Client.Email}");
+            }
+            catch (Exception ex)
+            {
+                // Log the error but don't fail the request
+                _logger.LogError(ex, $"Failed to send product registration email to {productWithClient.Client.Email}: {ex.Message}");
+            }
+        }
+
+        return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, productWithClient ?? product);
     }
 
     [HttpPut("{id}")]

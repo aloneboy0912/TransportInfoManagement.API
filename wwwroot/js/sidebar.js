@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('sidebar');
     const sidebarToggle = document.getElementById('sidebarToggle');
     const sidebarSearch = document.getElementById('sidebarSearch');
-    
+
     // Toggle sidebar collapse
     if (sidebarToggle) {
         sidebarToggle.addEventListener('click', () => {
@@ -11,26 +11,31 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
         });
     }
-    
+
     // Restore sidebar state
     if (localStorage.getItem('sidebarCollapsed') === 'true') {
         sidebar.classList.add('collapsed');
     }
-    
+
     // Search functionality
     if (sidebarSearch) {
         sidebarSearch.addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase().trim();
             const navSections = document.querySelectorAll('.nav-section');
-            
+
             navSections.forEach(section => {
                 const sectionItems = section.querySelectorAll('.nav-item');
                 let hasVisibleItems = false;
-                
+
                 sectionItems.forEach(item => {
+                    // Skip items hidden by RBAC
+                    if (item.classList.contains('restricted-hidden')) {
+                        return;
+                    }
+
                     const text = item.textContent.toLowerCase();
                     const span = item.querySelector('span');
-                    
+
                     if (searchTerm === '') {
                         item.style.display = 'flex';
                         if (span) {
@@ -54,19 +59,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         item.style.display = 'none';
                     }
                 });
-                
+
                 // Show/hide section based on visible items
                 const sectionHeader = section.querySelector('.nav-section-header');
                 if (searchTerm === '') {
-                    section.style.display = 'block';
-                    if (sectionHeader) sectionHeader.style.display = 'block';
+                    // Only show section if it has non-restricted items
+                    const hasNonRestrictedItems = Array.from(sectionItems).some(item => !item.classList.contains('restricted-hidden'));
+                    section.style.display = hasNonRestrictedItems ? 'block' : 'none';
+                    if (sectionHeader) sectionHeader.style.display = hasNonRestrictedItems ? 'block' : 'none';
                 } else {
                     section.style.display = hasVisibleItems ? 'block' : 'none';
                     if (sectionHeader) sectionHeader.style.display = hasVisibleItems ? 'block' : 'none';
                 }
             });
         });
-        
+
         // Clear search on escape
         sidebarSearch.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
@@ -76,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    
+
     // Update main content margin when sidebar collapses
     const observer = new MutationObserver(() => {
         const mainContent = document.querySelector('.main-content');
@@ -88,12 +95,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-    
+
     observer.observe(sidebar, {
         attributes: true,
         attributeFilter: ['class']
     });
-    
+
     // Add tooltips when collapsed
     const updateTooltips = () => {
         const allNavItems = document.querySelectorAll('.nav-item');
@@ -108,15 +115,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     };
-    
+
     observer.observe(sidebar, {
         attributes: true,
         attributeFilter: ['class']
     });
-    
+
     // Initial tooltip update
     updateTooltips();
-    
+
     // Update tooltips on toggle
     if (sidebarToggle) {
         sidebarToggle.addEventListener('click', () => {
@@ -141,9 +148,9 @@ document.addEventListener('click', (e) => {
     const sidebar = document.getElementById('sidebar');
     const sidebarToggle = document.getElementById('sidebarToggle');
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-    
-    if (window.innerWidth <= 768 && sidebar && 
-        !sidebar.contains(e.target) && 
+
+    if (window.innerWidth <= 768 && sidebar &&
+        !sidebar.contains(e.target) &&
         !sidebarToggle?.contains(e.target) &&
         !mobileMenuToggle?.contains(e.target)) {
         if (!sidebar.classList.contains('collapsed')) {

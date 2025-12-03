@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TransportInfoManagement.API.Data;
 using TransportInfoManagement.API.Models;
+using TransportInfoManagement.API.Helpers;
 
 namespace TransportInfoManagement.API.Controllers;
 
@@ -47,6 +49,7 @@ public class StripeController : ControllerBase
     }
 
     [HttpPost("confirm-payment")]
+    [AllowAnonymous] // Allow anonymous access for guest checkout
     public async Task<ActionResult<Payment>> ConfirmPayment([FromBody] ConfirmPaymentRequest request)
     {
         try
@@ -67,7 +70,7 @@ public class StripeController : ControllerBase
                     {
                         client = new Client
                         {
-                            ClientCode = $"CLT{DateTime.UtcNow:yyyyMMddHHmmss}",
+                            ClientCode = $"CLT{TimeZoneHelper.GetVietnamTime():yyyyMMddHHmmss}",
                             CompanyName = contact.Company ?? contact.Name,
                             ContactPerson = contact.Name,
                             Email = contact.Email,
@@ -76,7 +79,7 @@ public class StripeController : ControllerBase
                             City = "",
                             Country = "",
                             IsActive = true,
-                            CreatedAt = DateTime.UtcNow
+                            CreatedAt = TimeZoneHelper.ToUtc(TimeZoneHelper.GetVietnamTime())
                         };
                         _context.Clients.Add(client);
                         await _context.SaveChangesAsync();
@@ -89,27 +92,100 @@ public class StripeController : ControllerBase
                 client = await _context.Clients.FindAsync(request.ClientId.Value);
             }
 
-            if (client == null)
+            // If no client found, try to find by email or create a guest client for cart checkout
+            if (client == null && !string.IsNullOrEmpty(request.CustomerEmail))
             {
-                return BadRequest(new { message = "Client not found" });
+                // Try to find existing client by email first (to avoid unique constraint violation)
+                client = await _context.Clients
+                    .FirstOrDefaultAsync(c => c.Email.ToLower() == request.CustomerEmail.ToLower());
             }
 
-            // Create payment record
+            // If still no client found, create a guest client
+            if (client == null)
+            {
+                var customerEmail = request.CustomerEmail;
+                
+                // Generate unique email if needed
+                if (string.IsNullOrEmpty(customerEmail))
+                {
+                    customerEmail = $"guest{DateTime.UtcNow.Ticks}@example.com";
+                }
+                else
+                {
+                    // Check if email already exists (shouldn't happen if we checked above, but double-check)
+                    var emailExists = await _context.Clients
+                        .AnyAsync(c => c.Email.ToLower() == customerEmail.ToLower());
+                    
+                    if (emailExists)
+                    {
+                        // If email exists, append timestamp to make it unique
+                        var emailParts = customerEmail.Split('@');
+                        var emailLocal = emailParts[0];
+                        var emailDomain = emailParts.Length > 1 ? emailParts[1] : "example.com";
+                        customerEmail = $"{emailLocal}_{DateTime.UtcNow.Ticks}@{emailDomain}";
+                    }
+                }
+
+                client = new Client
+                {
+                    ClientCode = $"GUEST{TimeZoneHelper.GetVietnamTime():yyyyMMddHHmmss}",
+                    CompanyName = request.CustomerName ?? "Guest Customer",
+                    ContactPerson = request.CustomerName ?? "Guest",
+                    Email = customerEmail,
+                    Phone = "",
+                    Address = "",
+                    City = "",
+                    Country = "",
+                    IsActive = true,
+                    CreatedAt = TimeZoneHelper.ToUtc(TimeZoneHelper.GetVietnamTime())
+                };
+                
+                try
+                {
+                    _context.Clients.Add(client);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException)
+                {
+                    // If still fails (race condition), try to find existing client again
+                    if (!string.IsNullOrEmpty(request.CustomerEmail))
+                    {
+                        client = await _context.Clients
+                            .FirstOrDefaultAsync(c => c.Email.ToLower() == request.CustomerEmail.ToLower());
+                        if (client == null) throw; // Re-throw if still can't find/create
+                    }
+                    else
+                    {
+                        throw; // Re-throw if no email provided
+                    }
+                }
+            }
+
+            // Format payment description/notes
+            var paymentNotes = FormatPaymentDescription(request.Notes, request.PaymentIntentId);
+
+            // Create payment record (using Vietnam time UTC+7)
+            var vietnamNow = TimeZoneHelper.GetVietnamTime();
             var payment = new Payment
             {
                 ClientId = client.Id,
-                PaymentCode = $"PAY{DateTime.UtcNow:yyyyMMddHHmmss}",
+                PaymentCode = $"PAY{vietnamNow:yyyyMMddHHmmss}",
                 Amount = request.Amount,
-                PaymentDate = DateTime.UtcNow,
-                DueDate = DateTime.UtcNow.AddDays(30),
+                PaymentDate = TimeZoneHelper.ToUtc(vietnamNow),
+                DueDate = TimeZoneHelper.ToUtc(vietnamNow.AddDays(30)),
                 PaymentMethod = "Credit Card", // Stripe payments are credit card
                 Status = "Paid",
-                Notes = $"Stripe Payment - Payment Intent: {request.PaymentIntentId}\n{request.Notes ?? ""}",
-                CreatedAt = DateTime.UtcNow
+                Notes = paymentNotes,
+                CreatedAt = TimeZoneHelper.ToUtc(vietnamNow)
             };
 
             _context.Payments.Add(payment);
             await _context.SaveChangesAsync();
+
+            // Reload payment with client information
+            payment = await _context.Payments
+                .Include(p => p.Client)
+                .FirstOrDefaultAsync(p => p.Id == payment.Id);
 
             // Mark contact as processed if contactId is provided
             if (request.ContactId.HasValue)
@@ -124,10 +200,86 @@ public class StripeController : ControllerBase
 
             return CreatedAtAction(nameof(GetPayment), new { id = payment.Id }, payment);
         }
+        catch (DbUpdateException dbEx)
+        {
+            // Handle database constraint violations
+            var innerException = dbEx.InnerException;
+            var errorMessage = "Error confirming payment";
+            
+            if (innerException != null)
+            {
+                var innerMessage = innerException.Message.ToLower();
+                
+                if (innerMessage.Contains("duplicate") || innerMessage.Contains("unique"))
+                {
+                    errorMessage = "A client with this email already exists. Using existing client information.";
+                    _logger.LogWarning(dbEx, "Duplicate email detected, attempting to use existing client");
+                    
+                    // Try to find and use existing client
+                    if (!string.IsNullOrEmpty(request.CustomerEmail))
+                    {
+                        var existingClient = await _context.Clients
+                            .FirstOrDefaultAsync(c => c.Email.ToLower() == request.CustomerEmail.ToLower());
+                        
+                        if (existingClient != null)
+                        {
+                            // Retry payment creation with existing client
+                            var clientForPayment = existingClient;
+                            try
+                            {
+                                var paymentNotes = FormatPaymentDescription(request.Notes, request.PaymentIntentId);
+                                
+                                var vietnamNow = TimeZoneHelper.GetVietnamTime();
+                                var payment = new Payment
+                                {
+                                    ClientId = clientForPayment.Id,
+                                    PaymentCode = $"PAY{vietnamNow:yyyyMMddHHmmss}",
+                                    Amount = request.Amount,
+                                    PaymentDate = TimeZoneHelper.ToUtc(vietnamNow),
+                                    DueDate = TimeZoneHelper.ToUtc(vietnamNow.AddDays(30)),
+                                    PaymentMethod = "Credit Card",
+                                    Status = "Paid",
+                                    Notes = paymentNotes,
+                                    CreatedAt = TimeZoneHelper.ToUtc(vietnamNow)
+                                };
+                                _context.Payments.Add(payment);
+                                await _context.SaveChangesAsync();
+                                
+                                payment = await _context.Payments
+                                    .Include(p => p.Client)
+                                    .FirstOrDefaultAsync(p => p.Id == payment.Id);
+                                
+                                return CreatedAtAction(nameof(GetPayment), new { id = payment.Id }, payment);
+                            }
+                            catch (Exception retryEx)
+                            {
+                                errorMessage = "Error processing payment: " + retryEx.Message;
+                                _logger.LogError(retryEx, "Error retrying payment with existing client");
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    errorMessage = $"Database error: {innerException.Message}";
+                }
+            }
+            
+            _logger.LogError(dbEx, "Database error confirming payment");
+            return BadRequest(new { message = errorMessage });
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error confirming payment");
-            return BadRequest(new { message = "Error confirming payment: " + ex.Message });
+            
+            // Extract inner exception message if available
+            var detailedMessage = ex.Message;
+            if (ex.InnerException != null)
+            {
+                detailedMessage += $" Details: {ex.InnerException.Message}";
+            }
+            
+            return BadRequest(new { message = $"Error confirming payment: {detailedMessage}" });
         }
     }
 
@@ -140,6 +292,42 @@ public class StripeController : ControllerBase
 
         if (payment == null) return NotFound();
         return payment;
+    }
+
+    /// <summary>
+    /// Formats payment description/notes in a clean, professional format
+    /// </summary>
+    private static string FormatPaymentDescription(string? notes, string paymentIntentId)
+    {
+        var descriptionParts = new List<string>();
+
+        // Add payment method info
+        descriptionParts.Add("Payment Method: Credit Card (Stripe)");
+
+        // Add payment intent ID (for reference, but formatted nicely)
+        if (!string.IsNullOrEmpty(paymentIntentId))
+        {
+            // Extract short ID if it's a mock payment intent
+            var shortId = paymentIntentId.Length > 20 
+                ? paymentIntentId.Substring(paymentIntentId.Length - 8) 
+                : paymentIntentId;
+            descriptionParts.Add($"Transaction ID: {shortId}");
+        }
+
+        // Add service description if provided
+        if (!string.IsNullOrWhiteSpace(notes))
+        {
+            // Clean up the notes - remove any "Stripe payment completed" generic text
+            var cleanNotes = notes.Trim();
+            if (!cleanNotes.Equals("Stripe payment completed", StringComparison.OrdinalIgnoreCase) &&
+                !cleanNotes.StartsWith("Stripe Payment - Payment Intent:", StringComparison.OrdinalIgnoreCase))
+            {
+                descriptionParts.Add($"Services: {cleanNotes}");
+            }
+        }
+
+        // Join with line breaks for better readability
+        return string.Join("\n", descriptionParts);
     }
 }
 
@@ -158,5 +346,7 @@ public class ConfirmPaymentRequest
     public int? ClientId { get; set; }
     public int? ContactId { get; set; }
     public string? Notes { get; set; }
+    public string? CustomerName { get; set; }
+    public string? CustomerEmail { get; set; }
 }
 

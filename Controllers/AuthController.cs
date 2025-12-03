@@ -12,6 +12,7 @@ public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
 
+
     public AuthController(IAuthService authService)
     {
         _authService = authService;
@@ -67,6 +68,8 @@ public class AuthController : ControllerBase
         {
             return BadRequest(new { message = response.Message });
         }
+
+
 
         return Ok(response);
     }

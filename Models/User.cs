@@ -9,6 +9,9 @@ public class User
     public string FullName { get; set; } = string.Empty;
     public string Role { get; set; } = "User"; // Admin, User
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    // Navigation property back to Employee
+    public Employee? Employee { get; set; }
 }
 
 public class LoginRequest

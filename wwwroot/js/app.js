@@ -6,11 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
-            
+
             // Update active state - remove from all items
             document.querySelectorAll('.nav-item').forEach(ni => ni.classList.remove('active'));
             item.classList.add('active');
-            
+
             // Load corresponding page
             const page = item.getAttribute('data-page');
             loadPage(page);
@@ -19,6 +19,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadPage(page) {
+    // Check access permission
+    if (window.checkPageAccess && !window.checkPageAccess(page)) {
+        document.getElementById('pageContent').innerHTML = `
+            <div style="text-align: center; padding: 3rem;">
+                <i class="fas fa-lock" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
+                <h2 style="color: #1e293b; margin-bottom: 0.5rem;">Access Denied</h2>
+                <p style="color: #64748b;">You do not have permission to view this page.</p>
+            </div>
+        `;
+        return;
+    }
+
     const pageFunctions = {
         'dashboard': window.loadDashboard,
         'services': window.loadServices,

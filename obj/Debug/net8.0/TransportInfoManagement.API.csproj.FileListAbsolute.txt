@@ -1,5 +1,8 @@
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\appsettings.Development.json
+D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\appsettings.Example.json
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\appsettings.json
+D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\appsettings.SendGrid.Example.json
+D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\EMAIL_CONFIG_EXAMPLE.json
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\TransportInfoManagement.API.staticwebassets.runtime.json
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\TransportInfoManagement.API.exe
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\TransportInfoManagement.API.deps.json
@@ -7,7 +10,9 @@ D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\TransportInfo
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\TransportInfoManagement.API.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\TransportInfoManagement.API.pdb
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\BCrypt.Net-Next.dll
+D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Humanizer.dll
+D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\MailKit.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
@@ -26,6 +31,7 @@ D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Microsoft.Ide
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Microsoft.OpenApi.dll
+D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\MimeKit.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Mono.TextTemplating.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\MySqlConnector.dll
 D:\Code\Sem3\ppj3\src\TransportInfoManagement.API\bin\Debug\net8.0\Newtonsoft.Json.dll

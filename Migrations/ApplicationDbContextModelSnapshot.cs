@@ -595,7 +595,7 @@ namespace TransportInfoManagement.API.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 11, 28, 14, 15, 50, 763, DateTimeKind.Utc).AddTicks(7211),
+                            CreatedAt = new DateTime(2025, 12, 2, 2, 6, 48, 995, DateTimeKind.Utc).AddTicks(529),
                             Description = "Human Resources",
                             IsActive = true,
                             Name = "HR"
@@ -603,7 +603,7 @@ namespace TransportInfoManagement.API.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 11, 28, 14, 15, 50, 763, DateTimeKind.Utc).AddTicks(7216),
+                            CreatedAt = new DateTime(2025, 12, 2, 2, 6, 48, 995, DateTimeKind.Utc).AddTicks(532),
                             Description = "Administration",
                             IsActive = true,
                             Name = "Admin"
@@ -611,7 +611,7 @@ namespace TransportInfoManagement.API.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 11, 28, 14, 15, 50, 763, DateTimeKind.Utc).AddTicks(7217),
+                            CreatedAt = new DateTime(2025, 12, 2, 2, 6, 48, 995, DateTimeKind.Utc).AddTicks(533),
                             Description = "Service Department",
                             IsActive = true,
                             Name = "Service"
@@ -619,7 +619,7 @@ namespace TransportInfoManagement.API.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 11, 28, 14, 15, 50, 763, DateTimeKind.Utc).AddTicks(7218),
+                            CreatedAt = new DateTime(2025, 12, 2, 2, 6, 48, 995, DateTimeKind.Utc).AddTicks(534),
                             Description = "Training Department",
                             IsActive = true,
                             Name = "Training"
@@ -627,7 +627,7 @@ namespace TransportInfoManagement.API.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2025, 11, 28, 14, 15, 50, 763, DateTimeKind.Utc).AddTicks(7220),
+                            CreatedAt = new DateTime(2025, 12, 2, 2, 6, 48, 995, DateTimeKind.Utc).AddTicks(535),
                             Description = "Internet Security Department",
                             IsActive = true,
                             Name = "Internet Security"
@@ -635,7 +635,7 @@ namespace TransportInfoManagement.API.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2025, 11, 28, 14, 15, 50, 763, DateTimeKind.Utc).AddTicks(7221),
+                            CreatedAt = new DateTime(2025, 12, 2, 2, 6, 48, 995, DateTimeKind.Utc).AddTicks(536),
                             Description = "Auditing Department",
                             IsActive = true,
                             Name = "Auditors"
@@ -683,11 +683,17 @@ namespace TransportInfoManagement.API.Migrations
                     b.Property<int>("ServiceId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("ServiceId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Employees");
 
@@ -972,7 +978,7 @@ namespace TransportInfoManagement.API.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 11, 28, 14, 15, 50, 763, DateTimeKind.Utc).AddTicks(6943),
+                            CreatedAt = new DateTime(2025, 12, 2, 2, 6, 48, 995, DateTimeKind.Utc).AddTicks(273),
                             Description = "Receiving calls from customers",
                             IsActive = true,
                             Name = "In-bound Services"
@@ -980,7 +986,7 @@ namespace TransportInfoManagement.API.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 11, 28, 14, 15, 50, 763, DateTimeKind.Utc).AddTicks(6948),
+                            CreatedAt = new DateTime(2025, 12, 2, 2, 6, 48, 995, DateTimeKind.Utc).AddTicks(277),
                             Description = "Staff proactively calling customers",
                             IsActive = true,
                             Name = "Out-bound Services"
@@ -988,7 +994,7 @@ namespace TransportInfoManagement.API.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 11, 28, 14, 15, 50, 763, DateTimeKind.Utc).AddTicks(6950),
+                            CreatedAt = new DateTime(2025, 12, 2, 2, 6, 48, 995, DateTimeKind.Utc).AddTicks(279),
                             Description = "Marketing and sales services via telephone",
                             IsActive = true,
                             Name = "Tele Marketing Services"
@@ -1022,21 +1028,21 @@ namespace TransportInfoManagement.API.Migrations
                             Id = 1,
                             FeePerDayPerEmployee = 4500.00m,
                             ServiceId = 1,
-                            UpdatedAt = new DateTime(2025, 11, 28, 14, 15, 50, 763, DateTimeKind.Utc).AddTicks(7163)
+                            UpdatedAt = new DateTime(2025, 12, 2, 2, 6, 48, 995, DateTimeKind.Utc).AddTicks(487)
                         },
                         new
                         {
                             Id = 2,
                             FeePerDayPerEmployee = 6000.00m,
                             ServiceId = 2,
-                            UpdatedAt = new DateTime(2025, 11, 28, 14, 15, 50, 763, DateTimeKind.Utc).AddTicks(7170)
+                            UpdatedAt = new DateTime(2025, 12, 2, 2, 6, 48, 995, DateTimeKind.Utc).AddTicks(493)
                         },
                         new
                         {
                             Id = 3,
                             FeePerDayPerEmployee = 5500.00m,
                             ServiceId = 3,
-                            UpdatedAt = new DateTime(2025, 11, 28, 14, 15, 50, 763, DateTimeKind.Utc).AddTicks(7171)
+                            UpdatedAt = new DateTime(2025, 12, 2, 2, 6, 48, 995, DateTimeKind.Utc).AddTicks(495)
                         });
                 });
 
@@ -1083,10 +1089,10 @@ namespace TransportInfoManagement.API.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 11, 28, 14, 15, 50, 763, DateTimeKind.Utc).AddTicks(7266),
+                            CreatedAt = new DateTime(2025, 12, 2, 2, 6, 48, 995, DateTimeKind.Utc).AddTicks(654),
                             Email = "admin@excell-on.com",
                             FullName = "Administrator",
-                            PasswordHash = "$2a$11$U3yzzuvyFoI/mjB2TUiq5u3QMnDaVvpRJENNMrRllGy2K0c2RUOXu",
+                            PasswordHash = "$2a$11$N2FhJfOAOaEhTShv1D.PTuKFRvrhJyYEW6DCTG5RGY8LpnIps8KvW",
                             Role = "Admin",
                             Username = "admin"
                         });
@@ -1163,9 +1169,16 @@ namespace TransportInfoManagement.API.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("TransportInfoManagement.API.Models.User", "User")
+                        .WithOne("Employee")
+                        .HasForeignKey("TransportInfoManagement.API.Models.Employee", "UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Department");
 
                     b.Navigation("Service");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TransportInfoManagement.API.Models.Payment", b =>
@@ -1199,6 +1212,11 @@ namespace TransportInfoManagement.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("TransportInfoManagement.API.Models.User", b =>
+                {
+                    b.Navigation("Employee");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,29 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=TransportInfoDB;User=root;Password=;Port=3306;"
+  },
+  "EmailSettings": {
+    "_comment": "⬇️ REPLACE THE VALUES BELOW WITH YOUR EMAIL PROVIDER SETTINGS ⬇️",
+    "SmtpServer": "smtp.office365.com",
+    "Port": 587,
+    "SenderEmail": "your-email@outlook.com",
+    "SenderName": "Excell-On Services",
+    "Username": "your-email@outlook.com",
+    "Password": "your-password-here",
+    "Security": "TLS"
+  },
+  "JwtSettings": {
+    "SecretKey": "YourSuperSecretKeyForJWTTokenGeneration12345",
+    "Issuer": "TransportInfoManagement",
+    "Audience": "TransportInfoManagement",
+    "ExpirationInMinutes": 60
+  }
+}
+

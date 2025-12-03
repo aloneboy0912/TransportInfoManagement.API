@@ -58,6 +58,12 @@ public class ApplicationDbContext : DbContext
                   .WithMany()
                   .HasForeignKey(e => e.DepartmentId)
                   .OnDelete(DeleteBehavior.Restrict);
+
+            // One-to-One relationship with User
+            entity.HasOne(e => e.User)
+                  .WithOne(u => u.Employee)
+                  .HasForeignKey<Employee>(e => e.UserId)
+                  .OnDelete(DeleteBehavior.SetNull);
         });
 
         // Client Configuration
