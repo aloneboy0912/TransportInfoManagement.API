@@ -1,4 +1,4 @@
-    using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -93,7 +93,7 @@ app.MapGet("/login", async (context) =>
         await context.Response.SendFileAsync(loginFilePath);
         return;
     }
-    // Fallback to admin login if login.html doesn't exist
+    // Fallback to admin panel if login.html doesn't exist
     var adminFilePath = Path.Combine(env.WebRootPath, "index.html");
     if (File.Exists(adminFilePath))
     {
@@ -102,9 +102,7 @@ app.MapGet("/login", async (context) =>
     }
 });
 
-
-
-// Admin panel route - also serve admin panel at /admin for compatibility
+// Admin panel route - serve admin panel at /admin
 app.MapGet("/admin", async (context) =>
 {
     var adminFilePath = Path.Combine(env.WebRootPath, "index.html");
@@ -205,21 +203,8 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"Warning: Could not create CallLogs table: {ex.Message}");
     }
     
-    // Ensure mock department data exists
-    if (!db.Departments.Any())
-    {
-        var departments = new List<Department>
-        {
-            new Department { Id = 1, Name = "Human Resources", Description = "HR Department", IsActive = true, CreatedAt = DateTime.UtcNow },
-            new Department { Id = 2, Name = "Administration", Description = "Admin Department", IsActive = true, CreatedAt = DateTime.UtcNow },
-            new Department { Id = 3, Name = "Operations", Description = "Operations Department", IsActive = true, CreatedAt = DateTime.UtcNow },
-            new Department { Id = 4, Name = "Training", Description = "Training Department", IsActive = true, CreatedAt = DateTime.UtcNow },
-            new Department { Id = 5, Name = "Security", Description = "Security Department", IsActive = true, CreatedAt = DateTime.UtcNow },
-            new Department { Id = 6, Name = "Quality Assurance", Description = "QA Department", IsActive = true, CreatedAt = DateTime.UtcNow }
-        };
-        db.Departments.AddRange(departments);
-        db.SaveChanges();
-    }
+    // Note: Department seeding is handled by ApplicationDbContext.HasData() during migrations
+    // This ensures departments are only seeded once via Entity Framework migrations
 
     // Ensure mock service data exists - Match frontend naming exactly
     if (!db.Services.Any())
@@ -302,27 +287,200 @@ using (var scope = app.Services.CreateScope())
         db.SaveChanges();
     }
 
-    // Ensure mock employee data exists
-    if (!db.Employees.Any())
+    // Remove duplicate employees (keep the oldest record by ID)
+    // This prevents duplicates from multiple seeding sources (ApplicationDbContext, Program.cs, SQL scripts)
+    try
     {
-        var baseDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        var employees = new List<Employee>
+        var allEmployees = db.Employees.ToList();
+        var employeesToDelete = new List<Employee>();
+
+        // Find duplicates by Email (case-insensitive)
+        var emailGroups = allEmployees
+            .Where(e => !string.IsNullOrEmpty(e.Email))
+            .GroupBy(e => e.Email.ToLower())
+            .Where(g => g.Count() > 1)
+            .ToList();
+        
+        foreach (var group in emailGroups)
         {
-            new Employee { Id = 1, EmployeeCode = "EMP001", FullName = "John Smith", Email = "john.smith@excell-on.com", Phone = "+1-555-0101", Position = "Customer Service Representative", ServiceId = 1, DepartmentId = 3, HireDate = baseDate.AddDays(-120), IsActive = true, CreatedAt = baseDate.AddDays(-120) },
-            new Employee { Id = 2, EmployeeCode = "EMP002", FullName = "Sarah Johnson", Email = "sarah.johnson@excell-on.com", Phone = "+1-555-0102", Position = "Sales Manager", ServiceId = 2, DepartmentId = 3, HireDate = baseDate.AddDays(-200), IsActive = true, CreatedAt = baseDate.AddDays(-200) },
-            new Employee { Id = 3, EmployeeCode = "EMP003", FullName = "Michael Brown", Email = "michael.brown@excell-on.com", Phone = "+1-555-0103", Position = "Telemarketing Specialist", ServiceId = 3, DepartmentId = 3, HireDate = baseDate.AddDays(-90), IsActive = true, CreatedAt = baseDate.AddDays(-90) },
-            new Employee { Id = 4, EmployeeCode = "EMP004", FullName = "Emily Davis", Email = "emily.davis@excell-on.com", Phone = "+1-555-0104", Position = "HR Manager", ServiceId = 1, DepartmentId = 1, HireDate = baseDate.AddDays(-300), IsActive = true, CreatedAt = baseDate.AddDays(-300) },
-            new Employee { Id = 5, EmployeeCode = "EMP005", FullName = "David Wilson", Email = "david.wilson@excell-on.com", Phone = "+1-555-0105", Position = "Administrative Assistant", ServiceId = 1, DepartmentId = 2, HireDate = baseDate.AddDays(-60), IsActive = true, CreatedAt = baseDate.AddDays(-60) },
-            new Employee { Id = 6, EmployeeCode = "EMP006", FullName = "Jessica Martinez", Email = "jessica.martinez@excell-on.com", Phone = "+1-555-0106", Position = "Training Coordinator", ServiceId = 2, DepartmentId = 4, HireDate = baseDate.AddDays(-150), IsActive = true, CreatedAt = baseDate.AddDays(-150) },
-            new Employee { Id = 7, EmployeeCode = "EMP007", FullName = "Robert Taylor", Email = "robert.taylor@excell-on.com", Phone = "+1-555-0107", Position = "Security Analyst", ServiceId = 1, DepartmentId = 5, HireDate = baseDate.AddDays(-180), IsActive = true, CreatedAt = baseDate.AddDays(-180) },
-            new Employee { Id = 8, EmployeeCode = "EMP008", FullName = "Lisa Anderson", Email = "lisa.anderson@excell-on.com", Phone = "+1-555-0108", Position = "Auditor", ServiceId = 3, DepartmentId = 6, HireDate = baseDate.AddDays(-100), IsActive = true, CreatedAt = baseDate.AddDays(-100) },
-            new Employee { Id = 9, EmployeeCode = "EMP009", FullName = "James Thomas", Email = "james.thomas@excell-on.com", Phone = "+1-555-0109", Position = "Customer Support Lead", ServiceId = 1, DepartmentId = 3, HireDate = baseDate.AddDays(-250), IsActive = true, CreatedAt = baseDate.AddDays(-250) },
-            new Employee { Id = 10, EmployeeCode = "EMP010", FullName = "Amanda White", Email = "amanda.white@excell-on.com", Phone = "+1-555-0110", Position = "Sales Representative", ServiceId = 2, DepartmentId = 3, HireDate = baseDate.AddDays(-45), IsActive = true, CreatedAt = baseDate.AddDays(-45) },
-            new Employee { Id = 11, EmployeeCode = "EMP011", FullName = "Christopher Lee", Email = "christopher.lee@excell-on.com", Phone = "+1-555-0111", Position = "Marketing Specialist", ServiceId = 3, DepartmentId = 3, HireDate = baseDate.AddDays(-75), IsActive = true, CreatedAt = baseDate.AddDays(-75) },
-            new Employee { Id = 12, EmployeeCode = "EMP012", FullName = "Michelle Harris", Email = "michelle.harris@excell-on.com", Phone = "+1-555-0112", Position = "HR Coordinator", ServiceId = 1, DepartmentId = 1, HireDate = baseDate.AddDays(-30), IsActive = true, CreatedAt = baseDate.AddDays(-30) }
-        };
-        db.Employees.AddRange(employees);
-        db.SaveChanges();
+            var sorted = group.OrderBy(e => e.Id).ToList();
+            // Keep the first (oldest), mark the rest for deletion
+            employeesToDelete.AddRange(sorted.Skip(1));
+        }
+
+        // Find duplicates by EmployeeCode (case-insensitive)
+        var codeGroups = allEmployees
+            .Where(e => !string.IsNullOrEmpty(e.EmployeeCode))
+            .GroupBy(e => e.EmployeeCode.ToLower())
+            .Where(g => g.Count() > 1)
+            .ToList();
+        
+        foreach (var group in codeGroups)
+        {
+            var sorted = group.OrderBy(e => e.Id).ToList();
+            // Only add if not already marked for deletion
+            foreach (var emp in sorted.Skip(1))
+            {
+                if (!employeesToDelete.Any(e => e.Id == emp.Id))
+                {
+                    employeesToDelete.Add(emp);
+                }
+            }
+        }
+
+        // Remove duplicates
+        if (employeesToDelete.Any())
+        {
+            db.Employees.RemoveRange(employeesToDelete);
+            db.SaveChanges();
+            Console.WriteLine($"Removed {employeesToDelete.Count} duplicate employee(s) from database");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Warning: Could not remove duplicate employees: {ex.Message}");
+    }
+
+    // Note: Employee seeding is handled by ApplicationDbContext.HasData() during migrations
+    // This ensures employees are only seeded once via Entity Framework migrations
+    // The duplicate removal above handles cases where employees were seeded multiple times
+
+    // Remove duplicate departments (keep the oldest record by ID)
+    // This prevents duplicates from multiple seeding sources (ApplicationDbContext, Program.cs, SQL scripts)
+    try
+    {
+        var allDepartments = db.Departments.ToList();
+        var departmentsToDelete = new List<Department>();
+
+        // Find duplicates by Name (case-insensitive)
+        var nameGroups = allDepartments
+            .Where(d => !string.IsNullOrEmpty(d.Name))
+            .GroupBy(d => d.Name.ToLower())
+            .Where(g => g.Count() > 1)
+            .ToList();
+        
+        foreach (var group in nameGroups)
+        {
+            var sorted = group.OrderBy(d => d.Id).ToList();
+            // Keep the first (oldest), mark the rest for deletion
+            departmentsToDelete.AddRange(sorted.Skip(1));
+        }
+
+        // Remove duplicates
+        if (departmentsToDelete.Any())
+        {
+            db.Departments.RemoveRange(departmentsToDelete);
+            db.SaveChanges();
+            Console.WriteLine($"Removed {departmentsToDelete.Count} duplicate department(s) from database");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Warning: Could not remove duplicate departments: {ex.Message}");
+    }
+
+    // Note: Department seeding is handled by ApplicationDbContext.HasData() during migrations
+    // This ensures departments are only seeded once via Entity Framework migrations
+    // The duplicate removal above handles cases where departments were seeded multiple times
+
+    // Ensure all employees have user accounts for login
+    try
+    {
+        var employeesWithoutUsers = db.Employees
+            .Where(e => e.UserId == null && !string.IsNullOrEmpty(e.Email))
+            .ToList();
+        
+        if (employeesWithoutUsers.Any())
+        {
+            var existingUserEmails = db.Users.Select(u => u.Email.ToLower()).ToList();
+            var usersToCreate = new List<User>();
+            var maxUserId = db.Users.Any() ? db.Users.Max(u => u.Id) : 0;
+            var nextUserId = maxUserId + 1;
+            
+            foreach (var emp in employeesWithoutUsers)
+            {
+                // Skip if user with this email already exists
+                if (existingUserEmails.Contains(emp.Email.ToLower()))
+                {
+                    // Try to link to existing user
+                    var existingUser = db.Users.FirstOrDefault(u => u.Email.ToLower() == emp.Email.ToLower());
+                    if (existingUser != null)
+                    {
+                        emp.UserId = existingUser.Id;
+                        continue;
+                    }
+                }
+                
+                // Determine user role based on employee role/position
+                var userRole = emp.Role switch
+                {
+                    "Manager" => "Admin",
+                    "Supervisor" => "Supervisor",
+                    "Team Lead" => "Team Lead",
+                    _ => "Agent" // Agent, Director, or any other role defaults to Agent
+                };
+                
+                // Create user account
+                var newUser = new User
+                {
+                    Id = nextUserId++,
+                    Username = emp.Email,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), // Default password
+                    Email = emp.Email,
+                    FullName = emp.FullName,
+                    Role = userRole,
+                    CreatedAt = DateTime.UtcNow
+                };
+                
+                usersToCreate.Add(newUser);
+                emp.UserId = newUser.Id;
+                existingUserEmails.Add(emp.Email.ToLower());
+            }
+            
+            if (usersToCreate.Any())
+            {
+                db.Users.AddRange(usersToCreate);
+                db.SaveChanges();
+                Console.WriteLine($"Created {usersToCreate.Count} user account(s) for employees without login access");
+            }
+            
+            if (employeesWithoutUsers.Any(e => e.UserId != null))
+            {
+                db.SaveChanges();
+            }
+        }
+        
+        // Verify all employees can login - Display login information
+        var allEmployees = db.Employees
+            .Where(e => !string.IsNullOrEmpty(e.Email))
+            .ToList();
+        
+        var employeesWithLogin = allEmployees.Count(e => e.UserId != null);
+        var employeesWithoutLogin = allEmployees.Count(e => e.UserId == null);
+        
+        Console.WriteLine("=== Employee Login Status ===");
+        Console.WriteLine($"Total Employees: {allEmployees.Count}");
+        Console.WriteLine($"Employees with Login Accounts: {employeesWithLogin}");
+        Console.WriteLine($"Employees without Login Accounts: {employeesWithoutLogin}");
+        
+        if (employeesWithLogin > 0)
+        {
+            Console.WriteLine("\n✅ All employees can login using their email address and password: employee123");
+            Console.WriteLine("   (Managers have Admin access, others have User access)");
+        }
+        
+        if (employeesWithoutLogin > 0)
+        {
+            Console.WriteLine($"\n⚠️  Warning: {employeesWithoutLogin} employee(s) do not have login accounts");
+            foreach (var emp in allEmployees.Where(e => e.UserId == null))
+            {
+                Console.WriteLine($"   - {emp.FullName} ({emp.Email})");
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Warning: Could not create user accounts for employees: {ex.Message}");
     }
 
     // Ensure mock client data exists

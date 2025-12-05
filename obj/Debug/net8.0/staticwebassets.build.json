@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "jaAzWWNEEB/gUvF0n8O/sYVo0B3XDD0H6c+L9yVF+H0=",
+  "Hash": "zUsMpKL6a2dbunfqqPusYMZydE6hxnPk3nfCBCnPa0g=",
   "Source": "TransportInfoManagement.API",
   "BasePath": "_content/TransportInfoManagement.API",
   "Mode": "Default",
@@ -243,25 +243,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\employees.js"
-    },
-    {
-      "Identity": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\login.js",
-      "SourceId": "TransportInfoManagement.API",
-      "SourceType": "Discovered",
-      "ContentRoot": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\",
-      "BasePath": "_content/TransportInfoManagement.API",
-      "RelativePath": "js/login.js",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\login.js"
     },
     {
       "Identity": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\notifications.js",

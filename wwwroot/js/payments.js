@@ -1,29 +1,4 @@
-// Mock data for payments
-window.mockPayments = [
-    { id: 1, paymentCode: "PAY001", clientId: 1, client: { id: 1, companyName: "Tech Solutions Inc." }, amount: 15000.00, paymentDate: "2024-11-15T00:00:00Z", dueDate: "2024-11-30T00:00:00Z", paymentMethod: "Bank Transfer", status: "Paid", notes: "Monthly service fee" },
-    { id: 2, paymentCode: "PAY002", clientId: 2, client: { id: 2, companyName: "Global Enterprises Ltd." }, amount: 25000.50, paymentDate: "2024-12-01T00:00:00Z", dueDate: "2024-12-15T00:00:00Z", paymentMethod: "Credit Card", status: "Paid", notes: "Q4 payment" },
-    { id: 3, paymentCode: "PAY003", clientId: 3, client: { id: 3, companyName: "Digital Innovations Corp." }, amount: 18000.00, paymentDate: null, dueDate: "2024-12-20T00:00:00Z", paymentMethod: "Bank Transfer", status: "Pending", notes: "Awaiting payment" },
-    { id: 4, paymentCode: "PAY004", clientId: 4, client: { id: 4, companyName: "Premier Services Group" }, amount: 32000.75, paymentDate: "2024-10-25T00:00:00Z", dueDate: "2024-11-10T00:00:00Z", paymentMethod: "Cash", status: "Overdue", notes: "Payment overdue - follow up required" },
-    { id: 5, paymentCode: "PAY005", clientId: 5, client: { id: 5, companyName: "Advanced Systems Co." }, amount: 12500.00, paymentDate: "2024-12-05T00:00:00Z", dueDate: "2024-12-25T00:00:00Z", paymentMethod: "Bank Transfer", status: "Paid", notes: "On-time payment" },
-    { id: 6, paymentCode: "PAY006", clientId: 6, client: { id: 6, companyName: "Elite Business Partners" }, amount: 22000.00, paymentDate: null, dueDate: "2024-12-18T00:00:00Z", paymentMethod: "Credit Card", status: "Pending", notes: "Payment processing" },
-    { id: 7, paymentCode: "PAY007", clientId: 7, client: { id: 7, companyName: "Strategic Solutions LLC" }, amount: 28000.00, paymentDate: "2024-09-20T00:00:00Z", dueDate: "2024-10-05T00:00:00Z", paymentMethod: "Bank Transfer", status: "Overdue", notes: "Long overdue - urgent action needed" },
-    { id: 8, paymentCode: "PAY008", clientId: 8, client: { id: 8, companyName: "Prime Consulting Group" }, amount: 19500.00, paymentDate: "2024-12-10T00:00:00Z", dueDate: "2024-12-10T00:00:00Z", paymentMethod: "Cash", status: "Paid", notes: "Paid on due date" },
-    { id: 9, paymentCode: "PAY009", clientId: 9, client: { id: 9, companyName: "Modern Tech Solutions" }, amount: 16500.00, paymentDate: null, dueDate: "2024-12-22T00:00:00Z", paymentMethod: "Bank Transfer", status: "Pending", notes: "Expected payment" },
-    { id: 10, paymentCode: "PAY010", clientId: 10, client: { id: 10, companyName: "Excellence Corporation" }, amount: 35000.00, paymentDate: "2024-11-28T00:00:00Z", dueDate: "2024-12-12T00:00:00Z", paymentMethod: "Credit Card", status: "Overdue", notes: "Partial payment received" },
-    { id: 11, paymentCode: "PAY011", clientId: 11, client: { id: 11, companyName: "Innovation Hub Inc." }, amount: 14200.00, paymentDate: "2024-12-08T00:00:00Z", dueDate: "2024-12-28T00:00:00Z", paymentMethod: "Bank Transfer", status: "Paid", notes: "Early payment" },
-    { id: 12, paymentCode: "PAY012", clientId: 12, client: { id: 12, companyName: "Professional Services Co." }, amount: 27500.00, paymentDate: null, dueDate: "2024-12-15T00:00:00Z", paymentMethod: "Credit Card", status: "Pending", notes: "Payment reminder sent" },
-    { id: 13, paymentCode: "PAY013", clientId: 1, client: { id: 1, companyName: "Tech Solutions Inc." }, amount: 15000.00, paymentDate: "2024-10-15T00:00:00Z", dueDate: "2024-10-30T00:00:00Z", paymentMethod: "Bank Transfer", status: "Paid", notes: "Previous month payment" },
-    { id: 14, paymentCode: "PAY014", clientId: 2, client: { id: 2, companyName: "Global Enterprises Ltd." }, amount: 25000.50, paymentDate: null, dueDate: "2024-11-25T00:00:00Z", paymentMethod: "Bank Transfer", status: "Overdue", notes: "Overdue payment - contact client" },
-    { id: 15, paymentCode: "PAY015", clientId: 3, client: { id: 3, companyName: "Digital Innovations Corp." }, amount: 18000.00, paymentDate: "2024-12-12T00:00:00Z", dueDate: "2024-12-12T00:00:00Z", paymentMethod: "Credit Card", status: "Paid", notes: "On-time payment" },
-    { id: 16, paymentCode: "PAY016", clientId: 4, client: { id: 4, companyName: "Premier Services Group" }, amount: 32000.75, paymentDate: null, dueDate: "2024-12-20T00:00:00Z", paymentMethod: "Cash", status: "Pending", notes: "Awaiting confirmation" },
-    { id: 17, paymentCode: "PAY017", clientId: 5, client: { id: 5, companyName: "Advanced Systems Co." }, amount: 12500.00, paymentDate: "2024-09-15T00:00:00Z", dueDate: "2024-09-30T00:00:00Z", paymentMethod: "Bank Transfer", status: "Overdue", notes: "Old overdue payment" },
-    { id: 18, paymentCode: "PAY018", clientId: 6, client: { id: 6, companyName: "Elite Business Partners" }, amount: 22000.00, paymentDate: "2024-12-14T00:00:00Z", dueDate: "2024-12-14T00:00:00Z", paymentMethod: "Credit Card", status: "Paid", notes: "Paid on due date" },
-    { id: 19, paymentCode: "PAY019", clientId: 7, client: { id: 7, companyName: "Strategic Solutions LLC" }, amount: 28000.00, paymentDate: null, dueDate: "2024-12-25T00:00:00Z", paymentMethod: "Bank Transfer", status: "Pending", notes: "Holiday payment" },
-    { id: 20, paymentCode: "PAY020", clientId: 8, client: { id: 8, companyName: "Prime Consulting Group" }, amount: 19500.00, paymentDate: "2024-11-05T00:00:00Z", dueDate: "2024-11-20T00:00:00Z", paymentMethod: "Cash", status: "Overdue", notes: "Needs follow-up" }
-];
-
-// Also keep a local reference for backward compatibility
-const mockPayments = window.mockPayments;
+// Payment management - using only real API data
 
 window.loadPayments = async function() {
     // Check authentication before loading payments
@@ -55,10 +30,6 @@ window.loadPayments = async function() {
                     <option value="Paid">Paid</option>
                     <option value="Overdue">Overdue</option>
                 </select>
-                <div style="margin-left: auto; display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
-                    <span style="color: #3b82f6;">●</span> Real Payment
-                    <span style="color: #9ca3af; margin-left: 1rem;">○</span> Mock Data
-                </div>
             </div>
             <div class="table-container">
                 <table id="paymentsTable">
@@ -272,14 +243,14 @@ async function loadPaymentsData() {
         if (status) params.append('status', status);
         if (params.toString()) url += '?' + params.toString();
         
-        // Get real payments from API
-        let realPayments = [];
-        try {
-            const paymentsResponse = await api.get(url);
-            // Handle null or empty response
-            if (paymentsResponse && Array.isArray(paymentsResponse)) {
-                // Transform API payment format to match display format
-                realPayments = paymentsResponse.map(p => ({
+        // Get payments from API only
+        const paymentsResponse = await api.get(url);
+        
+        // Handle null or empty response
+        let payments = [];
+        if (paymentsResponse && Array.isArray(paymentsResponse)) {
+            // Transform API payment format to match display format
+            payments = paymentsResponse.map(p => ({
                 id: p.id,
                 paymentCode: p.paymentCode,
                 clientId: p.clientId,
@@ -289,47 +260,16 @@ async function loadPaymentsData() {
                 dueDate: p.dueDate,
                 paymentMethod: p.paymentMethod,
                 status: p.status,
-                notes: p.notes,
-                isReal: true // Mark as real payment
-                }));
-            }
-        } catch (error) {
-            console.warn('API call failed, will use mock data only:', error);
-        }
-        
-        // Get mock payments and mark them
-        let allMockPayments = mockPayments.map(p => ({ ...p, isReal: false }));
-        
-        // Merge real and mock payments
-        let allPayments = [...realPayments, ...allMockPayments];
-        
-        // Remove duplicates based on paymentCode (if real payment has same code as mock)
-        const seenCodes = new Set();
-        allPayments = allPayments.filter(p => {
-            if (seenCodes.has(p.paymentCode)) {
-                // If duplicate, prefer real payment over mock
-                return p.isReal;
-            }
-            seenCodes.add(p.paymentCode);
-            return true;
-        });
-        
-        // Apply filters
-        if (clientId) {
-            allPayments = allPayments.filter(p => p.clientId === parseInt(clientId));
-        }
-        if (status) {
-            allPayments = allPayments.filter(p => p.status === status);
+                notes: p.notes
+            }));
         }
         
         // Sort by payment date (most recent first)
-        allPayments.sort((a, b) => {
+        payments.sort((a, b) => {
             const dateA = a.paymentDate ? new Date(a.paymentDate) : new Date(0);
             const dateB = b.paymentDate ? new Date(b.paymentDate) : new Date(0);
             return dateB - dateA;
         });
-        
-        const payments = allPayments;
         
         const tbody = document.querySelector('#paymentsTable tbody');
         if (!payments || payments.length === 0) {
@@ -355,14 +295,9 @@ async function loadPaymentsData() {
             const statusText = payment.status === 'Paid' ? 'Paid' : 
                               payment.status === 'Overdue' ? 'Overdue' : 'Pending Payment';
             
-            // Add indicator for real vs mock payments
-            const dataSource = payment.isReal ? 
-                '<span style="font-size: 0.75rem; color: #3b82f6; margin-left: 0.25rem;" title="Real Payment from Database">●</span>' : 
-                '<span style="font-size: 0.75rem; color: #9ca3af; margin-left: 0.25rem;" title="Mock Data">○</span>';
-            
             return `
             <tr>
-                <td>${payment.paymentCode}${dataSource}</td>
+                <td>${payment.paymentCode}</td>
                 <td>${payment.client?.companyName || 'N/A'}</td>
                 <td>$${formattedAmount}</td>
                 <td>${paymentDate}</td>
@@ -374,16 +309,12 @@ async function loadPaymentsData() {
                     </span>
                 </td>
                 <td class="actions">
-                    ${payment.isReal ? `
-                        <button class="btn-icon btn-edit" onclick="editPayment(${payment.id})" title="Edit">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn-icon btn-delete" onclick="deletePayment(${payment.id})" title="Delete">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    ` : `
-                        <span style="color: #9ca3af; font-size: 0.75rem;">Mock</span>
-                    `}
+                    <button class="btn-icon btn-edit" onclick="editPayment(${payment.id})" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon btn-delete" onclick="deletePayment(${payment.id})" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </td>
             </tr>
         `;
@@ -397,42 +328,15 @@ async function loadPaymentsData() {
         }
     } catch (error) {
         console.error('Error loading payments:', error);
-        // Use mock data as fallback
-        const payments = mockPayments.map(p => ({ ...p, isReal: false }));
         const tbody = document.querySelector('#paymentsTable tbody');
-        tbody.innerHTML = payments.map(payment => {
-            const amount = typeof payment.amount === 'number' ? payment.amount : parseFloat(payment.amount);
-            const formattedAmount = amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            const paymentDate = payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString('en-US') : 'N/A';
-            const dueDate = new Date(payment.dueDate).toLocaleDateString('en-US');
-            const statusColor = payment.status === 'Paid' ? '#10b981' : 
-                               payment.status === 'Overdue' ? '#ef4444' : '#f59e0b';
-            const statusText = payment.status === 'Paid' ? 'Paid' : 
-                              payment.status === 'Overdue' ? 'Overdue' : 'Pending Payment';
-            const dataSource = '<span style="font-size: 0.75rem; color: #9ca3af; margin-left: 0.25rem;" title="Mock Data">○</span>';
-            
-            return `
-            <tr>
-                <td>${payment.paymentCode}${dataSource}</td>
-                <td>${payment.client?.companyName || 'N/A'}</td>
-                <td>$${formattedAmount}</td>
-                <td>${paymentDate}</td>
-                <td>${dueDate}</td>
-                <td>${payment.paymentMethod}</td>
-                <td>
-                    <span style="padding: 0.25rem 0.5rem; border-radius: 4px; background-color: ${statusColor}; color: white;">
-                        ${statusText}
-                    </span>
-                </td>
-                <td class="actions">
-                    <span style="color: #9ca3af; font-size: 0.75rem;">Mock</span>
-                </td>
-            </tr>
-        `;
-        }).join('');
-        window.paymentsData = payments;
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Error loading payments. Please try again later.</td></tr>';
+        window.paymentsData = [];
         const exportBtn = document.getElementById('exportPaymentsBtn');
-        if (exportBtn) exportBtn.style.display = 'block';
+        if (exportBtn) exportBtn.style.display = 'none';
+        
+        if (window.showToast) {
+            window.showToast('Failed to load payments: ' + (error.message || 'Unknown error'), 'error');
+        }
     }
 }
 
@@ -459,13 +363,14 @@ window.exportPaymentsToXLSX = function() {
 
 async function loadOverduePayments() {
     try {
-        // Get real overdue payments from API
-        let realOverdue = [];
-        try {
-            const overdueResponse = await api.get('/payments/overdue');
-            // Handle null or empty response
-            if (overdueResponse && Array.isArray(overdueResponse)) {
-                realOverdue = overdueResponse.map(p => ({
+        // Get overdue payments from API only
+        const overdueResponse = await api.get('/payments/overdue');
+        
+        // Handle null or empty response
+        let overdue = [];
+        if (overdueResponse && Array.isArray(overdueResponse)) {
+            const today = new Date();
+            overdue = overdueResponse.map(p => ({
                 id: p.id,
                 paymentCode: p.paymentCode,
                 clientId: p.clientId,
@@ -476,42 +381,9 @@ async function loadOverduePayments() {
                 paymentMethod: p.paymentMethod,
                 status: p.status,
                 notes: p.notes,
-                isReal: true
-                }));
-            }
-        } catch (error) {
-            console.warn('API call failed, will use mock data only:', error);
+                daysOverdue: Math.floor((today - new Date(p.dueDate)) / (1000 * 60 * 60 * 24))
+            }));
         }
-        
-        // Get mock overdue payments
-        const today = new Date();
-        const mockOverdue = mockPayments.filter(p => {
-            const dueDate = new Date(p.dueDate);
-            return p.status === 'Overdue' || (dueDate < today && p.status !== 'Paid');
-        }).map(p => ({
-            ...p,
-            isReal: false,
-            daysOverdue: Math.floor((today - new Date(p.dueDate)) / (1000 * 60 * 60 * 24))
-        }));
-        
-        // Merge real and mock overdue payments
-        let overdue = [...realOverdue, ...mockOverdue];
-        
-        // Calculate days overdue for real payments if not present
-        overdue = overdue.map(p => ({
-            ...p,
-            daysOverdue: p.daysOverdue || Math.floor((today - new Date(p.dueDate)) / (1000 * 60 * 60 * 24))
-        }));
-        
-        // Remove duplicates based on paymentCode
-        const seenCodes = new Set();
-        overdue = overdue.filter(p => {
-            if (seenCodes.has(p.paymentCode)) {
-                return p.isReal;
-            }
-            seenCodes.add(p.paymentCode);
-            return true;
-        });
         
         // Sort by days overdue (most overdue first)
         overdue.sort((a, b) => b.daysOverdue - a.daysOverdue);
@@ -538,12 +410,9 @@ async function loadOverduePayments() {
                         ${overdue.map(p => {
                             const amount = typeof p.amount === 'number' ? p.amount : parseFloat(p.amount);
                             const formattedAmount = amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                            const dataSource = p.isReal ? 
-                                '<span style="font-size: 0.75rem; color: #3b82f6; margin-left: 0.25rem;" title="Real Payment">●</span>' : 
-                                '<span style="font-size: 0.75rem; color: #9ca3af; margin-left: 0.25rem;" title="Mock Data">○</span>';
                             return `
                             <tr>
-                                <td>${p.paymentCode}${dataSource}</td>
+                                <td>${p.paymentCode}</td>
                                 <td>${p.client?.companyName || 'N/A'}</td>
                                 <td>$${formattedAmount}</td>
                                 <td>${new Date(p.dueDate).toLocaleDateString('en-US')}</td>
@@ -557,54 +426,12 @@ async function loadOverduePayments() {
         `;
     } catch (error) {
         console.error('Error loading overdue payments:', error);
-        // Use mock data as fallback
-        const today = new Date();
-        const overdue = mockPayments.filter(p => {
-            const dueDate = new Date(p.dueDate);
-            return p.status === 'Overdue' || (dueDate < today && p.status !== 'Paid');
-        }).map(p => ({
-            ...p,
-            isReal: false,
-            daysOverdue: Math.floor((today - new Date(p.dueDate)) / (1000 * 60 * 60 * 24))
-        }));
-        
         const container = document.getElementById('overduePayments');
-        if (overdue.length === 0) {
-            container.innerHTML = '<p>No overdue payments.</p>';
-            return;
-        }
+        container.innerHTML = '<p style="color: var(--text-secondary);">Error loading overdue payments. Please try again later.</p>';
         
-        container.innerHTML = `
-            <div class="table-container">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>PAY</th>
-                            <th>Client</th>
-                            <th>Amount</th>
-                            <th>Due Date</th>
-                            <th>Days Overdue</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${overdue.map(p => {
-                            const amount = typeof p.amount === 'number' ? p.amount : parseFloat(p.amount);
-                            const formattedAmount = amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                            const dataSource = '<span style="font-size: 0.75rem; color: #9ca3af; margin-left: 0.25rem;" title="Mock Data">○</span>';
-                            return `
-                            <tr>
-                                <td>${p.paymentCode}${dataSource}</td>
-                                <td>${p.client?.companyName || 'N/A'}</td>
-                                <td>$${formattedAmount}</td>
-                                <td>${new Date(p.dueDate).toLocaleDateString('en-US')}</td>
-                                <td><span style="color: #ef4444; font-weight: bold;">${p.daysOverdue} days</span></td>
-                            </tr>
-                        `;
-                        }).join('')}
-                    </tbody>
-                </table>
-            </div>
-        `;
+        if (window.showToast) {
+            window.showToast('Failed to load overdue payments: ' + (error.message || 'Unknown error'), 'error');
+        }
     }
 }
 

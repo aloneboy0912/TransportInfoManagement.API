@@ -1,93 +1,941 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Excell-On Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --bg-color: #f8fafc;
+            --bg-secondary: #ffffff;
+            --text-color: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card {
+            background: var(--bg-secondary);
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .login-header .logo {
+            width: 64px;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.75rem;
+        }
+
+        .login-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .login-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            font-size: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.75rem;
+            transition: all 0.2s;
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.25rem;
+            transition: color 0.2s;
+        }
+
+        .password-toggle:hover {
+            color: var(--text-color);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: var(--danger-color);
+            padding: 0.875rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .error-message.show {
+            display: flex;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .quick-login {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .quick-login-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .quick-login-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .quick-btn {
+            padding: 0.75rem 1rem;
+            background: var(--bg-color);
+            border: 2px solid var(--border-color);
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-family: inherit;
+        }
+
+        .quick-btn:hover {
+            border-color: var(--primary-color);
+            background: white;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .employee-accounts {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .employee-accounts-toggle {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-color);
+            border: 2px solid var(--border-color);
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+
+        .employee-accounts-toggle:hover {
+            border-color: var(--primary-color);
+            background: white;
+        }
+
+        .employee-accounts-list {
+            margin-top: 1rem;
+            display: none;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .employee-accounts-list.show {
+            display: flex;
+        }
+
+        .employee-accounts-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .employee-accounts-list::-webkit-scrollbar-track {
+            background: var(--bg-color);
+            border-radius: 3px;
+        }
+
+        .employee-accounts-list::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .employee-accounts-list::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        .employee-item {
+            padding: 0.75rem 1rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+
+        .employee-item:hover {
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .employee-info {
+            flex: 1;
+        }
+
+        .employee-name {
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .employee-email {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .employee-role {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+
+        .role-admin {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .role-supervisor {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .role-team-lead {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .role-agent {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .role-user {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            color: white;
+        }
+
+        .employee-access {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+
+        .department-header {
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            font-weight: 700;
+            font-size: 0.875rem;
+            border-radius: 0.75rem;
+            margin: 1rem 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .department-header:first-of-type {
+            margin-top: 0;
+        }
+
+        .department-header i {
+            font-size: 1rem;
+        }
+
+        .employee-login-btn {
+            padding: 0.5rem 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .employee-login-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .role-info {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-color);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .role-info-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .role-info-item {
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .role-info-item strong {
+            color: var(--text-color);
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        .loading-spinner.show {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 480px) {
+            .login-header {
+                padding: 2rem 1.5rem;
+            }
+
+            .login-body {
+                padding: 1.5rem;
+            }
+
+            .quick-login-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .employee-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .employee-login-btn {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
-
 <body>
-    <!-- Login Screen -->
-    <div id="loginScreen" class="screen">
         <div class="login-container">
-            <div class="login-box">
-                <div style="text-align: center; margin-bottom: 1rem;">
-                    <div
-                        style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary-color); font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">
-                        <i class="fas fa-headset"></i>
-                        <span>Excell-On Services</span>
-                    </div>
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo">
+                    <i class="fas fa-truck-fast"></i>
                 </div>
-                <h1>Login</h1>
-                <h2>Access Your System</h2>
+                <h1>Excell-On Services</h1>
+                <p>Transport Information Management System</p>
+                    </div>
 
-                <!-- Login Form -->
-                <form id="loginForm" class="auth-form">
+            <div class="login-body">
+                <div id="errorMessage" class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="errorText"></span>
+                </div>
+
+                <form id="loginForm">
                     <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" name="username" required placeholder="Enter username"
-                            autocomplete="username">
+                        <label class="form-label" for="username">Username or Email</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user input-icon"></i>
+                            <input 
+                                type="text" 
+                                id="username" 
+                                name="username" 
+                                class="form-input" 
+                                placeholder="Enter your username or email"
+                                required
+                                autocomplete="username"
+                            >
+                        </div>
                     </div>
+
                     <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required placeholder="Enter password"
-                            autocomplete="current-password">
+                        <label class="form-label" for="password">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="Enter your password"
+                                required
+                                autocomplete="current-password"
+                            >
+                            <button type="button" class="password-toggle" id="passwordToggle">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">
-                        <i class="fas fa-sign-in-alt"></i> Login
+
+                    <button type="submit" class="btn btn-primary" id="loginBtn">
+                        <span id="loginText">Login</span>
+                        <div class="loading-spinner" id="loadingSpinner"></div>
                     </button>
-                    <div id="loginError" class="error-message"></div>
                 </form>
 
-                <div
-                    style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
-                    <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
-                        <i class="fas fa-bolt" style="color: var(--warning-color);"></i> Quick Login (Demo)
-                    </p>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
-                        <button type="button" class="btn btn-outline-primary"
-                            style="padding: 0.5rem; font-size: 0.8rem; flex-direction: column; gap: 0.25rem;"
-                            onclick="fillLogin('admin', 'admin123', true)">
-                            <i class="fas fa-user-shield" style="font-size: 1.2rem;"></i>
-                            <span>Admin</span>
+                <div class="quick-login">
+                    <div class="quick-login-title">
+                        <i class="fas fa-bolt" style="color: var(--warning-color);"></i>
+                        Quick Login
+                    </div>
+                    <div class="quick-login-buttons">
+                        <button class="quick-btn" onclick="fillLogin('admin', 'admin123')">
+                            <i class="fas fa-user-shield"></i> Admin
                         </button>
-                        <button type="button" class="btn btn-outline-secondary"
-                            style="padding: 0.5rem; font-size: 0.8rem; flex-direction: column; gap: 0.25rem;"
-                            onclick="fillLogin('manager', 'manager123', true)">
-                            <i class="fas fa-user-tie" style="font-size: 1.2rem;"></i>
-                            <span>Manager</span>
-                        </button>
-                        <button type="button" class="btn btn-outline-info"
-                            style="padding: 0.5rem; font-size: 0.8rem; flex-direction: column; gap: 0.25rem;"
-                            onclick="fillLogin('user', 'user123', true)">
-                            <i class="fas fa-user" style="font-size: 1.2rem;"></i>
-                            <span>User</span>
+                        <button class="quick-btn" onclick="fillLogin('sarah.johnson@excell-on.com', 'employee123')">
+                            <i class="fas fa-user-tie"></i> Manager
                         </button>
                     </div>
+                </div>
+
+                <div class="employee-accounts">
+                    <button class="employee-accounts-toggle" id="employeeAccountsToggle" onclick="toggleEmployeeAccounts()">
+                        <i class="fas fa-users"></i>
+                        <span id="toggleText">Show Employee Accounts</span>
+                        <i class="fas fa-chevron-down" id="toggleIcon"></i>
+                    </button>
+                    <div class="employee-accounts-list" id="employeeAccountsList">
+                        <!-- HR Management Department -->
+                        <div class="department-header">
+                            <i class="fas fa-users-cog"></i>
+                            <span>HR Management Department</span>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Emily Davis</div>
+                                <div class="employee-email">emily.davis@excell-on.com</div>
+                                <span class="employee-role role-admin">Admin</span>
+                                <div class="employee-access">Department: HR Management | Access: All Pages</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('emily.davis@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Michelle Harris</div>
+                                <div class="employee-email">michelle.harris@excell-on.com</div>
+                                <span class="employee-role role-supervisor">Supervisor</span>
+                                <div class="employee-access">Department: HR Management | Access: Dashboard, Departments, Employees, Clients, Client Services, Services, Contacts, Reports, Analytics</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('michelle.harris@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        
+                        <!-- Administration Department -->
+                        <div class="department-header">
+                            <i class="fas fa-building"></i>
+                            <span>Administration Department</span>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">David Wilson</div>
+                                <div class="employee-email">david.wilson@excell-on.com</div>
+                                <span class="employee-role role-agent">Agent</span>
+                                <div class="employee-access">Department: Administration | Access: Dashboard, Clients, Client Services, Products, Contacts, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('david.wilson@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        
+                        <!-- Service Department -->
+                        <div class="department-header">
+                            <i class="fas fa-headset"></i>
+                            <span>Service Department</span>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">John Smith</div>
+                                <div class="employee-email">john.smith@excell-on.com</div>
+                                <span class="employee-role role-agent">Agent</span>
+                                <div class="employee-access">Department: Service | Access: Dashboard, Services, Clients, Client Services, Products, Contacts, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('john.smith@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Sarah Johnson</div>
+                                <div class="employee-email">sarah.johnson@excell-on.com</div>
+                                <span class="employee-role role-admin">Admin</span>
+                                <div class="employee-access">Department: Service | Access: All Pages</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('sarah.johnson@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Michael Brown</div>
+                                <div class="employee-email">michael.brown@excell-on.com</div>
+                                <span class="employee-role role-agent">Agent</span>
+                                <div class="employee-access">Department: Service | Access: Dashboard, Services, Clients, Client Services, Products, Contacts, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('michael.brown@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Amanda White</div>
+                                <div class="employee-email">amanda.white@excell-on.com</div>
+                                <span class="employee-role role-agent">Agent</span>
+                                <div class="employee-access">Department: Service | Access: Dashboard, Services, Clients, Client Services, Products, Contacts, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('amanda.white@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">James Thomas</div>
+                                <div class="employee-email">james.thomas@excell-on.com</div>
+                                <span class="employee-role role-team-lead">Team Lead</span>
+                                <div class="employee-access">Department: Service | Access: Dashboard, Services, Clients, Client Services, Products, Contacts, Reports, Analytics</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('james.thomas@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Christopher Lee</div>
+                                <div class="employee-email">christopher.lee@excell-on.com</div>
+                                <span class="employee-role role-agent">Agent</span>
+                                <div class="employee-access">Department: Service | Access: Dashboard, Services, Clients, Client Services, Products, Contacts, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('christopher.lee@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        
+                        <!-- Training Department -->
+                        <div class="department-header">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <span>Training Department</span>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Jessica Martinez</div>
+                                <div class="employee-email">jessica.martinez@excell-on.com</div>
+                                <span class="employee-role role-supervisor">Supervisor</span>
+                                <div class="employee-access">Department: Training | Access: Dashboard, Departments, Employees, Contacts, Reports, Analytics</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('jessica.martinez@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        
+                        <!-- Internet Security Department -->
+                        <div class="department-header">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Internet Security Department</span>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Robert Taylor</div>
+                                <div class="employee-email">robert.taylor@excell-on.com</div>
+                                <span class="employee-role role-agent">Agent</span>
+                                <div class="employee-access">Department: Internet Security | Access: Dashboard, Departments, Employees, Contacts, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('robert.taylor@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        
+                        <!-- Auditors Department -->
+                        <div class="department-header">
+                            <i class="fas fa-clipboard-check"></i>
+                            <span>Auditors Department</span>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Lisa Anderson</div>
+                                <div class="employee-email">lisa.anderson@excell-on.com</div>
+                                <span class="employee-role role-agent">Agent</span>
+                                <div class="employee-access">Department: Auditors | Access: Dashboard, Clients, Client Services, Products, Payments, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('lisa.anderson@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="role-info">
+                        <div class="role-info-title">
+                            <i class="fas fa-info-circle"></i>
+                            Department & Role-Based Access Information
+                        </div>
+                        <div class="role-info-item">
+                            <strong>HR Management:</strong> Dashboard, Departments, Employees, Clients, Client Services, Services, Contacts, Reports, Analytics
+                        </div>
+                        <div class="role-info-item">
+                            <strong>Administration:</strong> Dashboard, Departments, Employees, Clients, Client Services, Products, Contacts, Payments, Reports
+                        </div>
+                        <div class="role-info-item">
+                            <strong>Service:</strong> Dashboard, Services, Clients, Client Services, Products, Contacts, Reports
+                        </div>
+                        <div class="role-info-item">
+                            <strong>Training:</strong> Dashboard, Departments, Employees, Contacts, Reports
+                        </div>
+                        <div class="role-info-item">
+                            <strong>Internet Security:</strong> Dashboard, Departments, Employees, Contacts, Reports
+                        </div>
+                        <div class="role-info-item">
+                            <strong>Auditors:</strong> Dashboard, Clients, Client Services, Products, Payments, Reports
+                        </div>
+                        <div class="role-info-item" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color);">
+                            <strong>Role Restrictions:</strong> Admin (All), Supervisor (+Analytics, -Payments), Team Lead (+Analytics, -Payments/-Departments), Agent (-Payments/-Departments/-Employees/-Analytics/-Settings)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-text">
+                    <i class="fas fa-shield-alt"></i> Secure Login
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="js/api.js"></script>
-    <script src="js/login.js?v=1.0"></script>
     <script>
-        // Fallback if login.js fails to load or run
-        if (typeof window.fillLogin === 'undefined') {
-            console.warn('login.js failed to define fillLogin, using fallback');
-            window.fillLogin = function (username, password, autoSubmit = false) {
+        const API_BASE_URL = window.location.origin;
+
+        // Password toggle
+        const passwordToggle = document.getElementById('passwordToggle');
+        const passwordInput = document.getElementById('password');
+        
+        passwordToggle.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            passwordToggle.querySelector('i').classList.toggle('fa-eye');
+            passwordToggle.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+
+        // Form submission
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginText = document.getElementById('loginText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.add('show');
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+            }, 5000);
+        }
+
+        function setLoading(loading) {
+            loginBtn.disabled = loading;
+            loginText.style.display = loading ? 'none' : 'inline';
+            loadingSpinner.classList.toggle('show', loading);
+        }
+
+        function fillLogin(username, password) {
                 document.getElementById('username').value = username;
                 document.getElementById('password').value = password;
-                if (autoSubmit) {
-                    const form = document.getElementById('loginForm');
-                    if (form) form.dispatchEvent(new Event('submit', { 'bubbles': true, 'cancelable': true }));
+            loginForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                showError('Please enter both username and password');
+                return;
+            }
+
+            setLoading(true);
+            errorMessage.classList.remove('show');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Login failed');
                 }
-            };
+
+                // Store token and user info
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('username', data.username);
+                localStorage.setItem('userFullName', data.fullName);
+                localStorage.setItem('userRole', data.role);
+                if (data.departmentId) {
+                    localStorage.setItem('userDepartmentId', data.departmentId);
+                }
+                if (data.departmentName) {
+                    localStorage.setItem('userDepartment', data.departmentName);
+                }
+
+                // Redirect to admin panel
+                window.location.href = '/admin';
+            } catch (error) {
+                console.error('Login error:', error);
+                showError(error.message || 'Invalid username or password. Please try again.');
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        // Check if already logged in
+        if (localStorage.getItem('token')) {
+            window.location.href = '/admin';
+        }
+
+        // Focus username input on load
+        document.getElementById('username').focus();
+
+        // Toggle employee accounts list
+        function toggleEmployeeAccounts() {
+            const list = document.getElementById('employeeAccountsList');
+            const toggleText = document.getElementById('toggleText');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            list.classList.toggle('show');
+            
+            if (list.classList.contains('show')) {
+                toggleText.textContent = 'Hide Employee Accounts';
+                toggleIcon.classList.remove('fa-chevron-down');
+                toggleIcon.classList.add('fa-chevron-up');
+            } else {
+                toggleText.textContent = 'Show Employee Accounts';
+                toggleIcon.classList.remove('fa-chevron-up');
+                toggleIcon.classList.add('fa-chevron-down');
+            }
         }
     </script>
 </body>
-
 </html>
+

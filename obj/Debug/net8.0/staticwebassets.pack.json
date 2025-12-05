@@ -49,10 +49,6 @@
       "PackagePath": "staticwebassets\\js\\employees.js"
     },
     {
-      "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\login.js",
-      "PackagePath": "staticwebassets\\js\\login.js"
-    },
-    {
       "Id": "D:\\Code\\Sem3\\ppj3\\src\\TransportInfoManagement.API\\wwwroot\\js\\notifications.js",
       "PackagePath": "staticwebassets\\js\\notifications.js"
     },

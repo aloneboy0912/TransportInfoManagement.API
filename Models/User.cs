@@ -26,6 +26,8 @@ public class LoginResponse
     public string Username { get; set; } = string.Empty;
     public string FullName { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
+    public int? DepartmentId { get; set; }
+    public string? DepartmentName { get; set; }
 }
 
 public class RegisterRequest

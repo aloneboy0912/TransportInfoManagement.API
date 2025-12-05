@@ -1,0 +1,149 @@
+# Employee Roles - Based on Requirements Document
+
+## Overview
+According to the Excell-On Services requirements document, **"The details of the employees are to be maintained based on the designation and the services (like out-bound, in-bound, etc.)"**
+
+This document outlines how employee roles are structured to align with this requirement.
+
+## Role Structure
+
+### Role Definition
+Employee roles represent the **designation** (position/title) of an employee within their assigned **service** (In-bound, Out-bound, or Tele Marketing Services).
+
+### Available Roles
+1. **Agent** - Entry-level or standard employee role
+   - Works directly with clients/customers
+   - Handles day-to-day service operations
+   - Default role for new employees
+
+2. **Team Lead** - Leadership role for a team
+   - Supervises a small group of agents
+   - Coordinates team activities
+   - Reports to Supervisor or Manager
+
+3. **Supervisor** - Mid-level management role
+   - Oversees multiple teams or agents
+   - Ensures quality and performance standards
+   - Manages operational workflows
+
+4. **Manager** - Senior management role
+   - Manages department or service area
+   - Strategic planning and decision-making
+   - Full administrative access in the system
+
+5. **Director** - Executive-level role
+   - Highest level of management
+   - Strategic oversight
+   - Full system access
+
+## Role Assignment Based on Services
+
+### In-bound Services
+- **Technical Support Agents** - Handle technical customer inquiries
+- **Customer Service Representatives** - Handle general customer service
+- **Team Leads** - Supervise support/service teams
+- **Supervisors** - Oversee support operations
+- **Managers** - Manage entire in-bound service operations
+
+### Out-bound Services
+- **Sales Representatives** - Proactively call customers
+- **Customer Satisfaction Agents** - Check customer satisfaction
+- **Team Leads** - Lead outbound calling teams
+- **Supervisors** - Supervise outbound operations
+- **Managers** - Manage outbound service department
+
+### Tele Marketing Services
+- **Telemarketing Specialists** - Promote products/services via phone
+- **Marketing Agents** - Execute marketing campaigns
+- **Team Leads** - Lead marketing teams
+- **Supervisors** - Oversee marketing operations
+- **Managers** - Manage telemarketing department
+
+## Role Assignment Based on Departments
+
+### HR Management Department
+- **HR Coordinator** - Supervisor role
+- **HR Manager** - Manager role
+- **HR Assistant** - Agent role
+
+### Administration Department
+- **Administrative Assistant** - Agent role
+- **Admin Manager** - Manager role
+
+### Service Department
+- **Service Agents** - Agent role (across all services)
+- **Service Team Leads** - Team Lead role
+- **Service Supervisors** - Supervisor role
+- **Service Managers** - Manager role
+
+### Training Department
+- **Training Coordinator** - Supervisor role
+- **Training Specialist** - Agent role
+- **Training Manager** - Manager role
+
+### Internet Security Department
+- **Security Analyst** - Agent role
+- **Security Specialist** - Agent role
+- **Security Manager** - Manager role
+
+### Auditors Department
+- **Auditor** - Agent role
+- **Senior Auditor** - Supervisor role
+- **Audit Manager** - Manager role
+
+## Current Implementation
+
+### Role to User Role Mapping
+- **Manager** → **Admin** (Full system access)
+- **All other roles** (Agent, Team Lead, Supervisor, Director) → **User** (Limited access)
+
+### Database Structure
+- Employee `Role` field stores the designation/position
+- Employee `ServiceId` links to the service (In-bound, Out-bound, Tele Marketing)
+- Employee `DepartmentId` links to the department
+- Employee `Position` field stores the specific job title
+
+### Example Employee Records
+```
+Employee: John Smith
+- Role: Agent
+- Service: In-bound Services
+- Department: Service
+- Position: Customer Service Representative
+- Designation: Agent level in In-bound Services
+
+Employee: Sarah Johnson
+- Role: Manager
+- Service: Out-bound Services
+- Department: Service
+- Position: Sales Manager
+- Designation: Manager level in Out-bound Services
+```
+
+## Requirements Compliance
+
+✅ **Requirement Met**: "The details of the employees are to be maintained based on the designation and the services"
+
+- Employee roles reflect their **designation** (Agent, Team Lead, Supervisor, Manager, Director)
+- Employees are linked to **services** (In-bound, Out-bound, Tele Marketing)
+- Employees are linked to **departments** (HR, Admin, Service, Training, Internet Security, Auditors)
+- The combination of Role + Service + Department provides complete employee classification
+
+## Usage in System
+
+### Employee Management
+- Roles are displayed in the employee management interface
+- Roles can be assigned when creating/editing employees
+- Roles help filter and organize employees
+
+### Access Control
+- Manager roles receive Admin-level access
+- Other roles receive User-level access
+- Role-based permissions can be extended as needed
+
+### Reporting
+- Reports can be generated by role
+- Reports can be generated by service
+- Reports can be generated by department
+- Combined filters allow detailed employee analysis
+

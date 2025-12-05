@@ -8,6 +8,10 @@ public class Employee
     public string Email { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
     public string Position { get; set; } = string.Empty;
+    // Employee Role: Based on designation and services (In-bound, Out-bound, Tele Marketing)
+    // Roles reflect the employee's designation/position within their assigned service
+    // Valid roles: Agent, Team Lead, Supervisor, Manager, Director
+    public string Role { get; set; } = "Agent";
     public int ServiceId { get; set; }
     public Service? Service { get; set; }
     public int DepartmentId { get; set; }

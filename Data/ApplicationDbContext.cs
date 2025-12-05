@@ -180,13 +180,13 @@ public class ApplicationDbContext : DbContext
             new ServiceFee { Id = 3, ServiceId = 3, FeePerDayPerEmployee = 5500.00m }
         );
 
-        // Seed Departments
+        // Seed Departments - Based on Excell-On Services Requirements
         modelBuilder.Entity<Department>().HasData(
-            new Department { Id = 1, Name = "HR", Description = "Human Resources" },
-            new Department { Id = 2, Name = "Admin", Description = "Administration" },
+            new Department { Id = 1, Name = "HR Management", Description = "Human Resources Management" },
+            new Department { Id = 2, Name = "Administration", Description = "Administration Department" },
             new Department { Id = 3, Name = "Service", Description = "Service Department" },
             new Department { Id = 4, Name = "Training", Description = "Training Department" },
-            new Department { Id = 5, Name = "Internet Security", Description = "Internet Security Department" },
+            new Department { Id = 5, Name = "Internet Security", Description = "It will take care of any technical related issues and problems like PC of an employee is hanged, PC of an employee is not getting started, One of the software application is not running properly, installing and uninstalling software, etc." },
             new Department { Id = 6, Name = "Auditors", Description = "Auditing Department" }
         );
 
@@ -200,6 +200,117 @@ public class ApplicationDbContext : DbContext
                 Email = "admin@excell-on.com",
                 FullName = "Administrator",
                 Role = "Admin"
+            },
+            // Employee user accounts (password: employee123 for all)
+            // Username: email address, can also login with email
+            // Roles based on employee positions: Admin (Manager), Supervisor, Team Lead, Agent
+            new User 
+            { 
+                Id = 2, 
+                Username = "john.smith@excell-on.com", 
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
+                Email = "john.smith@excell-on.com",
+                FullName = "John Smith",
+                Role = "Agent" // Customer Service Representative
+            },
+            new User 
+            { 
+                Id = 3, 
+                Username = "sarah.johnson@excell-on.com", 
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
+                Email = "sarah.johnson@excell-on.com",
+                FullName = "Sarah Johnson",
+                Role = "Admin" // Manager -> Admin access
+            },
+            new User 
+            { 
+                Id = 4, 
+                Username = "michael.brown@excell-on.com", 
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
+                Email = "michael.brown@excell-on.com",
+                FullName = "Michael Brown",
+                Role = "Agent" // Telemarketing Specialist
+            },
+            new User 
+            { 
+                Id = 5, 
+                Username = "emily.davis@excell-on.com", 
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
+                Email = "emily.davis@excell-on.com",
+                FullName = "Emily Davis",
+                Role = "Admin" // Manager -> Admin access
+            },
+            new User 
+            { 
+                Id = 6, 
+                Username = "david.wilson@excell-on.com", 
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
+                Email = "david.wilson@excell-on.com",
+                FullName = "David Wilson",
+                Role = "Agent" // Administrative Assistant
+            },
+            new User 
+            { 
+                Id = 7, 
+                Username = "jessica.martinez@excell-on.com", 
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
+                Email = "jessica.martinez@excell-on.com",
+                FullName = "Jessica Martinez",
+                Role = "Supervisor" // Training Coordinator
+            },
+            new User 
+            { 
+                Id = 8, 
+                Username = "robert.taylor@excell-on.com", 
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
+                Email = "robert.taylor@excell-on.com",
+                FullName = "Robert Taylor",
+                Role = "Agent" // Security Analyst
+            },
+            new User 
+            { 
+                Id = 9, 
+                Username = "lisa.anderson@excell-on.com", 
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
+                Email = "lisa.anderson@excell-on.com",
+                FullName = "Lisa Anderson",
+                Role = "Agent" // Auditor
+            },
+            new User 
+            { 
+                Id = 10, 
+                Username = "james.thomas@excell-on.com", 
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
+                Email = "james.thomas@excell-on.com",
+                FullName = "James Thomas",
+                Role = "Team Lead" // Customer Support Lead
+            },
+            new User 
+            { 
+                Id = 11, 
+                Username = "amanda.white@excell-on.com", 
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
+                Email = "amanda.white@excell-on.com",
+                FullName = "Amanda White",
+                Role = "Agent" // Sales Representative
+            },
+            new User 
+            { 
+                Id = 12, 
+                Username = "christopher.lee@excell-on.com", 
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
+                Email = "christopher.lee@excell-on.com",
+                FullName = "Christopher Lee",
+                Role = "Agent" // Marketing Specialist
+            },
+            new User 
+            { 
+                Id = 13, 
+                Username = "michelle.harris@excell-on.com", 
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
+                Email = "michelle.harris@excell-on.com",
+                FullName = "Michelle Harris",
+                Role = "Supervisor" // HR Coordinator
             }
         );
 
@@ -213,9 +324,11 @@ public class ApplicationDbContext : DbContext
                 FullName = "John Smith", 
                 Email = "john.smith@excell-on.com", 
                 Phone = "+1-555-0101", 
-                Position = "Customer Service Representative", 
+                Position = "Customer Service Representative",
+                Role = "Agent",
                 ServiceId = 1, 
                 DepartmentId = 3, 
+                UserId = 2, // Link to User account
                 HireDate = baseDate.AddDays(-120), 
                 IsActive = true, 
                 CreatedAt = baseDate.AddDays(-120) 
@@ -227,9 +340,11 @@ public class ApplicationDbContext : DbContext
                 FullName = "Sarah Johnson", 
                 Email = "sarah.johnson@excell-on.com", 
                 Phone = "+1-555-0102", 
-                Position = "Sales Manager", 
+                Position = "Sales Manager",
+                Role = "Manager",
                 ServiceId = 2, 
                 DepartmentId = 3, 
+                UserId = 3, // Link to User account
                 HireDate = baseDate.AddDays(-200), 
                 IsActive = true, 
                 CreatedAt = baseDate.AddDays(-200) 
@@ -241,9 +356,11 @@ public class ApplicationDbContext : DbContext
                 FullName = "Michael Brown", 
                 Email = "michael.brown@excell-on.com", 
                 Phone = "+1-555-0103", 
-                Position = "Telemarketing Specialist", 
+                Position = "Telemarketing Specialist",
+                Role = "Agent",
                 ServiceId = 3, 
                 DepartmentId = 3, 
+                UserId = 4, // Link to User account
                 HireDate = baseDate.AddDays(-90), 
                 IsActive = true, 
                 CreatedAt = baseDate.AddDays(-90) 
@@ -255,9 +372,11 @@ public class ApplicationDbContext : DbContext
                 FullName = "Emily Davis", 
                 Email = "emily.davis@excell-on.com", 
                 Phone = "+1-555-0104", 
-                Position = "HR Manager", 
+                Position = "HR Manager",
+                Role = "Manager",
                 ServiceId = 1, 
                 DepartmentId = 1, 
+                UserId = 5, // Link to User account
                 HireDate = baseDate.AddDays(-300), 
                 IsActive = true, 
                 CreatedAt = baseDate.AddDays(-300) 
@@ -269,9 +388,11 @@ public class ApplicationDbContext : DbContext
                 FullName = "David Wilson", 
                 Email = "david.wilson@excell-on.com", 
                 Phone = "+1-555-0105", 
-                Position = "Administrative Assistant", 
+                Position = "Administrative Assistant",
+                Role = "Agent",
                 ServiceId = 1, 
                 DepartmentId = 2, 
+                UserId = 6, // Link to User account
                 HireDate = baseDate.AddDays(-60), 
                 IsActive = true, 
                 CreatedAt = baseDate.AddDays(-60) 
@@ -283,9 +404,11 @@ public class ApplicationDbContext : DbContext
                 FullName = "Jessica Martinez", 
                 Email = "jessica.martinez@excell-on.com", 
                 Phone = "+1-555-0106", 
-                Position = "Training Coordinator", 
+                Position = "Training Coordinator",
+                Role = "Supervisor",
                 ServiceId = 2, 
                 DepartmentId = 4, 
+                UserId = 7, // Link to User account
                 HireDate = baseDate.AddDays(-150), 
                 IsActive = true, 
                 CreatedAt = baseDate.AddDays(-150) 
@@ -297,9 +420,11 @@ public class ApplicationDbContext : DbContext
                 FullName = "Robert Taylor", 
                 Email = "robert.taylor@excell-on.com", 
                 Phone = "+1-555-0107", 
-                Position = "Security Analyst", 
+                Position = "Security Analyst",
+                Role = "Agent",
                 ServiceId = 1, 
                 DepartmentId = 5, 
+                UserId = 8, // Link to User account
                 HireDate = baseDate.AddDays(-180), 
                 IsActive = true, 
                 CreatedAt = baseDate.AddDays(-180) 
@@ -311,9 +436,11 @@ public class ApplicationDbContext : DbContext
                 FullName = "Lisa Anderson", 
                 Email = "lisa.anderson@excell-on.com", 
                 Phone = "+1-555-0108", 
-                Position = "Auditor", 
+                Position = "Auditor",
+                Role = "Agent",
                 ServiceId = 3, 
                 DepartmentId = 6, 
+                UserId = 9, // Link to User account
                 HireDate = baseDate.AddDays(-100), 
                 IsActive = true, 
                 CreatedAt = baseDate.AddDays(-100) 
@@ -325,9 +452,11 @@ public class ApplicationDbContext : DbContext
                 FullName = "James Thomas", 
                 Email = "james.thomas@excell-on.com", 
                 Phone = "+1-555-0109", 
-                Position = "Customer Support Lead", 
+                Position = "Customer Support Lead",
+                Role = "Team Lead",
                 ServiceId = 1, 
                 DepartmentId = 3, 
+                UserId = 10, // Link to User account
                 HireDate = baseDate.AddDays(-250), 
                 IsActive = true, 
                 CreatedAt = baseDate.AddDays(-250) 
@@ -339,9 +468,11 @@ public class ApplicationDbContext : DbContext
                 FullName = "Amanda White", 
                 Email = "amanda.white@excell-on.com", 
                 Phone = "+1-555-0110", 
-                Position = "Sales Representative", 
+                Position = "Sales Representative",
+                Role = "Agent",
                 ServiceId = 2, 
                 DepartmentId = 3, 
+                UserId = 11, // Link to User account
                 HireDate = baseDate.AddDays(-45), 
                 IsActive = true, 
                 CreatedAt = baseDate.AddDays(-45) 
@@ -353,9 +484,11 @@ public class ApplicationDbContext : DbContext
                 FullName = "Christopher Lee", 
                 Email = "christopher.lee@excell-on.com", 
                 Phone = "+1-555-0111", 
-                Position = "Marketing Specialist", 
+                Position = "Marketing Specialist",
+                Role = "Agent",
                 ServiceId = 3, 
                 DepartmentId = 3, 
+                UserId = 12, // Link to User account
                 HireDate = baseDate.AddDays(-75), 
                 IsActive = true, 
                 CreatedAt = baseDate.AddDays(-75) 
@@ -367,9 +500,11 @@ public class ApplicationDbContext : DbContext
                 FullName = "Michelle Harris", 
                 Email = "michelle.harris@excell-on.com", 
                 Phone = "+1-555-0112", 
-                Position = "HR Coordinator", 
+                Position = "HR Coordinator",
+                Role = "Supervisor",
                 ServiceId = 1, 
                 DepartmentId = 1, 
+                UserId = 13, // Link to User account
                 HireDate = baseDate.AddDays(-30), 
                 IsActive = true, 
                 CreatedAt = baseDate.AddDays(-30) 

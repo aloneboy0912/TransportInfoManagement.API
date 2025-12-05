@@ -37,6 +37,27 @@ public class AuthService : IAuthService
             return null;
         }
 
+        // Get employee and department information
+        // First try to find by UserId
+        var employee = await _context.Employees
+            .Include(e => e.Department)
+            .FirstOrDefaultAsync(e => e.UserId == user.Id);
+
+        // If not found by UserId, try to find by email (fallback for cases where UserId might not be set)
+        if (employee == null)
+        {
+            employee = await _context.Employees
+                .Include(e => e.Department)
+                .FirstOrDefaultAsync(e => e.Email.ToLower() == user.Email.ToLower());
+            
+            // If found by email, link the employee to the user
+            if (employee != null && employee.UserId == null)
+            {
+                employee.UserId = user.Id;
+                await _context.SaveChangesAsync();
+            }
+        }
+
         // Cho phép tất cả user đăng nhập (không chỉ admin)
         // Logic phân quyền sẽ được xử lý ở frontend/controller
 
@@ -47,7 +68,9 @@ public class AuthService : IAuthService
             Token = token,
             Username = user.Username,
             FullName = user.FullName,
-            Role = user.Role
+            Role = user.Role,
+            DepartmentId = employee?.DepartmentId,
+            DepartmentName = employee?.Department?.Name
         };
     }
 
