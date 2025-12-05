@@ -58,12 +58,12 @@ public class StripeController : ControllerBase
             Client? client = null;
             if (request.ContactId.HasValue)
             {
-                var contact = await _context.Contacts.FindAsync(request.ContactId.Value);
-                if (contact != null)
+                var existingContact = await _context.Contacts.FindAsync(request.ContactId.Value);
+                if (existingContact != null)
                 {
                     // Try to find existing client by email
                     client = await _context.Clients
-                        .FirstOrDefaultAsync(c => c.Email.ToLower() == contact.Email.ToLower());
+                        .FirstOrDefaultAsync(c => c.Email.ToLower() == existingContact.Email.ToLower());
 
                     // If no client exists, create one
                     if (client == null)
@@ -71,10 +71,10 @@ public class StripeController : ControllerBase
                         client = new Client
                         {
                             ClientCode = $"CLT{TimeZoneHelper.GetVietnamTime():yyyyMMddHHmmss}",
-                            CompanyName = contact.Company ?? contact.Name,
-                            ContactPerson = contact.Name,
-                            Email = contact.Email,
-                            Phone = contact.Phone ?? "",
+                            CompanyName = existingContact.Company ?? existingContact.Name,
+                            ContactPerson = existingContact.Name,
+                            Email = existingContact.Email,
+                            Phone = existingContact.Phone ?? "",
                             Address = "",
                             City = "",
                             Country = "",
@@ -187,14 +187,223 @@ public class StripeController : ControllerBase
                 .Include(p => p.Client)
                 .FirstOrDefaultAsync(p => p.Id == payment.Id);
 
-            // Mark contact as processed if contactId is provided
+            if (payment == null)
+            {
+                _logger.LogError("Payment was not found after creation");
+                return BadRequest(new { message = "Payment was not created successfully" });
+            }
+
+            // Ensure contact exists in Contact Manager
+            Contact? contact = null;
+            
+            // If contactId is provided, find existing contact
             if (request.ContactId.HasValue)
             {
-                var contact = await _context.Contacts.FindAsync(request.ContactId.Value);
-                if (contact != null)
+                contact = await _context.Contacts.FindAsync(request.ContactId.Value);
+            }
+            
+            // If no contact found, try to find by email
+            if (contact == null && !string.IsNullOrEmpty(request.CustomerEmail))
+            {
+                contact = await _context.Contacts
+                    .FirstOrDefaultAsync(c => c.Email.ToLower() == request.CustomerEmail.ToLower());
+            }
+            
+            // If still no contact exists, create one from payment information
+            if (contact == null && !string.IsNullOrEmpty(request.CustomerEmail))
+            {
+                try
+                {
+                    contact = new Contact
+                    {
+                        Name = request.CustomerName ?? "Payment Customer",
+                        Email = request.CustomerEmail,
+                        Company = client?.CompanyName,
+                        Phone = client?.Phone ?? string.Empty, // Ensure phone is set to empty string if null, not a date
+                        Subject = "Payment Completed",
+                        Message = $"Payment of ${request.Amount:F2} completed successfully. Payment Code: {payment.PaymentCode}",
+                        CreatedAt = TimeZoneHelper.ToUtc(TimeZoneHelper.GetVietnamTime()),
+                        IsProcessed = true // Mark as processed since payment is complete
+                    };
+                    
+                    _context.Contacts.Add(contact);
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation($"Created new contact for payment: {contact.Email} (ID: {contact.Id})");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Error creating contact for payment: {request.CustomerEmail}");
+                    // Don't fail the payment if contact creation fails
+                }
+            }
+            else if (contact != null)
+            {
+                // Update existing contact to mark as processed
+                try
                 {
                     contact.IsProcessed = true;
+                    // Update contact information if we have better data from payment
+                    if (!string.IsNullOrEmpty(request.CustomerName) && string.IsNullOrEmpty(contact.Name))
+                    {
+                        contact.Name = request.CustomerName;
+                    }
+                    if (client != null && !string.IsNullOrEmpty(client.Phone) && string.IsNullOrEmpty(contact.Phone))
+                    {
+                        contact.Phone = client.Phone;
+                    }
+                    if (client != null && !string.IsNullOrEmpty(client.CompanyName) && string.IsNullOrEmpty(contact.Company))
+                    {
+                        contact.Company = client.CompanyName;
+                    }
                     await _context.SaveChangesAsync();
+                    _logger.LogInformation($"Updated contact for payment: {contact.Email} (ID: {contact.Id})");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Error updating contact for payment: {request.CustomerEmail}");
+                    // Don't fail the payment if contact update fails
+                }
+            }
+
+            // Create ClientService when payment is successful
+            if (client != null)
+            {
+                try
+                {
+                    // Determine which service to assign
+                    // If ServiceId is provided, use it; otherwise, try to match by amount or use default service
+                    int serviceId = request.ServiceId ?? 0;
+                    
+                    if (serviceId == 0)
+                    {
+                        // Try to determine service from payment amount by matching service fees
+                        var serviceFees = await _context.ServiceFees
+                            .Include(sf => sf.Service)
+                            .Where(sf => sf.Service != null && sf.Service.IsActive)
+                            .ToListAsync();
+                        
+                        // Find service that matches the payment amount (within reasonable range)
+                        // Payment amount is typically per day per employee, so we'll use the first active service as default
+                        var defaultService = await _context.Services
+                            .Where(s => s.IsActive)
+                            .OrderBy(s => s.Id)
+                            .FirstOrDefaultAsync();
+                        
+                        serviceId = defaultService?.Id ?? 1; // Default to service ID 1 if no services found
+                    }
+                    
+                    // Check if a ClientService already exists for this client and service
+                    var existingClientService = await _context.ClientServices
+                        .FirstOrDefaultAsync(cs => cs.ClientId == client.Id && 
+                                                   cs.ServiceId == serviceId && 
+                                                   cs.IsActive);
+                    
+                    if (existingClientService == null)
+                    {
+                        // Find an available employee for this service (preferably from Service department)
+                        var employee = await _context.Employees
+                            .Where(e => e.ServiceId == serviceId && e.IsActive)
+                            .OrderBy(e => e.Id)
+                            .FirstOrDefaultAsync();
+                        
+                        // If no employee found for this service, get any active employee
+                        if (employee == null)
+                        {
+                            employee = await _context.Employees
+                                .Where(e => e.IsActive)
+                                .OrderBy(e => e.Id)
+                                .FirstOrDefaultAsync();
+                        }
+                        
+                        var clientService = new ClientService
+                        {
+                            ClientId = client.Id,
+                            ServiceId = serviceId,
+                            EmployeeId = employee?.Id,
+                            NumberOfEmployees = 1, // Default to 1, can be updated later
+                            StartDate = TimeZoneHelper.ToUtc(TimeZoneHelper.GetVietnamTime()),
+                            EndDate = null,
+                            IsActive = true,
+                            CreatedAt = TimeZoneHelper.ToUtc(TimeZoneHelper.GetVietnamTime())
+                        };
+                        
+                        _context.ClientServices.Add(clientService);
+                        await _context.SaveChangesAsync();
+                        _logger.LogInformation($"Created ClientService for client {client.Id} with service {serviceId} (ClientService ID: {clientService.Id})");
+                    }
+                    else
+                    {
+                        _logger.LogInformation($"ClientService already exists for client {client.Id} with service {serviceId} (ClientService ID: {existingClientService.Id})");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Error creating ClientService for payment: ClientId={client.Id}, ServiceId={request.ServiceId}");
+                    // Don't fail the payment if ClientService creation fails
+                }
+            }
+
+            // Create Product when payment is successful
+            if (client != null)
+            {
+                try
+                {
+                    // Determine which service was purchased
+                    int serviceId = request.ServiceId ?? 0;
+                    
+                    if (serviceId == 0)
+                    {
+                        // Try to determine service from payment amount by matching service fees
+                        var defaultService = await _context.Services
+                            .Where(s => s.IsActive)
+                            .OrderBy(s => s.Id)
+                            .FirstOrDefaultAsync();
+                        
+                        serviceId = defaultService?.Id ?? 1; // Default to service ID 1 if no services found
+                    }
+                    
+                    // Get the service details
+                    var service = await _context.Services.FindAsync(serviceId);
+                    if (service == null)
+                    {
+                        _logger.LogWarning($"Service {serviceId} not found, skipping product creation");
+                    }
+                    else
+                    {
+                        // Check if a product already exists for this client and service
+                        var existingProduct = await _context.Products
+                            .FirstOrDefaultAsync(p => p.ClientId == client.Id && 
+                                                      p.ProductName.ToLower() == service.Name.ToLower());
+                        
+                        if (existingProduct == null)
+                        {
+                            // Create product based on the purchased service
+                            var product = new Product
+                            {
+                                ClientId = client.Id,
+                                ProductCode = $"PRD{TimeZoneHelper.GetVietnamTime():yyyyMMddHHmmss}",
+                                ProductName = service.Name,
+                                Description = !string.IsNullOrEmpty(request.Notes) 
+                                    ? request.Notes 
+                                    : $"Service purchased: {service.Description ?? service.Name}",
+                                Category = "Service",
+                                CreatedAt = TimeZoneHelper.ToUtc(TimeZoneHelper.GetVietnamTime())
+                            };
+                            
+                            _context.Products.Add(product);
+                            await _context.SaveChangesAsync();
+                            _logger.LogInformation($"Created Product for client {client.Id} with service {serviceId} (Product ID: {product.Id}, Name: {product.ProductName})");
+                        }
+                        else
+                        {
+                            _logger.LogInformation($"Product already exists for client {client.Id} with service {serviceId} (Product ID: {existingProduct.Id})");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Error creating Product for payment: ClientId={client.Id}, ServiceId={request.ServiceId}");
+                    // Don't fail the payment if Product creation fails
                 }
             }
 
@@ -245,11 +454,16 @@ public class StripeController : ControllerBase
                                 _context.Payments.Add(payment);
                                 await _context.SaveChangesAsync();
                                 
-                                payment = await _context.Payments
+                                var retryPayment = await _context.Payments
                                     .Include(p => p.Client)
                                     .FirstOrDefaultAsync(p => p.Id == payment.Id);
                                 
-                                return CreatedAtAction(nameof(GetPayment), new { id = payment.Id }, payment);
+                                if (retryPayment == null)
+                                {
+                                    throw new Exception("Payment was not found after retry");
+                                }
+                                
+                                return CreatedAtAction(nameof(GetPayment), new { id = retryPayment.Id }, retryPayment);
                             }
                             catch (Exception retryEx)
                             {
@@ -345,6 +559,7 @@ public class ConfirmPaymentRequest
     public decimal Amount { get; set; }
     public int? ClientId { get; set; }
     public int? ContactId { get; set; }
+    public int? ServiceId { get; set; } // Service ID for ClientService creation
     public string? Notes { get; set; }
     public string? CustomerName { get; set; }
     public string? CustomerEmail { get; set; }

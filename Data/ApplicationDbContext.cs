@@ -190,7 +190,8 @@ public class ApplicationDbContext : DbContext
             new Department { Id = 6, Name = "Auditors", Description = "Auditing Department" }
         );
 
-        // Seed default admin user (password: admin123)
+        // Seed Users
+        // Default admin user (password: admin123)
         modelBuilder.Entity<User>().HasData(
             new User 
             { 
@@ -201,350 +202,105 @@ public class ApplicationDbContext : DbContext
                 FullName = "Administrator",
                 Role = "Admin"
             },
-            // Employee user accounts (password: employee123 for all)
-            // Username: email address, can also login with email
-            // Roles based on employee positions: Admin (Manager), Supervisor, Team Lead, Agent
-            new User 
-            { 
-                Id = 2, 
-                Username = "john.smith@excell-on.com", 
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
-                Email = "john.smith@excell-on.com",
-                FullName = "John Smith",
-                Role = "Agent" // Customer Service Representative
-            },
-            new User 
-            { 
-                Id = 3, 
-                Username = "sarah.johnson@excell-on.com", 
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
-                Email = "sarah.johnson@excell-on.com",
-                FullName = "Sarah Johnson",
-                Role = "Admin" // Manager -> Admin access
-            },
-            new User 
-            { 
-                Id = 4, 
-                Username = "michael.brown@excell-on.com", 
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
-                Email = "michael.brown@excell-on.com",
-                FullName = "Michael Brown",
-                Role = "Agent" // Telemarketing Specialist
-            },
-            new User 
-            { 
-                Id = 5, 
-                Username = "emily.davis@excell-on.com", 
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
-                Email = "emily.davis@excell-on.com",
-                FullName = "Emily Davis",
-                Role = "Admin" // Manager -> Admin access
-            },
-            new User 
-            { 
-                Id = 6, 
-                Username = "david.wilson@excell-on.com", 
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
-                Email = "david.wilson@excell-on.com",
-                FullName = "David Wilson",
-                Role = "Agent" // Administrative Assistant
-            },
-            new User 
-            { 
-                Id = 7, 
-                Username = "jessica.martinez@excell-on.com", 
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
-                Email = "jessica.martinez@excell-on.com",
-                FullName = "Jessica Martinez",
-                Role = "Supervisor" // Training Coordinator
-            },
-            new User 
-            { 
-                Id = 8, 
-                Username = "robert.taylor@excell-on.com", 
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
-                Email = "robert.taylor@excell-on.com",
-                FullName = "Robert Taylor",
-                Role = "Agent" // Security Analyst
-            },
-            new User 
-            { 
-                Id = 9, 
-                Username = "lisa.anderson@excell-on.com", 
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
-                Email = "lisa.anderson@excell-on.com",
-                FullName = "Lisa Anderson",
-                Role = "Agent" // Auditor
-            },
-            new User 
-            { 
-                Id = 10, 
-                Username = "james.thomas@excell-on.com", 
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
-                Email = "james.thomas@excell-on.com",
-                FullName = "James Thomas",
-                Role = "Team Lead" // Customer Support Lead
-            },
-            new User 
-            { 
-                Id = 11, 
-                Username = "amanda.white@excell-on.com", 
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
-                Email = "amanda.white@excell-on.com",
-                FullName = "Amanda White",
-                Role = "Agent" // Sales Representative
-            },
-            new User 
-            { 
-                Id = 12, 
-                Username = "christopher.lee@excell-on.com", 
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
-                Email = "christopher.lee@excell-on.com",
-                FullName = "Christopher Lee",
-                Role = "Agent" // Marketing Specialist
-            },
-            new User 
-            { 
-                Id = 13, 
-                Username = "michelle.harris@excell-on.com", 
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"),
-                Email = "michelle.harris@excell-on.com",
-                FullName = "Michelle Harris",
-                Role = "Supervisor" // HR Coordinator
-            }
+            // Employee Accounts - 5 Roles × 6 Departments (30 employees)
+            // Password: employee123 for all accounts
+            // Username: email address (can login with email)
+            // Role mapping: Manager → Admin, Supervisor → Supervisor, Team Lead → Team Lead, Agent → Agent
+            // PROTECTED: User IDs 2-31 and Employee IDs 1-30 are protected system accounts
+            // These accounts cannot be edited or deleted through the UI/API
+            
+            // HR Management Department (User IDs: 2-6)
+            new User { Id = 2, Username = "hr.admin@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "hr.admin@excell-on.com", FullName = "HR Admin", Role = "Admin" },
+            new User { Id = 3, Username = "hr.manager@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "hr.manager@excell-on.com", FullName = "HR Manager", Role = "Admin" },
+            new User { Id = 4, Username = "hr.supervisor@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "hr.supervisor@excell-on.com", FullName = "HR Supervisor", Role = "Supervisor" },
+            new User { Id = 5, Username = "hr.teamlead@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "hr.teamlead@excell-on.com", FullName = "HR Team Lead", Role = "Team Lead" },
+            new User { Id = 6, Username = "hr.agent@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "hr.agent@excell-on.com", FullName = "HR Agent", Role = "Agent" },
+            
+            // Administration Department (User IDs: 7-11)
+            new User { Id = 7, Username = "admin.dept.admin@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "admin.dept.admin@excell-on.com", FullName = "Admin Dept Admin", Role = "Admin" },
+            new User { Id = 8, Username = "admin.dept.manager@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "admin.dept.manager@excell-on.com", FullName = "Admin Dept Manager", Role = "Admin" },
+            new User { Id = 9, Username = "admin.dept.supervisor@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "admin.dept.supervisor@excell-on.com", FullName = "Admin Dept Supervisor", Role = "Supervisor" },
+            new User { Id = 10, Username = "admin.dept.teamlead@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "admin.dept.teamlead@excell-on.com", FullName = "Admin Dept Team Lead", Role = "Team Lead" },
+            new User { Id = 11, Username = "admin.dept.agent@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "admin.dept.agent@excell-on.com", FullName = "Admin Dept Agent", Role = "Agent" },
+            
+            // Service Department (User IDs: 12-16)
+            new User { Id = 12, Username = "service.admin@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "service.admin@excell-on.com", FullName = "Service Admin", Role = "Admin" },
+            new User { Id = 13, Username = "service.manager@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "service.manager@excell-on.com", FullName = "Service Manager", Role = "Admin" },
+            new User { Id = 14, Username = "service.supervisor@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "service.supervisor@excell-on.com", FullName = "Service Supervisor", Role = "Supervisor" },
+            new User { Id = 15, Username = "service.teamlead@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "service.teamlead@excell-on.com", FullName = "Service Team Lead", Role = "Team Lead" },
+            new User { Id = 16, Username = "service.agent@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "service.agent@excell-on.com", FullName = "Service Agent", Role = "Agent" },
+            
+            // Training Department (User IDs: 17-21)
+            new User { Id = 17, Username = "training.admin@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "training.admin@excell-on.com", FullName = "Training Admin", Role = "Admin" },
+            new User { Id = 18, Username = "training.manager@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "training.manager@excell-on.com", FullName = "Training Manager", Role = "Admin" },
+            new User { Id = 19, Username = "training.supervisor@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "training.supervisor@excell-on.com", FullName = "Training Supervisor", Role = "Supervisor" },
+            new User { Id = 20, Username = "training.teamlead@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "training.teamlead@excell-on.com", FullName = "Training Team Lead", Role = "Team Lead" },
+            new User { Id = 21, Username = "training.agent@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "training.agent@excell-on.com", FullName = "Training Agent", Role = "Agent" },
+            
+            // Internet Security Department (User IDs: 22-26)
+            new User { Id = 22, Username = "security.admin@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "security.admin@excell-on.com", FullName = "Security Admin", Role = "Admin" },
+            new User { Id = 23, Username = "security.manager@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "security.manager@excell-on.com", FullName = "Security Manager", Role = "Admin" },
+            new User { Id = 24, Username = "security.supervisor@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "security.supervisor@excell-on.com", FullName = "Security Supervisor", Role = "Supervisor" },
+            new User { Id = 25, Username = "security.teamlead@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "security.teamlead@excell-on.com", FullName = "Security Team Lead", Role = "Team Lead" },
+            new User { Id = 26, Username = "security.agent@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "security.agent@excell-on.com", FullName = "Security Agent", Role = "Agent" },
+            
+            // Auditors Department (User IDs: 27-31)
+            new User { Id = 27, Username = "auditor.admin@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "auditor.admin@excell-on.com", FullName = "Auditor Admin", Role = "Admin" },
+            new User { Id = 28, Username = "auditor.manager@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "auditor.manager@excell-on.com", FullName = "Auditor Manager", Role = "Admin" },
+            new User { Id = 29, Username = "auditor.supervisor@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "auditor.supervisor@excell-on.com", FullName = "Auditor Supervisor", Role = "Supervisor" },
+            new User { Id = 30, Username = "auditor.teamlead@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "auditor.teamlead@excell-on.com", FullName = "Auditor Team Lead", Role = "Team Lead" },
+            new User { Id = 31, Username = "auditor.agent@excell-on.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("employee123"), Email = "auditor.agent@excell-on.com", FullName = "Auditor Agent", Role = "Agent" }
         );
 
         // Seed Employees
+        // 5 Roles × 6 Departments = 30 employees (Employee IDs: 1-30)
+        // PROTECTED: These employee accounts (IDs 1-30) are protected system accounts
+        // They cannot be edited or deleted through the UI/API - see EmployeesController for protection logic
         var baseDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         modelBuilder.Entity<Employee>().HasData(
-            new Employee 
-            { 
-                Id = 1, 
-                EmployeeCode = "EMP001", 
-                FullName = "John Smith", 
-                Email = "john.smith@excell-on.com", 
-                Phone = "+1-555-0101", 
-                Position = "Customer Service Representative",
-                Role = "Agent",
-                ServiceId = 1, 
-                DepartmentId = 3, 
-                UserId = 2, // Link to User account
-                HireDate = baseDate.AddDays(-120), 
-                IsActive = true, 
-                CreatedAt = baseDate.AddDays(-120) 
-            },
-            new Employee 
-            { 
-                Id = 2, 
-                EmployeeCode = "EMP002", 
-                FullName = "Sarah Johnson", 
-                Email = "sarah.johnson@excell-on.com", 
-                Phone = "+1-555-0102", 
-                Position = "Sales Manager",
-                Role = "Manager",
-                ServiceId = 2, 
-                DepartmentId = 3, 
-                UserId = 3, // Link to User account
-                HireDate = baseDate.AddDays(-200), 
-                IsActive = true, 
-                CreatedAt = baseDate.AddDays(-200) 
-            },
-            new Employee 
-            { 
-                Id = 3, 
-                EmployeeCode = "EMP003", 
-                FullName = "Michael Brown", 
-                Email = "michael.brown@excell-on.com", 
-                Phone = "+1-555-0103", 
-                Position = "Telemarketing Specialist",
-                Role = "Agent",
-                ServiceId = 3, 
-                DepartmentId = 3, 
-                UserId = 4, // Link to User account
-                HireDate = baseDate.AddDays(-90), 
-                IsActive = true, 
-                CreatedAt = baseDate.AddDays(-90) 
-            },
-            new Employee 
-            { 
-                Id = 4, 
-                EmployeeCode = "EMP004", 
-                FullName = "Emily Davis", 
-                Email = "emily.davis@excell-on.com", 
-                Phone = "+1-555-0104", 
-                Position = "HR Manager",
-                Role = "Manager",
-                ServiceId = 1, 
-                DepartmentId = 1, 
-                UserId = 5, // Link to User account
-                HireDate = baseDate.AddDays(-300), 
-                IsActive = true, 
-                CreatedAt = baseDate.AddDays(-300) 
-            },
-            new Employee 
-            { 
-                Id = 5, 
-                EmployeeCode = "EMP005", 
-                FullName = "David Wilson", 
-                Email = "david.wilson@excell-on.com", 
-                Phone = "+1-555-0105", 
-                Position = "Administrative Assistant",
-                Role = "Agent",
-                ServiceId = 1, 
-                DepartmentId = 2, 
-                UserId = 6, // Link to User account
-                HireDate = baseDate.AddDays(-60), 
-                IsActive = true, 
-                CreatedAt = baseDate.AddDays(-60) 
-            },
-            new Employee 
-            { 
-                Id = 6, 
-                EmployeeCode = "EMP006", 
-                FullName = "Jessica Martinez", 
-                Email = "jessica.martinez@excell-on.com", 
-                Phone = "+1-555-0106", 
-                Position = "Training Coordinator",
-                Role = "Supervisor",
-                ServiceId = 2, 
-                DepartmentId = 4, 
-                UserId = 7, // Link to User account
-                HireDate = baseDate.AddDays(-150), 
-                IsActive = true, 
-                CreatedAt = baseDate.AddDays(-150) 
-            },
-            new Employee 
-            { 
-                Id = 7, 
-                EmployeeCode = "EMP007", 
-                FullName = "Robert Taylor", 
-                Email = "robert.taylor@excell-on.com", 
-                Phone = "+1-555-0107", 
-                Position = "Security Analyst",
-                Role = "Agent",
-                ServiceId = 1, 
-                DepartmentId = 5, 
-                UserId = 8, // Link to User account
-                HireDate = baseDate.AddDays(-180), 
-                IsActive = true, 
-                CreatedAt = baseDate.AddDays(-180) 
-            },
-            new Employee 
-            { 
-                Id = 8, 
-                EmployeeCode = "EMP008", 
-                FullName = "Lisa Anderson", 
-                Email = "lisa.anderson@excell-on.com", 
-                Phone = "+1-555-0108", 
-                Position = "Auditor",
-                Role = "Agent",
-                ServiceId = 3, 
-                DepartmentId = 6, 
-                UserId = 9, // Link to User account
-                HireDate = baseDate.AddDays(-100), 
-                IsActive = true, 
-                CreatedAt = baseDate.AddDays(-100) 
-            },
-            new Employee 
-            { 
-                Id = 9, 
-                EmployeeCode = "EMP009", 
-                FullName = "James Thomas", 
-                Email = "james.thomas@excell-on.com", 
-                Phone = "+1-555-0109", 
-                Position = "Customer Support Lead",
-                Role = "Team Lead",
-                ServiceId = 1, 
-                DepartmentId = 3, 
-                UserId = 10, // Link to User account
-                HireDate = baseDate.AddDays(-250), 
-                IsActive = true, 
-                CreatedAt = baseDate.AddDays(-250) 
-            },
-            new Employee 
-            { 
-                Id = 10, 
-                EmployeeCode = "EMP010", 
-                FullName = "Amanda White", 
-                Email = "amanda.white@excell-on.com", 
-                Phone = "+1-555-0110", 
-                Position = "Sales Representative",
-                Role = "Agent",
-                ServiceId = 2, 
-                DepartmentId = 3, 
-                UserId = 11, // Link to User account
-                HireDate = baseDate.AddDays(-45), 
-                IsActive = true, 
-                CreatedAt = baseDate.AddDays(-45) 
-            },
-            new Employee 
-            { 
-                Id = 11, 
-                EmployeeCode = "EMP011", 
-                FullName = "Christopher Lee", 
-                Email = "christopher.lee@excell-on.com", 
-                Phone = "+1-555-0111", 
-                Position = "Marketing Specialist",
-                Role = "Agent",
-                ServiceId = 3, 
-                DepartmentId = 3, 
-                UserId = 12, // Link to User account
-                HireDate = baseDate.AddDays(-75), 
-                IsActive = true, 
-                CreatedAt = baseDate.AddDays(-75) 
-            },
-            new Employee 
-            { 
-                Id = 12, 
-                EmployeeCode = "EMP012", 
-                FullName = "Michelle Harris", 
-                Email = "michelle.harris@excell-on.com", 
-                Phone = "+1-555-0112", 
-                Position = "HR Coordinator",
-                Role = "Supervisor",
-                ServiceId = 1, 
-                DepartmentId = 1, 
-                UserId = 13, // Link to User account
-                HireDate = baseDate.AddDays(-30), 
-                IsActive = true, 
-                CreatedAt = baseDate.AddDays(-30) 
-            }
+            // HR Management Department (Employee IDs: 1-5, User IDs: 2-6)
+            new Employee { Id = 1, EmployeeCode = "EMP001", FullName = "HR Admin", Email = "hr.admin@excell-on.com", Phone = "+1-555-2001", Position = "HR Administrator", Role = "Admin", ServiceId = 1, DepartmentId = 1, UserId = 2, HireDate = baseDate.AddDays(-365), IsActive = true, CreatedAt = baseDate.AddDays(-365) },
+            new Employee { Id = 2, EmployeeCode = "EMP002", FullName = "HR Manager", Email = "hr.manager@excell-on.com", Phone = "+1-555-2002", Position = "HR Manager", Role = "Manager", ServiceId = 1, DepartmentId = 1, UserId = 3, HireDate = baseDate.AddDays(-300), IsActive = true, CreatedAt = baseDate.AddDays(-300) },
+            new Employee { Id = 3, EmployeeCode = "EMP003", FullName = "HR Supervisor", Email = "hr.supervisor@excell-on.com", Phone = "+1-555-2003", Position = "HR Supervisor", Role = "Supervisor", ServiceId = 1, DepartmentId = 1, UserId = 4, HireDate = baseDate.AddDays(-240), IsActive = true, CreatedAt = baseDate.AddDays(-240) },
+            new Employee { Id = 4, EmployeeCode = "EMP004", FullName = "HR Team Lead", Email = "hr.teamlead@excell-on.com", Phone = "+1-555-2004", Position = "HR Team Lead", Role = "Team Lead", ServiceId = 1, DepartmentId = 1, UserId = 5, HireDate = baseDate.AddDays(-180), IsActive = true, CreatedAt = baseDate.AddDays(-180) },
+            new Employee { Id = 5, EmployeeCode = "EMP005", FullName = "HR Agent", Email = "hr.agent@excell-on.com", Phone = "+1-555-2005", Position = "HR Agent", Role = "Agent", ServiceId = 1, DepartmentId = 1, UserId = 6, HireDate = baseDate.AddDays(-120), IsActive = true, CreatedAt = baseDate.AddDays(-120) },
+            
+            // Administration Department (Employee IDs: 6-10, User IDs: 7-11)
+            new Employee { Id = 6, EmployeeCode = "EMP006", FullName = "Admin Dept Admin", Email = "admin.dept.admin@excell-on.com", Phone = "+1-555-2006", Position = "Administration Admin", Role = "Admin", ServiceId = 1, DepartmentId = 2, UserId = 7, HireDate = baseDate.AddDays(-365), IsActive = true, CreatedAt = baseDate.AddDays(-365) },
+            new Employee { Id = 7, EmployeeCode = "EMP007", FullName = "Admin Dept Manager", Email = "admin.dept.manager@excell-on.com", Phone = "+1-555-2007", Position = "Administration Manager", Role = "Manager", ServiceId = 1, DepartmentId = 2, UserId = 8, HireDate = baseDate.AddDays(-300), IsActive = true, CreatedAt = baseDate.AddDays(-300) },
+            new Employee { Id = 8, EmployeeCode = "EMP008", FullName = "Admin Dept Supervisor", Email = "admin.dept.supervisor@excell-on.com", Phone = "+1-555-2008", Position = "Administration Supervisor", Role = "Supervisor", ServiceId = 1, DepartmentId = 2, UserId = 9, HireDate = baseDate.AddDays(-240), IsActive = true, CreatedAt = baseDate.AddDays(-240) },
+            new Employee { Id = 9, EmployeeCode = "EMP009", FullName = "Admin Dept Team Lead", Email = "admin.dept.teamlead@excell-on.com", Phone = "+1-555-2009", Position = "Administration Team Lead", Role = "Team Lead", ServiceId = 1, DepartmentId = 2, UserId = 10, HireDate = baseDate.AddDays(-180), IsActive = true, CreatedAt = baseDate.AddDays(-180) },
+            new Employee { Id = 10, EmployeeCode = "EMP010", FullName = "Admin Dept Agent", Email = "admin.dept.agent@excell-on.com", Phone = "+1-555-2010", Position = "Administration Agent", Role = "Agent", ServiceId = 1, DepartmentId = 2, UserId = 11, HireDate = baseDate.AddDays(-120), IsActive = true, CreatedAt = baseDate.AddDays(-120) },
+            
+            // Service Department (Employee IDs: 11-15, User IDs: 12-16)
+            new Employee { Id = 11, EmployeeCode = "EMP011", FullName = "Service Admin", Email = "service.admin@excell-on.com", Phone = "+1-555-2011", Position = "Service Administrator", Role = "Admin", ServiceId = 1, DepartmentId = 3, UserId = 12, HireDate = baseDate.AddDays(-365), IsActive = true, CreatedAt = baseDate.AddDays(-365) },
+            new Employee { Id = 12, EmployeeCode = "EMP012", FullName = "Service Manager", Email = "service.manager@excell-on.com", Phone = "+1-555-2012", Position = "Service Manager", Role = "Manager", ServiceId = 2, DepartmentId = 3, UserId = 13, HireDate = baseDate.AddDays(-300), IsActive = true, CreatedAt = baseDate.AddDays(-300) },
+            new Employee { Id = 13, EmployeeCode = "EMP013", FullName = "Service Supervisor", Email = "service.supervisor@excell-on.com", Phone = "+1-555-2013", Position = "Service Supervisor", Role = "Supervisor", ServiceId = 2, DepartmentId = 3, UserId = 14, HireDate = baseDate.AddDays(-240), IsActive = true, CreatedAt = baseDate.AddDays(-240) },
+            new Employee { Id = 14, EmployeeCode = "EMP014", FullName = "Service Team Lead", Email = "service.teamlead@excell-on.com", Phone = "+1-555-2014", Position = "Service Team Lead", Role = "Team Lead", ServiceId = 2, DepartmentId = 3, UserId = 15, HireDate = baseDate.AddDays(-180), IsActive = true, CreatedAt = baseDate.AddDays(-180) },
+            new Employee { Id = 15, EmployeeCode = "EMP015", FullName = "Service Agent", Email = "service.agent@excell-on.com", Phone = "+1-555-2015", Position = "Service Agent", Role = "Agent", ServiceId = 3, DepartmentId = 3, UserId = 16, HireDate = baseDate.AddDays(-120), IsActive = true, CreatedAt = baseDate.AddDays(-120) },
+            
+            // Training Department (Employee IDs: 16-20, User IDs: 17-21)
+            new Employee { Id = 16, EmployeeCode = "EMP016", FullName = "Training Admin", Email = "training.admin@excell-on.com", Phone = "+1-555-2016", Position = "Training Administrator", Role = "Admin", ServiceId = 1, DepartmentId = 4, UserId = 17, HireDate = baseDate.AddDays(-365), IsActive = true, CreatedAt = baseDate.AddDays(-365) },
+            new Employee { Id = 17, EmployeeCode = "EMP017", FullName = "Training Manager", Email = "training.manager@excell-on.com", Phone = "+1-555-2017", Position = "Training Manager", Role = "Manager", ServiceId = 2, DepartmentId = 4, UserId = 18, HireDate = baseDate.AddDays(-300), IsActive = true, CreatedAt = baseDate.AddDays(-300) },
+            new Employee { Id = 18, EmployeeCode = "EMP018", FullName = "Training Supervisor", Email = "training.supervisor@excell-on.com", Phone = "+1-555-2018", Position = "Training Supervisor", Role = "Supervisor", ServiceId = 2, DepartmentId = 4, UserId = 19, HireDate = baseDate.AddDays(-240), IsActive = true, CreatedAt = baseDate.AddDays(-240) },
+            new Employee { Id = 19, EmployeeCode = "EMP019", FullName = "Training Team Lead", Email = "training.teamlead@excell-on.com", Phone = "+1-555-2019", Position = "Training Team Lead", Role = "Team Lead", ServiceId = 2, DepartmentId = 4, UserId = 20, HireDate = baseDate.AddDays(-180), IsActive = true, CreatedAt = baseDate.AddDays(-180) },
+            new Employee { Id = 20, EmployeeCode = "EMP020", FullName = "Training Agent", Email = "training.agent@excell-on.com", Phone = "+1-555-2020", Position = "Training Agent", Role = "Agent", ServiceId = 3, DepartmentId = 4, UserId = 21, HireDate = baseDate.AddDays(-120), IsActive = true, CreatedAt = baseDate.AddDays(-120) },
+            
+            // Internet Security Department (Employee IDs: 21-25, User IDs: 22-26)
+            new Employee { Id = 21, EmployeeCode = "EMP021", FullName = "Security Admin", Email = "security.admin@excell-on.com", Phone = "+1-555-2021", Position = "IT Security Administrator", Role = "Admin", ServiceId = 1, DepartmentId = 5, UserId = 22, HireDate = baseDate.AddDays(-365), IsActive = true, CreatedAt = baseDate.AddDays(-365) },
+            new Employee { Id = 22, EmployeeCode = "EMP022", FullName = "Security Manager", Email = "security.manager@excell-on.com", Phone = "+1-555-2022", Position = "IT Security Manager", Role = "Manager", ServiceId = 1, DepartmentId = 5, UserId = 23, HireDate = baseDate.AddDays(-300), IsActive = true, CreatedAt = baseDate.AddDays(-300) },
+            new Employee { Id = 23, EmployeeCode = "EMP023", FullName = "Security Supervisor", Email = "security.supervisor@excell-on.com", Phone = "+1-555-2023", Position = "IT Security Supervisor", Role = "Supervisor", ServiceId = 1, DepartmentId = 5, UserId = 24, HireDate = baseDate.AddDays(-240), IsActive = true, CreatedAt = baseDate.AddDays(-240) },
+            new Employee { Id = 24, EmployeeCode = "EMP024", FullName = "Security Team Lead", Email = "security.teamlead@excell-on.com", Phone = "+1-555-2024", Position = "IT Security Team Lead", Role = "Team Lead", ServiceId = 1, DepartmentId = 5, UserId = 25, HireDate = baseDate.AddDays(-180), IsActive = true, CreatedAt = baseDate.AddDays(-180) },
+            new Employee { Id = 25, EmployeeCode = "EMP025", FullName = "Security Agent", Email = "security.agent@excell-on.com", Phone = "+1-555-2025", Position = "IT Security Agent", Role = "Agent", ServiceId = 1, DepartmentId = 5, UserId = 26, HireDate = baseDate.AddDays(-120), IsActive = true, CreatedAt = baseDate.AddDays(-120) },
+            
+            // Auditors Department (Employee IDs: 26-30, User IDs: 27-31)
+            new Employee { Id = 26, EmployeeCode = "EMP026", FullName = "Auditor Admin", Email = "auditor.admin@excell-on.com", Phone = "+1-555-2026", Position = "Audit Administrator", Role = "Admin", ServiceId = 3, DepartmentId = 6, UserId = 27, HireDate = baseDate.AddDays(-365), IsActive = true, CreatedAt = baseDate.AddDays(-365) },
+            new Employee { Id = 27, EmployeeCode = "EMP027", FullName = "Auditor Manager", Email = "auditor.manager@excell-on.com", Phone = "+1-555-2027", Position = "Audit Manager", Role = "Manager", ServiceId = 3, DepartmentId = 6, UserId = 28, HireDate = baseDate.AddDays(-300), IsActive = true, CreatedAt = baseDate.AddDays(-300) },
+            new Employee { Id = 28, EmployeeCode = "EMP028", FullName = "Auditor Supervisor", Email = "auditor.supervisor@excell-on.com", Phone = "+1-555-2028", Position = "Audit Supervisor", Role = "Supervisor", ServiceId = 3, DepartmentId = 6, UserId = 29, HireDate = baseDate.AddDays(-240), IsActive = true, CreatedAt = baseDate.AddDays(-240) },
+            new Employee { Id = 29, EmployeeCode = "EMP029", FullName = "Auditor Team Lead", Email = "auditor.teamlead@excell-on.com", Phone = "+1-555-2029", Position = "Audit Team Lead", Role = "Team Lead", ServiceId = 3, DepartmentId = 6, UserId = 30, HireDate = baseDate.AddDays(-180), IsActive = true, CreatedAt = baseDate.AddDays(-180) },
+            new Employee { Id = 30, EmployeeCode = "EMP030", FullName = "Auditor Agent", Email = "auditor.agent@excell-on.com", Phone = "+1-555-2030", Position = "Audit Agent", Role = "Agent", ServiceId = 3, DepartmentId = 6, UserId = 31, HireDate = baseDate.AddDays(-120), IsActive = true, CreatedAt = baseDate.AddDays(-120) }
         );
 
-        // Seed Clients
-        modelBuilder.Entity<Client>().HasData(
-            new Client { Id = 1, ClientCode = "CLI001", CompanyName = "Tech Solutions Inc.", ContactPerson = "Robert Chen", Email = "robert.chen@techsolutions.com", Phone = "+1-555-1001", Address = "123 Tech Street", City = "San Francisco", Country = "USA", IsActive = true, CreatedAt = baseDate.AddDays(-180) },
-            new Client { Id = 2, ClientCode = "CLI002", CompanyName = "Global Enterprises Ltd.", ContactPerson = "Maria Garcia", Email = "maria.garcia@globalent.com", Phone = "+1-555-1002", Address = "456 Business Ave", City = "New York", Country = "USA", IsActive = true, CreatedAt = baseDate.AddDays(-150) },
-            new Client { Id = 3, ClientCode = "CLI003", CompanyName = "Digital Innovations Corp.", ContactPerson = "James Wilson", Email = "james.wilson@digitalinnov.com", Phone = "+1-555-1003", Address = "789 Innovation Blvd", City = "Seattle", Country = "USA", IsActive = true, CreatedAt = baseDate.AddDays(-120) },
-            new Client { Id = 4, ClientCode = "CLI004", CompanyName = "Premier Services Group", ContactPerson = "Sarah Thompson", Email = "sarah.thompson@premierservices.com", Phone = "+1-555-1004", Address = "321 Service Road", City = "Chicago", Country = "USA", IsActive = true, CreatedAt = baseDate.AddDays(-200) },
-            new Client { Id = 5, ClientCode = "CLI005", CompanyName = "Advanced Systems Co.", ContactPerson = "Michael Rodriguez", Email = "michael.rodriguez@advancedsys.com", Phone = "+1-555-1005", Address = "654 System Drive", City = "Austin", Country = "USA", IsActive = true, CreatedAt = baseDate.AddDays(-90) },
-            new Client { Id = 6, ClientCode = "CLI006", CompanyName = "Elite Business Partners", ContactPerson = "Jennifer Martinez", Email = "jennifer.martinez@elitebiz.com", Phone = "+1-555-1006", Address = "987 Elite Plaza", City = "Los Angeles", Country = "USA", IsActive = true, CreatedAt = baseDate.AddDays(-60) },
-            new Client { Id = 7, ClientCode = "CLI007", CompanyName = "Strategic Solutions LLC", ContactPerson = "David Kim", Email = "david.kim@strategicsol.com", Phone = "+1-555-1007", Address = "147 Strategy Lane", City = "Boston", Country = "USA", IsActive = true, CreatedAt = baseDate.AddDays(-250) },
-            new Client { Id = 8, ClientCode = "CLI008", CompanyName = "Prime Consulting Group", ContactPerson = "Lisa Anderson", Email = "lisa.anderson@primeconsult.com", Phone = "+1-555-1008", Address = "258 Prime Street", City = "Denver", Country = "USA", IsActive = true, CreatedAt = baseDate.AddDays(-100) },
-            new Client { Id = 9, ClientCode = "CLI009", CompanyName = "Modern Tech Solutions", ContactPerson = "Christopher Brown", Email = "christopher.brown@moderntech.com", Phone = "+1-555-1009", Address = "369 Modern Way", City = "Portland", Country = "USA", IsActive = true, CreatedAt = baseDate.AddDays(-75) },
-            new Client { Id = 10, ClientCode = "CLI010", CompanyName = "Excellence Corporation", ContactPerson = "Amanda White", Email = "amanda.white@excellencecorp.com", Phone = "+1-555-1010", Address = "741 Excellence Blvd", City = "Miami", Country = "USA", IsActive = true, CreatedAt = baseDate.AddDays(-45) },
-            new Client { Id = 11, ClientCode = "CLI011", CompanyName = "Innovation Hub Inc.", ContactPerson = "Daniel Lee", Email = "daniel.lee@innovationhub.com", Phone = "+1-555-1011", Address = "852 Innovation Center", City = "San Diego", Country = "USA", IsActive = true, CreatedAt = baseDate.AddDays(-30) },
-            new Client { Id = 12, ClientCode = "CLI012", CompanyName = "Professional Services Co.", ContactPerson = "Nicole Taylor", Email = "nicole.taylor@profservices.com", Phone = "+1-555-1012", Address = "963 Professional Park", City = "Phoenix", Country = "USA", IsActive = true, CreatedAt = baseDate.AddDays(-20) }
-        );
-
-        // Seed ClientServices
-        modelBuilder.Entity<ClientService>().HasData(
-            new ClientService { Id = 1, ClientId = 1, ServiceId = 1, EmployeeId = 1, NumberOfEmployees = 3, StartDate = baseDate.AddDays(-150), EndDate = null, IsActive = true, CreatedAt = baseDate.AddDays(-150) },
-            new ClientService { Id = 2, ClientId = 2, ServiceId = 2, EmployeeId = 2, NumberOfEmployees = 5, StartDate = baseDate.AddDays(-120), EndDate = null, IsActive = true, CreatedAt = baseDate.AddDays(-120) },
-            new ClientService { Id = 3, ClientId = 3, ServiceId = 3, EmployeeId = 3, NumberOfEmployees = 2, StartDate = baseDate.AddDays(-100), EndDate = baseDate.AddDays(-10), IsActive = false, CreatedAt = baseDate.AddDays(-100) },
-            new ClientService { Id = 4, ClientId = 4, ServiceId = 1, EmployeeId = 4, NumberOfEmployees = 4, StartDate = baseDate.AddDays(-180), EndDate = null, IsActive = true, CreatedAt = baseDate.AddDays(-180) },
-            new ClientService { Id = 5, ClientId = 5, ServiceId = 2, EmployeeId = 5, NumberOfEmployees = 6, StartDate = baseDate.AddDays(-80), EndDate = null, IsActive = true, CreatedAt = baseDate.AddDays(-80) },
-            new ClientService { Id = 6, ClientId = 6, ServiceId = 3, EmployeeId = 6, NumberOfEmployees = 3, StartDate = baseDate.AddDays(-60), EndDate = null, IsActive = true, CreatedAt = baseDate.AddDays(-60) },
-            new ClientService { Id = 7, ClientId = 7, ServiceId = 1, EmployeeId = 7, NumberOfEmployees = 2, StartDate = baseDate.AddDays(-200), EndDate = null, IsActive = true, CreatedAt = baseDate.AddDays(-200) },
-            new ClientService { Id = 8, ClientId = 8, ServiceId = 2, EmployeeId = 8, NumberOfEmployees = 4, StartDate = baseDate.AddDays(-90), EndDate = baseDate.AddDays(-5), IsActive = false, CreatedAt = baseDate.AddDays(-90) },
-            new ClientService { Id = 9, ClientId = 9, ServiceId = 3, EmployeeId = 9, NumberOfEmployees = 5, StartDate = baseDate.AddDays(-70), EndDate = null, IsActive = true, CreatedAt = baseDate.AddDays(-70) },
-            new ClientService { Id = 10, ClientId = 10, ServiceId = 1, EmployeeId = 10, NumberOfEmployees = 3, StartDate = baseDate.AddDays(-40), EndDate = null, IsActive = true, CreatedAt = baseDate.AddDays(-40) },
-            new ClientService { Id = 11, ClientId = 11, ServiceId = 2, EmployeeId = 11, NumberOfEmployees = 4, StartDate = baseDate.AddDays(-30), EndDate = null, IsActive = true, CreatedAt = baseDate.AddDays(-30) },
-            new ClientService { Id = 12, ClientId = 12, ServiceId = 3, EmployeeId = 12, NumberOfEmployees = 2, StartDate = baseDate.AddDays(-20), EndDate = null, IsActive = true, CreatedAt = baseDate.AddDays(-20) },
-            new ClientService { Id = 13, ClientId = 1, ServiceId = 2, EmployeeId = 2, NumberOfEmployees = 3, StartDate = baseDate.AddDays(-50), EndDate = null, IsActive = true, CreatedAt = baseDate.AddDays(-50) },
-            new ClientService { Id = 14, ClientId = 2, ServiceId = 1, EmployeeId = 1, NumberOfEmployees = 4, StartDate = baseDate.AddDays(-110), EndDate = null, IsActive = true, CreatedAt = baseDate.AddDays(-110) },
-            new ClientService { Id = 15, ClientId = 3, ServiceId = 1, EmployeeId = 4, NumberOfEmployees = 2, StartDate = baseDate.AddDays(-85), EndDate = null, IsActive = true, CreatedAt = baseDate.AddDays(-85) }
-        );
     }
 }
 

@@ -21,19 +21,41 @@ public class AuthService : IAuthService
 
     public async Task<LoginResponse?> LoginAsync(LoginRequest request)
     {
-        // Try to find user by username first
-        var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Username == request.Username);
+        if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
+        {
+            return null;
+        }
 
-        // If not found by username, try to find by email
+        // Normalize the input for case-insensitive comparison
+        var normalizedUsername = request.Username.Trim().ToLowerInvariant();
+
+        // Try to find user by username first (case-insensitive)
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Username.ToLower() == normalizedUsername);
+
+        // If not found by username, try to find by email (case-insensitive)
         if (user == null)
         {
             user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == request.Username);
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == normalizedUsername);
         }
 
-        if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        if (user == null)
         {
+            return null;
+        }
+
+        // Verify password
+        try
+        {
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+            {
+                return null;
+            }
+        }
+        catch
+        {
+            // If password verification fails (e.g., invalid hash format), return null
             return null;
         }
 

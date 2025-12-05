@@ -68,6 +68,12 @@ public class EmployeesController : ControllerBase
     {
         if (id != employee.Id) return BadRequest();
         
+        // Protect real employee accounts (IDs 1-30) - these are seeded accounts
+        if (id >= 1 && id <= 30)
+        {
+            return BadRequest(new { message = "Cannot modify protected employee accounts. These are system accounts." });
+        }
+        
         _context.Entry(employee).State = EntityState.Modified;
         try
         {
@@ -86,6 +92,12 @@ public class EmployeesController : ControllerBase
     {
         var employee = await _context.Employees.FindAsync(id);
         if (employee == null) return NotFound();
+        
+        // Protect real employee accounts (IDs 1-30) - these are seeded accounts
+        if (id >= 1 && id <= 30)
+        {
+            return BadRequest(new { message = "Cannot delete protected employee accounts. These are system accounts." });
+        }
         
         _context.Employees.Remove(employee);
         await _context.SaveChangesAsync();

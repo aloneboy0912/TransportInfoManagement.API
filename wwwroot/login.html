@@ -16,91 +16,201 @@
         }
 
         :root {
-            --primary-color: #3b82f6;
+            --primary: #3b82f6;
             --primary-dark: #2563eb;
             --primary-light: #60a5fa;
-            --success-color: #10b981;
-            --danger-color: #ef4444;
-            --warning-color: #f59e0b;
-            --bg-color: #f8fafc;
-            --bg-secondary: #ffffff;
-            --text-color: #0f172a;
-            --text-secondary: #64748b;
-            --border-color: #e2e8f0;
-            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --purple: #8b5cf6;
+            --green: #10b981;
+            --bg: #f8fafc;
+            --bg-card: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --radius: 0.75rem;
+            --radius-sm: 0.5rem;
+            --radius-lg: 1.25rem;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1rem;
+            padding: 1.5rem;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
         }
 
         .login-container {
             width: 100%;
-            max-width: 440px;
-            animation: fadeInUp 0.6s ease-out;
+            max-width: 1400px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
         }
 
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(40px) scale(0.95);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
         .login-card {
-            background: var(--bg-secondary);
-            border-radius: 1.5rem;
-            box-shadow: var(--shadow-xl);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl), 0 0 0 1px rgba(255, 255, 255, 0.5);
             overflow: hidden;
+            height: fit-content;
+        }
+
+        .employee-accounts-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl), 0 0 0 1px rgba(255, 255, 255, 0.5);
+            overflow: hidden;
+            max-height: calc(100vh - 3rem);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .employee-accounts-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 1.5rem 2rem;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .employee-accounts-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .employee-accounts-header p {
+            font-size: 0.875rem;
+            opacity: 0.95;
+        }
+
+        .employee-accounts-content {
+            padding: 1.5rem 2rem;
+            overflow-y: auto;
+            flex: 1;
         }
 
         .login-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             padding: 2.5rem 2rem;
             text-align: center;
             color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: pulse 6s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.4; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.6; }
         }
 
         .login-header .logo {
-            width: 64px;
-            height: 64px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 1rem;
+            width: 68px;
+            height: 68px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 1.75rem;
+            margin: 0 auto 1.25rem;
+            font-size: 1.875rem;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .login-header .logo:hover {
+            transform: scale(1.08) rotate(5deg);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
         }
 
         .login-header h1 {
             font-size: 1.75rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.375rem;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -0.025em;
         }
 
         .login-header p {
-            font-size: 0.95rem;
-            opacity: 0.9;
+            font-size: 0.9375rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            font-weight: 400;
         }
 
         .login-body {
-            padding: 2rem;
+            padding: 2.25rem 2rem;
         }
 
         .form-group {
@@ -110,9 +220,10 @@
         .form-label {
             display: block;
             font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--text-color);
-            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.625rem;
+            letter-spacing: -0.01em;
         }
 
         .input-wrapper {
@@ -124,75 +235,114 @@
             left: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-secondary);
+            color: var(--text-muted);
             font-size: 1rem;
+            z-index: 1;
+            transition: color 0.2s;
+        }
+
+        .form-input:focus ~ .input-icon {
+            color: var(--primary);
         }
 
         .form-input {
             width: 100%;
-            padding: 0.875rem 1rem 0.875rem 3rem;
-            font-size: 1rem;
-            border: 2px solid var(--border-color);
-            border-radius: 0.75rem;
-            transition: all 0.2s;
-            background: var(--bg-color);
-            color: var(--text-color);
+            padding: 0.875rem 1rem 0.875rem 2.875rem;
+            font-size: 0.9375rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg);
+            color: var(--text);
             font-family: inherit;
+            font-weight: 400;
         }
 
         .form-input:focus {
             outline: none;
-            border-color: var(--primary-color);
+            border-color: var(--primary);
             background: white;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            transform: translateY(-1px);
         }
 
         .form-input::placeholder {
-            color: var(--text-secondary);
+            color: var(--text-muted);
+            font-weight: 400;
         }
 
         .password-toggle {
             position: absolute;
-            right: 1rem;
+            right: 0.875rem;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
-            color: var(--text-secondary);
+            color: var(--text-muted);
             cursor: pointer;
             font-size: 1rem;
-            padding: 0.25rem;
-            transition: color 0.2s;
+            padding: 0.5rem;
+            transition: all 0.2s;
+            z-index: 1;
+            border-radius: var(--radius-sm);
+            width: 2.25rem;
+            height: 2.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .password-toggle:hover {
-            color: var(--text-color);
+            color: var(--text);
+            background: var(--bg);
         }
 
         .btn {
             width: 100%;
-            padding: 0.875rem 1.5rem;
+            padding: 0.9375rem 1.5rem;
             font-size: 1rem;
             font-weight: 600;
             border: none;
-            border-radius: 0.75rem;
+            border-radius: var(--radius);
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.625rem;
             font-family: inherit;
+            letter-spacing: -0.01em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             box-shadow: var(--shadow-md);
+            position: relative;
         }
 
         .btn-primary:hover:not(:disabled) {
-            transform: translateY(-1px);
+            transform: translateY(-2px);
             box-shadow: var(--shadow-lg);
         }
 
@@ -206,114 +356,90 @@
         }
 
         .error-message {
-            background: #fee2e2;
-            color: var(--danger-color);
-            padding: 0.875rem 1rem;
-            border-radius: 0.75rem;
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: var(--danger);
+            padding: 1rem 1.125rem;
+            border-radius: var(--radius);
             font-size: 0.875rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             display: none;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            animation: slideDown 0.3s ease-out;
         }
 
         .error-message.show {
             display: flex;
-            animation: shake 0.5s;
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .quick-login {
             margin-top: 2rem;
             padding-top: 2rem;
-            border-top: 1px solid var(--border-color);
+            border-top: 2px solid var(--border);
         }
 
         .quick-login-title {
-            font-size: 0.875rem;
+            font-size: 0.8125rem;
             font-weight: 600;
-            color: var(--text-secondary);
+            color: var(--text-muted);
             margin-bottom: 1rem;
             text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .quick-login-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
+            display: flex;
+            gap: 0.875rem;
         }
 
         .quick-btn {
-            padding: 0.75rem 1rem;
-            background: var(--bg-color);
-            border: 2px solid var(--border-color);
-            border-radius: 0.75rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--text-color);
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-            font-family: inherit;
-        }
-
-        .quick-btn:hover {
-            border-color: var(--primary-color);
-            background: white;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .employee-accounts {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .employee-accounts-toggle {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: var(--bg-color);
-            border: 2px solid var(--border-color);
-            border-radius: 0.75rem;
+            flex: 1;
+            padding: 0.875rem 1rem;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
             font-size: 0.875rem;
             font-weight: 600;
-            color: var(--text-color);
+            color: var(--text);
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            font-family: inherit;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            font-family: inherit;
         }
 
-        .employee-accounts-toggle:hover {
-            border-color: var(--primary-color);
+        .quick-btn:hover {
+            border-color: var(--primary);
             background: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
         }
 
         .employee-accounts-list {
-            margin-top: 1rem;
-            display: none;
-            flex-direction: column;
-            gap: 0.5rem;
-            max-height: 400px;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-        }
-
-        .employee-accounts-list.show {
             display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding-right: 0.5rem;
         }
 
         .employee-accounts-list::-webkit-scrollbar {
@@ -321,108 +447,35 @@
         }
 
         .employee-accounts-list::-webkit-scrollbar-track {
-            background: var(--bg-color);
+            background: var(--bg);
             border-radius: 3px;
         }
 
         .employee-accounts-list::-webkit-scrollbar-thumb {
-            background: var(--border-color);
+            background: var(--border);
             border-radius: 3px;
         }
 
         .employee-accounts-list::-webkit-scrollbar-thumb:hover {
-            background: var(--text-secondary);
-        }
-
-        .employee-item {
-            padding: 0.75rem 1rem;
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.2s;
-        }
-
-        .employee-item:hover {
-            border-color: var(--primary-color);
-            background: white;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .employee-info {
-            flex: 1;
-        }
-
-        .employee-name {
-            font-weight: 600;
-            color: var(--text-color);
-            font-size: 0.875rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .employee-email {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
-        .employee-role {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-top: 0.25rem;
-        }
-
-        .role-admin {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-        }
-
-        .role-supervisor {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-            color: white;
-        }
-
-        .role-team-lead {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-        }
-
-        .role-agent {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-        }
-
-        .role-user {
-            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
-            color: white;
-        }
-
-        .employee-access {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            margin-top: 0.25rem;
-            font-style: italic;
+            background: var(--text-muted);
         }
 
         .department-header {
-            padding: 0.75rem 1rem;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            padding: 0.875rem 1.125rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             font-weight: 700;
             font-size: 0.875rem;
-            border-radius: 0.75rem;
-            margin: 1rem 0 0.75rem 0;
+            border-radius: var(--radius);
+            margin: 1.25rem 0 0.875rem 0;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.625rem;
             position: sticky;
             top: 0;
             z-index: 10;
             box-shadow: var(--shadow-sm);
+            letter-spacing: -0.01em;
         }
 
         .department-header:first-of-type {
@@ -433,51 +486,137 @@
             font-size: 1rem;
         }
 
-        .employee-login-btn {
-            padding: 0.5rem 1rem;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
+        .employee-item {
+            padding: 1rem 1.125rem;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .employee-login-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
+        .employee-item:hover {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .employee-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .employee-name {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9375rem;
+            margin-bottom: 0.375rem;
+            letter-spacing: -0.01em;
+        }
+
+        .employee-email {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+        }
+
+        .employee-role {
+            display: inline-block;
+            padding: 0.3125rem 0.625rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.6875rem;
+            font-weight: 700;
+            margin-top: 0.375rem;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        .role-admin {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .role-supervisor {
+            background: linear-gradient(135deg, var(--purple) 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .role-team-lead {
+            background: linear-gradient(135deg, var(--green) 0%, #059669 100%);
+            color: white;
+        }
+
+        .role-agent {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .employee-access {
+            font-size: 0.6875rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        .employee-login-btn {
+            padding: 0.625rem 1.25rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.8125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+            white-space: nowrap;
             box-shadow: var(--shadow-sm);
         }
 
+        .employee-login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
         .role-info {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background: var(--bg-color);
-            border-radius: 0.75rem;
-            border: 1px solid var(--border-color);
+            margin-top: 1.75rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, var(--bg) 0%, white 100%);
+            border-radius: var(--radius);
+            border: 2px solid var(--border);
         }
 
         .role-info-title {
             font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-color);
-            margin-bottom: 0.75rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.625rem;
+            letter-spacing: -0.01em;
         }
 
         .role-info-item {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.625rem;
             font-size: 0.75rem;
-            color: var(--text-secondary);
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .role-info-item:last-child {
+            margin-bottom: 0;
         }
 
         .role-info-item strong {
-            color: var(--text-color);
+            color: var(--text);
+            font-weight: 600;
         }
 
         .loading-spinner {
@@ -500,38 +639,65 @@
 
         .footer-text {
             text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
+            margin-top: 2rem;
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .login-container {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+            }
+
+            .employee-accounts-card {
+                max-height: 600px;
+            }
         }
 
         @media (max-width: 480px) {
+            .login-container {
+                max-width: 100%;
+            }
+
             .login-header {
-                padding: 2rem 1.5rem;
+                padding: 2rem 1.5rem 1.75rem;
             }
 
             .login-body {
-                padding: 1.5rem;
+                padding: 2rem 1.5rem;
             }
 
-            .quick-login-buttons {
-                grid-template-columns: 1fr;
+            .employee-accounts-header {
+                padding: 1.25rem 1.5rem;
+            }
+
+            .employee-accounts-content {
+                padding: 1.25rem 1.5rem;
             }
 
             .employee-item {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 0.75rem;
             }
 
             .employee-login-btn {
                 width: 100%;
             }
+
+            .employee-accounts-card {
+                max-height: 500px;
+            }
         }
     </style>
 </head>
 <body>
-        <div class="login-container">
+    <div class="login-container">
+        <!-- Login Form Card -->
         <div class="login-card">
             <div class="login-header">
                 <div class="logo">
@@ -539,7 +705,7 @@
                 </div>
                 <h1>Excell-On Services</h1>
                 <p>Transport Information Management System</p>
-                    </div>
+            </div>
 
             <div class="login-body">
                 <div id="errorMessage" class="error-message">
@@ -551,7 +717,6 @@
                     <div class="form-group">
                         <label class="form-label" for="username">Username or Email</label>
                         <div class="input-wrapper">
-                            <i class="fas fa-user input-icon"></i>
                             <input 
                                 type="text" 
                                 id="username" 
@@ -561,13 +726,13 @@
                                 required
                                 autocomplete="username"
                             >
+                            <i class="fas fa-user input-icon"></i>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="password">Password</label>
                         <div class="input-wrapper">
-                            <i class="fas fa-lock input-icon"></i>
                             <input 
                                 type="password" 
                                 id="password" 
@@ -577,6 +742,7 @@
                                 required
                                 autocomplete="current-password"
                             >
+                            <i class="fas fa-lock input-icon"></i>
                             <button type="button" class="password-toggle" id="passwordToggle">
                                 <i class="fas fa-eye"></i>
                             </button>
@@ -589,228 +755,417 @@
                     </button>
                 </form>
 
-                <div class="quick-login">
-                    <div class="quick-login-title">
-                        <i class="fas fa-bolt" style="color: var(--warning-color);"></i>
-                        Quick Login
-                    </div>
-                    <div class="quick-login-buttons">
-                        <button class="quick-btn" onclick="fillLogin('admin', 'admin123')">
-                            <i class="fas fa-user-shield"></i> Admin
-                        </button>
-                        <button class="quick-btn" onclick="fillLogin('sarah.johnson@excell-on.com', 'employee123')">
-                            <i class="fas fa-user-tie"></i> Manager
-                        </button>
-                    </div>
+                <div class="footer-text">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure Login</span>
                 </div>
+            </div>
+        </div>
 
-                <div class="employee-accounts">
-                    <button class="employee-accounts-toggle" id="employeeAccountsToggle" onclick="toggleEmployeeAccounts()">
-                        <i class="fas fa-users"></i>
-                        <span id="toggleText">Show Employee Accounts</span>
-                        <i class="fas fa-chevron-down" id="toggleIcon"></i>
-                    </button>
-                    <div class="employee-accounts-list" id="employeeAccountsList">
-                        <!-- HR Management Department -->
+        <!-- Employee Accounts Card -->
+        <div class="employee-accounts-card">
+            <div class="employee-accounts-header">
+                <h2>
+                    <i class="fas fa-users"></i>
+                    Employee Accounts
+                </h2>
+                <p>Select an account to quick login</p>
+            </div>
+            <div class="employee-accounts-content">
+                <div class="employee-accounts-list" id="employeeAccountsList">
+                        <!-- HR Management Department - 5 Roles -->
                         <div class="department-header">
                             <i class="fas fa-users-cog"></i>
                             <span>HR Management Department</span>
                         </div>
                         <div class="employee-item">
                             <div class="employee-info">
-                                <div class="employee-name">Emily Davis</div>
-                                <div class="employee-email">emily.davis@excell-on.com</div>
+                                <div class="employee-name">HR Admin</div>
+                                <div class="employee-email">hr.admin@excell-on.com</div>
                                 <span class="employee-role role-admin">Admin</span>
                                 <div class="employee-access">Department: HR Management | Access: All Pages</div>
                             </div>
-                            <button class="employee-login-btn" onclick="fillLogin('emily.davis@excell-on.com', 'employee123')">
+                            <button class="employee-login-btn" onclick="fillLogin('hr.admin@excell-on.com', 'employee123')">
                                 Login
                             </button>
                         </div>
                         <div class="employee-item">
                             <div class="employee-info">
-                                <div class="employee-name">Michelle Harris</div>
-                                <div class="employee-email">michelle.harris@excell-on.com</div>
-                                <span class="employee-role role-supervisor">Supervisor</span>
-                                <div class="employee-access">Department: HR Management | Access: Dashboard, Departments, Employees, Clients, Client Services, Services, Contacts, Reports, Analytics</div>
+                                <div class="employee-name">HR Manager</div>
+                                <div class="employee-email">hr.manager@excell-on.com</div>
+                                <span class="employee-role role-admin">Admin</span>
+                                <div class="employee-access">Department: HR Management | Access: All Pages</div>
                             </div>
-                            <button class="employee-login-btn" onclick="fillLogin('michelle.harris@excell-on.com', 'employee123')">
+                            <button class="employee-login-btn" onclick="fillLogin('hr.manager@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">HR Supervisor</div>
+                                <div class="employee-email">hr.supervisor@excell-on.com</div>
+                                <span class="employee-role role-supervisor">Supervisor</span>
+                                <div class="employee-access">Department: HR Management | Access: Dashboard, Departments, Employees, Clients, Client Services, Services, Products, Payments, Reports, Analytics</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('hr.supervisor@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">HR Team Lead</div>
+                                <div class="employee-email">hr.teamlead@excell-on.com</div>
+                                <span class="employee-role role-team-lead">Team Lead</span>
+                                <div class="employee-access">Department: HR Management | Access: Dashboard, Departments, Employees, Clients, Client Services, Services, Products, Reports, Analytics</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('hr.teamlead@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">HR Agent</div>
+                                <div class="employee-email">hr.agent@excell-on.com</div>
+                                <span class="employee-role role-agent">Agent</span>
+                                <div class="employee-access">Department: HR Management | Access: Dashboard, Departments, Employees, Clients, Client Services, Services, Products, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('hr.agent@excell-on.com', 'employee123')">
                                 Login
                             </button>
                         </div>
                         
-                        <!-- Administration Department -->
+                        <!-- Administration Department - 5 Roles -->
                         <div class="department-header">
                             <i class="fas fa-building"></i>
                             <span>Administration Department</span>
                         </div>
                         <div class="employee-item">
                             <div class="employee-info">
-                                <div class="employee-name">David Wilson</div>
-                                <div class="employee-email">david.wilson@excell-on.com</div>
-                                <span class="employee-role role-agent">Agent</span>
-                                <div class="employee-access">Department: Administration | Access: Dashboard, Clients, Client Services, Products, Contacts, Reports</div>
+                                <div class="employee-name">Admin Dept Admin</div>
+                                <div class="employee-email">admin.dept.admin@excell-on.com</div>
+                                <span class="employee-role role-admin">Admin</span>
+                                <div class="employee-access">Department: Administration | Access: All Pages</div>
                             </div>
-                            <button class="employee-login-btn" onclick="fillLogin('david.wilson@excell-on.com', 'employee123')">
+                            <button class="employee-login-btn" onclick="fillLogin('admin.dept.admin@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Admin Dept Manager</div>
+                                <div class="employee-email">admin.dept.manager@excell-on.com</div>
+                                <span class="employee-role role-admin">Admin</span>
+                                <div class="employee-access">Department: Administration | Access: All Pages</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('admin.dept.manager@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Admin Dept Supervisor</div>
+                                <div class="employee-email">admin.dept.supervisor@excell-on.com</div>
+                                <span class="employee-role role-supervisor">Supervisor</span>
+                                <div class="employee-access">Department: Administration | Access: Dashboard, Departments, Employees, Clients, Client Services, Products, Payments, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('admin.dept.supervisor@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Admin Dept Team Lead</div>
+                                <div class="employee-email">admin.dept.teamlead@excell-on.com</div>
+                                <span class="employee-role role-team-lead">Team Lead</span>
+                                <div class="employee-access">Department: Administration | Access: Dashboard, Departments, Employees, Clients, Client Services, Products, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('admin.dept.teamlead@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Admin Dept Agent</div>
+                                <div class="employee-email">admin.dept.agent@excell-on.com</div>
+                                <span class="employee-role role-agent">Agent</span>
+                                <div class="employee-access">Department: Administration | Access: Dashboard, Clients, Client Services, Products, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('admin.dept.agent@excell-on.com', 'employee123')">
                                 Login
                             </button>
                         </div>
                         
-                        <!-- Service Department -->
+                        <!-- Service Department - 5 Roles -->
                         <div class="department-header">
                             <i class="fas fa-headset"></i>
                             <span>Service Department</span>
                         </div>
                         <div class="employee-item">
                             <div class="employee-info">
-                                <div class="employee-name">John Smith</div>
-                                <div class="employee-email">john.smith@excell-on.com</div>
-                                <span class="employee-role role-agent">Agent</span>
-                                <div class="employee-access">Department: Service | Access: Dashboard, Services, Clients, Client Services, Products, Contacts, Reports</div>
-                            </div>
-                            <button class="employee-login-btn" onclick="fillLogin('john.smith@excell-on.com', 'employee123')">
-                                Login
-                            </button>
-                        </div>
-                        <div class="employee-item">
-                            <div class="employee-info">
-                                <div class="employee-name">Sarah Johnson</div>
-                                <div class="employee-email">sarah.johnson@excell-on.com</div>
+                                <div class="employee-name">Service Admin</div>
+                                <div class="employee-email">service.admin@excell-on.com</div>
                                 <span class="employee-role role-admin">Admin</span>
                                 <div class="employee-access">Department: Service | Access: All Pages</div>
                             </div>
-                            <button class="employee-login-btn" onclick="fillLogin('sarah.johnson@excell-on.com', 'employee123')">
+                            <button class="employee-login-btn" onclick="fillLogin('service.admin@excell-on.com', 'employee123')">
                                 Login
                             </button>
                         </div>
                         <div class="employee-item">
                             <div class="employee-info">
-                                <div class="employee-name">Michael Brown</div>
-                                <div class="employee-email">michael.brown@excell-on.com</div>
-                                <span class="employee-role role-agent">Agent</span>
-                                <div class="employee-access">Department: Service | Access: Dashboard, Services, Clients, Client Services, Products, Contacts, Reports</div>
+                                <div class="employee-name">Service Manager</div>
+                                <div class="employee-email">service.manager@excell-on.com</div>
+                                <span class="employee-role role-admin">Admin</span>
+                                <div class="employee-access">Department: Service | Access: All Pages</div>
                             </div>
-                            <button class="employee-login-btn" onclick="fillLogin('michael.brown@excell-on.com', 'employee123')">
+                            <button class="employee-login-btn" onclick="fillLogin('service.manager@excell-on.com', 'employee123')">
                                 Login
                             </button>
                         </div>
                         <div class="employee-item">
                             <div class="employee-info">
-                                <div class="employee-name">Amanda White</div>
-                                <div class="employee-email">amanda.white@excell-on.com</div>
-                                <span class="employee-role role-agent">Agent</span>
-                                <div class="employee-access">Department: Service | Access: Dashboard, Services, Clients, Client Services, Products, Contacts, Reports</div>
+                                <div class="employee-name">Service Supervisor</div>
+                                <div class="employee-email">service.supervisor@excell-on.com</div>
+                                <span class="employee-role role-supervisor">Supervisor</span>
+                                <div class="employee-access">Department: Service | Access: Dashboard, Services, Clients, Client Services, Products, Reports</div>
                             </div>
-                            <button class="employee-login-btn" onclick="fillLogin('amanda.white@excell-on.com', 'employee123')">
+                            <button class="employee-login-btn" onclick="fillLogin('service.supervisor@excell-on.com', 'employee123')">
                                 Login
                             </button>
                         </div>
                         <div class="employee-item">
                             <div class="employee-info">
-                                <div class="employee-name">James Thomas</div>
-                                <div class="employee-email">james.thomas@excell-on.com</div>
+                                <div class="employee-name">Service Team Lead</div>
+                                <div class="employee-email">service.teamlead@excell-on.com</div>
                                 <span class="employee-role role-team-lead">Team Lead</span>
-                                <div class="employee-access">Department: Service | Access: Dashboard, Services, Clients, Client Services, Products, Contacts, Reports, Analytics</div>
+                                <div class="employee-access">Department: Service | Access: Dashboard, Services, Clients, Client Services, Products, Reports</div>
                             </div>
-                            <button class="employee-login-btn" onclick="fillLogin('james.thomas@excell-on.com', 'employee123')">
+                            <button class="employee-login-btn" onclick="fillLogin('service.teamlead@excell-on.com', 'employee123')">
                                 Login
                             </button>
                         </div>
                         <div class="employee-item">
                             <div class="employee-info">
-                                <div class="employee-name">Christopher Lee</div>
-                                <div class="employee-email">christopher.lee@excell-on.com</div>
+                                <div class="employee-name">Service Agent</div>
+                                <div class="employee-email">service.agent@excell-on.com</div>
                                 <span class="employee-role role-agent">Agent</span>
-                                <div class="employee-access">Department: Service | Access: Dashboard, Services, Clients, Client Services, Products, Contacts, Reports</div>
+                                <div class="employee-access">Department: Service | Access: Dashboard, Services, Clients, Client Services, Products, Reports</div>
                             </div>
-                            <button class="employee-login-btn" onclick="fillLogin('christopher.lee@excell-on.com', 'employee123')">
+                            <button class="employee-login-btn" onclick="fillLogin('service.agent@excell-on.com', 'employee123')">
                                 Login
                             </button>
                         </div>
                         
-                        <!-- Training Department -->
+                        <!-- Training Department - 5 Roles -->
                         <div class="department-header">
                             <i class="fas fa-chalkboard-teacher"></i>
                             <span>Training Department</span>
                         </div>
                         <div class="employee-item">
                             <div class="employee-info">
-                                <div class="employee-name">Jessica Martinez</div>
-                                <div class="employee-email">jessica.martinez@excell-on.com</div>
-                                <span class="employee-role role-supervisor">Supervisor</span>
-                                <div class="employee-access">Department: Training | Access: Dashboard, Departments, Employees, Contacts, Reports, Analytics</div>
+                                <div class="employee-name">Training Admin</div>
+                                <div class="employee-email">training.admin@excell-on.com</div>
+                                <span class="employee-role role-admin">Admin</span>
+                                <div class="employee-access">Department: Training | Access: All Pages</div>
                             </div>
-                            <button class="employee-login-btn" onclick="fillLogin('jessica.martinez@excell-on.com', 'employee123')">
+                            <button class="employee-login-btn" onclick="fillLogin('training.admin@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Training Manager</div>
+                                <div class="employee-email">training.manager@excell-on.com</div>
+                                <span class="employee-role role-admin">Admin</span>
+                                <div class="employee-access">Department: Training | Access: All Pages</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('training.manager@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Training Supervisor</div>
+                                <div class="employee-email">training.supervisor@excell-on.com</div>
+                                <span class="employee-role role-supervisor">Supervisor</span>
+                                <div class="employee-access">Department: Training | Access: Dashboard, Departments, Employees, Reports, Analytics</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('training.supervisor@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Training Team Lead</div>
+                                <div class="employee-email">training.teamlead@excell-on.com</div>
+                                <span class="employee-role role-team-lead">Team Lead</span>
+                                <div class="employee-access">Department: Training | Access: Dashboard, Departments, Employees, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('training.teamlead@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Training Agent</div>
+                                <div class="employee-email">training.agent@excell-on.com</div>
+                                <span class="employee-role role-agent">Agent</span>
+                                <div class="employee-access">Department: Training | Access: Dashboard, Departments, Employees, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('training.agent@excell-on.com', 'employee123')">
                                 Login
                             </button>
                         </div>
                         
-                        <!-- Internet Security Department -->
+                        <!-- Internet Security Department - 5 Roles -->
                         <div class="department-header">
                             <i class="fas fa-shield-alt"></i>
                             <span>Internet Security Department</span>
                         </div>
                         <div class="employee-item">
                             <div class="employee-info">
-                                <div class="employee-name">Robert Taylor</div>
-                                <div class="employee-email">robert.taylor@excell-on.com</div>
-                                <span class="employee-role role-agent">Agent</span>
-                                <div class="employee-access">Department: Internet Security | Access: Dashboard, Departments, Employees, Contacts, Reports</div>
+                                <div class="employee-name">Security Admin</div>
+                                <div class="employee-email">security.admin@excell-on.com</div>
+                                <span class="employee-role role-admin">Admin</span>
+                                <div class="employee-access">Department: Internet Security | Access: All Pages</div>
                             </div>
-                            <button class="employee-login-btn" onclick="fillLogin('robert.taylor@excell-on.com', 'employee123')">
+                            <button class="employee-login-btn" onclick="fillLogin('security.admin@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Security Manager</div>
+                                <div class="employee-email">security.manager@excell-on.com</div>
+                                <span class="employee-role role-admin">Admin</span>
+                                <div class="employee-access">Department: Internet Security | Access: All Pages</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('security.manager@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Security Supervisor</div>
+                                <div class="employee-email">security.supervisor@excell-on.com</div>
+                                <span class="employee-role role-supervisor">Supervisor</span>
+                                <div class="employee-access">Department: Internet Security | Access: Dashboard, Departments, Employees, Reports, Analytics</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('security.supervisor@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Security Team Lead</div>
+                                <div class="employee-email">security.teamlead@excell-on.com</div>
+                                <span class="employee-role role-team-lead">Team Lead</span>
+                                <div class="employee-access">Department: Internet Security | Access: Dashboard, Departments, Employees, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('security.teamlead@excell-on.com', 'employee123')">
+                                Login
+                            </button>
+                        </div>
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Security Agent</div>
+                                <div class="employee-email">security.agent@excell-on.com</div>
+                                <span class="employee-role role-agent">Agent</span>
+                                <div class="employee-access">Department: Internet Security | Access: Dashboard, Departments, Employees, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('security.agent@excell-on.com', 'employee123')">
                                 Login
                             </button>
                         </div>
                         
-                        <!-- Auditors Department -->
+                        <!-- Auditors Department - 5 Roles -->
                         <div class="department-header">
                             <i class="fas fa-clipboard-check"></i>
                             <span>Auditors Department</span>
                         </div>
                         <div class="employee-item">
                             <div class="employee-info">
-                                <div class="employee-name">Lisa Anderson</div>
-                                <div class="employee-email">lisa.anderson@excell-on.com</div>
-                                <span class="employee-role role-agent">Agent</span>
-                                <div class="employee-access">Department: Auditors | Access: Dashboard, Clients, Client Services, Products, Payments, Reports</div>
+                                <div class="employee-name">Auditor Admin</div>
+                                <div class="employee-email">auditor.admin@excell-on.com</div>
+                                <span class="employee-role role-admin">Admin</span>
+                                <div class="employee-access">Department: Auditors | Access: All Pages</div>
                             </div>
-                            <button class="employee-login-btn" onclick="fillLogin('lisa.anderson@excell-on.com', 'employee123')">
+                            <button class="employee-login-btn" onclick="fillLogin('auditor.admin@excell-on.com', 'employee123')">
                                 Login
                             </button>
                         </div>
-                    </div>
-
-                    <div class="role-info">
-                        <div class="role-info-title">
-                            <i class="fas fa-info-circle"></i>
-                            Department & Role-Based Access Information
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Auditor Manager</div>
+                                <div class="employee-email">auditor.manager@excell-on.com</div>
+                                <span class="employee-role role-admin">Admin</span>
+                                <div class="employee-access">Department: Auditors | Access: All Pages</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('auditor.manager@excell-on.com', 'employee123')">
+                                Login
+                            </button>
                         </div>
-                        <div class="role-info-item">
-                            <strong>HR Management:</strong> Dashboard, Departments, Employees, Clients, Client Services, Services, Contacts, Reports, Analytics
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Auditor Supervisor</div>
+                                <div class="employee-email">auditor.supervisor@excell-on.com</div>
+                                <span class="employee-role role-supervisor">Supervisor</span>
+                                <div class="employee-access">Department: Auditors | Access: Dashboard, Clients, Client Services, Products, Payments, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('auditor.supervisor@excell-on.com', 'employee123')">
+                                Login
+                            </button>
                         </div>
-                        <div class="role-info-item">
-                            <strong>Administration:</strong> Dashboard, Departments, Employees, Clients, Client Services, Products, Contacts, Payments, Reports
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Auditor Team Lead</div>
+                                <div class="employee-email">auditor.teamlead@excell-on.com</div>
+                                <span class="employee-role role-team-lead">Team Lead</span>
+                                <div class="employee-access">Department: Auditors | Access: Dashboard, Clients, Client Services, Products, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('auditor.teamlead@excell-on.com', 'employee123')">
+                                Login
+                            </button>
                         </div>
-                        <div class="role-info-item">
-                            <strong>Service:</strong> Dashboard, Services, Clients, Client Services, Products, Contacts, Reports
+                        <div class="employee-item">
+                            <div class="employee-info">
+                                <div class="employee-name">Auditor Agent</div>
+                                <div class="employee-email">auditor.agent@excell-on.com</div>
+                                <span class="employee-role role-agent">Agent</span>
+                                <div class="employee-access">Department: Auditors | Access: Dashboard, Clients, Client Services, Products, Payments, Reports</div>
+                            </div>
+                            <button class="employee-login-btn" onclick="fillLogin('auditor.agent@excell-on.com', 'employee123')">
+                                Login
+                            </button>
                         </div>
-                        <div class="role-info-item">
-                            <strong>Training:</strong> Dashboard, Departments, Employees, Contacts, Reports
-                        </div>
-                        <div class="role-info-item">
-                            <strong>Internet Security:</strong> Dashboard, Departments, Employees, Contacts, Reports
-                        </div>
-                        <div class="role-info-item">
-                            <strong>Auditors:</strong> Dashboard, Clients, Client Services, Products, Payments, Reports
-                        </div>
-                        <div class="role-info-item" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color);">
-                            <strong>Role Restrictions:</strong> Admin (All), Supervisor (+Analytics, -Payments), Team Lead (+Analytics, -Payments/-Departments), Agent (-Payments/-Departments/-Employees/-Analytics/-Settings)
-                        </div>
-                    </div>
                 </div>
 
-                <div class="footer-text">
-                    <i class="fas fa-shield-alt"></i> Secure Login
+                <div class="role-info">
+                    <div class="role-info-title">
+                        <i class="fas fa-info-circle"></i>
+                        Department & Role-Based Access Information
+                    </div>
+                    <div class="role-info-item">
+                        <strong>HR Management:</strong> Dashboard, Departments, Employees, Clients, Client Services, Services, Products, Payments, Reports, Analytics
+                    </div>
+                    <div class="role-info-item">
+                        <strong>Administration:</strong> Dashboard, Departments, Employees, Clients, Client Services, Products, Payments, Reports
+                    </div>
+                    <div class="role-info-item">
+                        <strong>Service:</strong> Dashboard, Services, Clients, Client Services, Products, Reports
+                    </div>
+                    <div class="role-info-item">
+                        <strong>Training:</strong> Dashboard, Departments, Employees, Products, Reports
+                    </div>
+                    <div class="role-info-item">
+                        <strong>Internet Security:</strong> Dashboard, Departments, Employees, Products, Reports
+                    </div>
+                    <div class="role-info-item">
+                        <strong>Auditors:</strong> Dashboard, Clients, Client Services, Products, Payments, Reports
+                    </div>
+                    <div class="role-info-item" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border);">
+                        <strong>Role Restrictions:</strong> Admin (All), Supervisor (+Analytics, HR Management: All Access), Team Lead (+Analytics, -Payments/-Departments), Agent (-Payments/-Departments/-Employees/-Analytics/-Settings, HR Management: Keeps Departments/Employees)
+                    </div>
                 </div>
             </div>
         </div>
@@ -853,8 +1208,8 @@
         }
 
         function fillLogin(username, password) {
-                document.getElementById('username').value = username;
-                document.getElementById('password').value = password;
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
             loginForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
         }
 
@@ -916,26 +1271,6 @@
 
         // Focus username input on load
         document.getElementById('username').focus();
-
-        // Toggle employee accounts list
-        function toggleEmployeeAccounts() {
-            const list = document.getElementById('employeeAccountsList');
-            const toggleText = document.getElementById('toggleText');
-            const toggleIcon = document.getElementById('toggleIcon');
-            
-            list.classList.toggle('show');
-            
-            if (list.classList.contains('show')) {
-                toggleText.textContent = 'Hide Employee Accounts';
-                toggleIcon.classList.remove('fa-chevron-down');
-                toggleIcon.classList.add('fa-chevron-up');
-            } else {
-                toggleText.textContent = 'Show Employee Accounts';
-                toggleIcon.classList.remove('fa-chevron-up');
-                toggleIcon.classList.add('fa-chevron-down');
-            }
-        }
     </script>
 </body>
 </html>
-

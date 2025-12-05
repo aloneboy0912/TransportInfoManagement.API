@@ -53,37 +53,109 @@ async function loadClientsData() {
         const search = document.getElementById('searchInput')?.value || '';
         const url = search ? `/clients?search=${encodeURIComponent(search)}` : '/clients';
         const clients = await api.get(url);
+        
+        // Handle null or undefined response
+        if (!clients) {
+            console.warn('Clients API returned null or undefined');
+            const tbody = document.querySelector('#clientsTable tbody');
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No clients found.</td></tr>';
+            }
+            return;
+        }
+        
+        // Ensure clients is an array
+        const clientsArray = Array.isArray(clients) ? clients : [];
+        
         const tbody = document.querySelector('#clientsTable tbody');
-        tbody.innerHTML = clients.map(client => `
-            <tr>
-                <td>${client.clientCode || client.id}</td>
-                <td>${client.companyName}</td>
-                <td>${client.contactPerson}</td>
-                <td>${client.email}</td>
-                <td>${client.phone || 'N/A'}</td>
-                <td>${client.city || 'N/A'}</td>
-                <td>${client.isActive ? 'Active' : 'Inactive'}</td>
-                <td class="actions">
-                    <button class="btn-icon btn-edit" onclick="editClient(${client.id})" title="Edit">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn-icon btn-delete" onclick="deleteClient(${client.id})" title="Delete">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+        if (!tbody) {
+            console.error('Clients table tbody not found');
+            return;
+        }
+        
+        if (clientsArray.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No clients found.</td></tr>';
+            return;
+        }
+        
+        // Helper function to safely get property value (handles both camelCase and PascalCase)
+        const getProp = (obj, ...keys) => {
+            for (const key of keys) {
+                if (obj && (obj[key] !== undefined && obj[key] !== null)) {
+                    return obj[key];
+                }
+            }
+            return null;
+        };
+        
+        // Escape HTML to prevent XSS
+        const escapeHtml = (text) => {
+            if (text === null || text === undefined) return 'N/A';
+            if (text === 'N/A') return text;
+            if (typeof text === 'number') return String(text);
+            if (text === '') return 'N/A';
+            const div = document.createElement('div');
+            div.textContent = String(text);
+            return div.innerHTML;
+        };
+        
+        tbody.innerHTML = clientsArray.map((client, index) => {
+            // Safely extract all fields with proper fallbacks
+            const clientId = getProp(client, 'id', 'Id') ?? 0;
+            const clientCode = getProp(client, 'clientCode', 'ClientCode') ?? '';
+            const companyName = getProp(client, 'companyName', 'CompanyName') ?? 'N/A';
+            const contactPerson = getProp(client, 'contactPerson', 'ContactPerson') ?? 'N/A';
+            const email = getProp(client, 'email', 'Email') ?? 'N/A';
+            const phoneRaw = getProp(client, 'phone', 'Phone');
+            const cityRaw = getProp(client, 'city', 'City');
+            const isActiveRaw = getProp(client, 'isActive', 'IsActive');
+            
+            // Format phone - handle empty string, null, undefined
+            const phone = (phoneRaw !== null && phoneRaw !== undefined && phoneRaw !== '') ? phoneRaw : 'N/A';
+            
+            // Format city - handle empty string, null, undefined
+            const city = (cityRaw !== null && cityRaw !== undefined && cityRaw !== '') ? cityRaw : 'N/A';
+            
+            // Determine status
+            const isActive = isActiveRaw === true || isActiveRaw === 'true' || String(isActiveRaw).toLowerCase() === 'true';
+            const status = isActive ? 'Active' : 'Inactive';
+            
+            // Use clientCode if available, otherwise use id
+            const displayCode = clientCode || clientId;
+            
+            return `
+                <tr>
+                    <td>${escapeHtml(displayCode)}</td>
+                    <td>${escapeHtml(companyName)}</td>
+                    <td>${escapeHtml(contactPerson)}</td>
+                    <td>${escapeHtml(email)}</td>
+                    <td>${escapeHtml(phone)}</td>
+                    <td>${escapeHtml(city)}</td>
+                    <td>${escapeHtml(status)}</td>
+                    <td class="actions">
+                        <button class="btn-icon btn-edit" onclick="editClient(${clientId})" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon btn-delete" onclick="deleteClient(${clientId})" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
         
         // Store data for export and show export button
-        window.clientsData = clients;
+        window.clientsData = clientsArray;
         const exportBtn = document.getElementById('exportClientsBtn');
-        if (exportBtn && clients && clients.length > 0) {
+        if (exportBtn && clientsArray && clientsArray.length > 0) {
             exportBtn.style.display = 'block';
         }
     } catch (error) {
         console.error('Error loading clients:', error);
-        document.querySelector('#clientsTable tbody').innerHTML = 
-            '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Error loading clients. Please try again.</td></tr>';
+        const tbody = document.querySelector('#clientsTable tbody');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Error loading clients. Please try again.</td></tr>';
+        }
     }
 }
 
@@ -171,25 +243,63 @@ function showAdvancedSearch() {
             if (clients.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No clients found matching your search criteria.</td></tr>';
             } else {
-                tbody.innerHTML = clients.map(client => `
-                    <tr>
-                        <td>${client.clientCode || client.id}</td>
-                        <td>${client.companyName}</td>
-                        <td>${client.contactPerson}</td>
-                        <td>${client.email}</td>
-                        <td>${client.phone || 'N/A'}</td>
-                        <td>${client.city || 'N/A'}</td>
-                        <td>${client.isActive ? 'Active' : 'Inactive'}</td>
-                        <td class="actions">
-                            <button class="btn-icon btn-edit" onclick="editClient(${client.id})" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn-icon btn-delete" onclick="deleteClient(${client.id})" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
+                // Helper function to safely get property value (handles both camelCase and PascalCase)
+                const getProp = (obj, ...keys) => {
+                    for (const key of keys) {
+                        if (obj && (obj[key] !== undefined && obj[key] !== null)) {
+                            return obj[key];
+                        }
+                    }
+                    return null;
+                };
+                
+                // Escape HTML to prevent XSS
+                const escapeHtml = (text) => {
+                    if (text === null || text === undefined) return 'N/A';
+                    if (text === 'N/A') return text;
+                    if (typeof text === 'number') return String(text);
+                    if (text === '') return 'N/A';
+                    const div = document.createElement('div');
+                    div.textContent = String(text);
+                    return div.innerHTML;
+                };
+                
+                tbody.innerHTML = clients.map(client => {
+                    const clientId = getProp(client, 'id', 'Id') ?? 0;
+                    const clientCode = getProp(client, 'clientCode', 'ClientCode') ?? '';
+                    const companyName = getProp(client, 'companyName', 'CompanyName') ?? 'N/A';
+                    const contactPerson = getProp(client, 'contactPerson', 'ContactPerson') ?? 'N/A';
+                    const email = getProp(client, 'email', 'Email') ?? 'N/A';
+                    const phoneRaw = getProp(client, 'phone', 'Phone');
+                    const cityRaw = getProp(client, 'city', 'City');
+                    const isActiveRaw = getProp(client, 'isActive', 'IsActive');
+                    
+                    const phone = (phoneRaw !== null && phoneRaw !== undefined && phoneRaw !== '') ? phoneRaw : 'N/A';
+                    const city = (cityRaw !== null && cityRaw !== undefined && cityRaw !== '') ? cityRaw : 'N/A';
+                    const isActive = isActiveRaw === true || isActiveRaw === 'true' || String(isActiveRaw).toLowerCase() === 'true';
+                    const status = isActive ? 'Active' : 'Inactive';
+                    const displayCode = clientCode || clientId;
+                    
+                    return `
+                        <tr>
+                            <td>${escapeHtml(displayCode)}</td>
+                            <td>${escapeHtml(companyName)}</td>
+                            <td>${escapeHtml(contactPerson)}</td>
+                            <td>${escapeHtml(email)}</td>
+                            <td>${escapeHtml(phone)}</td>
+                            <td>${escapeHtml(city)}</td>
+                            <td>${escapeHtml(status)}</td>
+                            <td class="actions">
+                                <button class="btn-icon btn-edit" onclick="editClient(${clientId})" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon btn-delete" onclick="deleteClient(${clientId})" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
             }
             closeModal('advancedSearchModal');
         } catch (error) {

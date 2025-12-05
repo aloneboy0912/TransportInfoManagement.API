@@ -15,19 +15,84 @@
     <!-- Authentication Required Screen -->
     <div id="loginScreen" class="screen hidden">
         <div class="login-container">
+            <!-- Login Form Card -->
             <div class="login-box">
-                <h1>Transport Information Management</h1>
-                <h2>Excell-On Services</h2>
-                
-                <div class="auth-info" style="text-align: center; padding: 2rem;">
-                    <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
-                    <h3 style="margin-bottom: 1rem; color: var(--text-color);">Authentication Required</h3>
-                    <p style="color: #64748b; margin-bottom: 2rem; font-size: 1rem;">
-                        Redirecting to login page...
-                    </p>
-                    <a href="/login" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-                        <i class="fas fa-sign-in-alt"></i> Go to Login
-                    </a>
+                <div class="login-header">
+                    <div class="logo">
+                        <i class="fas fa-truck-fast"></i>
+                    </div>
+                    <h1>Excell-On Services</h1>
+                    <p>Transport Information Management System</p>
+                </div>
+
+                <div class="login-body">
+                    <div id="errorMessage" class="error-message" style="display: none;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span id="errorText"></span>
+                    </div>
+
+                    <form id="adminLoginForm">
+                        <div class="form-group">
+                            <label class="form-label" for="adminUsername">Username or Email</label>
+                            <div class="input-wrapper">
+                                <input 
+                                    type="text" 
+                                    id="adminUsername" 
+                                    name="username" 
+                                    class="form-input" 
+                                    placeholder="Enter your username or email"
+                                    required
+                                    autocomplete="username"
+                                >
+                                <i class="fas fa-user input-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="adminPassword">Password</label>
+                            <div class="input-wrapper">
+                                <input 
+                                    type="password" 
+                                    id="adminPassword" 
+                                    name="password" 
+                                    class="form-input" 
+                                    placeholder="Enter your password"
+                                    required
+                                    autocomplete="current-password"
+                                >
+                                <i class="fas fa-lock input-icon"></i>
+                                <button type="button" class="password-toggle" id="adminPasswordToggle">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="adminLoginBtn">
+                            <span id="adminLoginText">Login</span>
+                            <div class="loading-spinner" id="adminLoadingSpinner" style="display: none;"></div>
+                        </button>
+                    </form>
+
+                    <div class="footer-text" style="text-align: center; margin-top: 2rem; font-size: 0.875rem; color: var(--text-secondary);">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Secure Login</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee Accounts Card -->
+            <div class="employee-accounts-card">
+                <div class="employee-accounts-header">
+                    <h2>
+                        <i class="fas fa-users"></i>
+                        Employee Accounts
+                    </h2>
+                    <p>Select an account to quick login</p>
+                </div>
+                <div class="employee-accounts-content">
+                    <div class="employee-accounts-list" id="adminEmployeeAccountsList">
+                        <!-- Employee accounts will be loaded here -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -111,10 +176,6 @@
                             <i class="fas fa-box"></i>
                             <span>Products</span>
                         </a>
-                        <a href="#" data-page="contacts" class="nav-item">
-                            <i class="fas fa-envelope"></i>
-                            <span>Contacts</span>
-                        </a>
                     </div>
                 </div>
 
@@ -195,7 +256,6 @@
     <script src="js/clients.js?v=2.0"></script>
     <script src="js/client-services.js?v=3.0"></script>
     <script src="js/products.js"></script>
-    <script src="js/contacts.js"></script>
     <script src="js/payments.js"></script>
     <script src="js/reports.js"></script>
     <script src="js/analytics.js"></script>

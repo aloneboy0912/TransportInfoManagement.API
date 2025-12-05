@@ -7,71 +7,6 @@ window.ClientServicesPage = window.ClientServicesPage || {
     clientServices: []
 };
 
-// Mock data
-const mockClients = [
-    { id: 1, clientCode: "CLI001", companyName: "Tech Solutions Inc.", contactPerson: "Robert Chen", email: "robert.chen@techsolutions.com", phone: "+1-555-1001", address: "123 Tech Street", city: "San Francisco", country: "USA", isActive: true, createdAt: "2024-01-01T00:00:00Z" },
-    { id: 2, clientCode: "CLI002", companyName: "Global Enterprises Ltd.", contactPerson: "Maria Garcia", email: "maria.garcia@globalent.com", phone: "+1-555-1002", address: "456 Business Ave", city: "New York", country: "USA", isActive: true, createdAt: "2024-01-01T00:00:00Z" },
-    { id: 3, clientCode: "CLI003", companyName: "Digital Innovations Corp.", contactPerson: "James Wilson", email: "james.wilson@digitalinnov.com", phone: "+1-555-1003", address: "789 Innovation Blvd", city: "Seattle", country: "USA", isActive: true, createdAt: "2024-01-01T00:00:00Z" },
-    { id: 4, clientCode: "CLI004", companyName: "Premier Services Group", contactPerson: "Sarah Thompson", email: "sarah.thompson@premierservices.com", phone: "+1-555-1004", address: "321 Service Road", city: "Chicago", country: "USA", isActive: true, createdAt: "2024-01-01T00:00:00Z" },
-    { id: 5, clientCode: "CLI005", companyName: "Advanced Systems Co.", contactPerson: "Michael Rodriguez", email: "michael.rodriguez@advancedsys.com", phone: "+1-555-1005", address: "654 System Drive", city: "Austin", country: "USA", isActive: true, createdAt: "2024-01-01T00:00:00Z" },
-    { id: 6, clientCode: "CLI006", companyName: "Elite Business Partners", contactPerson: "Jennifer Martinez", email: "jennifer.martinez@elitebiz.com", phone: "+1-555-1006", address: "987 Elite Plaza", city: "Los Angeles", country: "USA", isActive: true, createdAt: "2024-01-01T00:00:00Z" },
-    { id: 7, clientCode: "CLI007", companyName: "Strategic Solutions LLC", contactPerson: "David Kim", email: "david.kim@strategicsol.com", phone: "+1-555-1007", address: "147 Strategy Lane", city: "Boston", country: "USA", isActive: true, createdAt: "2024-01-01T00:00:00Z" },
-    { id: 8, clientCode: "CLI008", companyName: "Prime Consulting Group", contactPerson: "Lisa Anderson", email: "lisa.anderson@primeconsult.com", phone: "+1-555-1008", address: "258 Prime Street", city: "Denver", country: "USA", isActive: true, createdAt: "2024-01-01T00:00:00Z" },
-    { id: 9, clientCode: "CLI009", companyName: "Modern Tech Solutions", contactPerson: "Christopher Brown", email: "christopher.brown@moderntech.com", phone: "+1-555-1009", address: "369 Modern Way", city: "Portland", country: "USA", isActive: true, createdAt: "2024-01-01T00:00:00Z" },
-    { id: 10, clientCode: "CLI010", companyName: "Excellence Corporation", contactPerson: "Amanda White", email: "amanda.white@excellencecorp.com", phone: "+1-555-1010", address: "741 Excellence Blvd", city: "Miami", country: "USA", isActive: true, createdAt: "2024-01-01T00:00:00Z" },
-    { id: 11, clientCode: "CLI011", companyName: "Innovation Hub Inc.", contactPerson: "Daniel Lee", email: "daniel.lee@innovationhub.com", phone: "+1-555-1011", address: "852 Innovation Center", city: "San Diego", country: "USA", isActive: true, createdAt: "2024-01-01T00:00:00Z" },
-    { id: 12, clientCode: "CLI012", companyName: "Professional Services Co.", contactPerson: "Nicole Taylor", email: "nicole.taylor@profservices.com", phone: "+1-555-1012", address: "963 Professional Park", city: "Phoenix", country: "USA", isActive: true, createdAt: "2024-01-01T00:00:00Z" }
-];
-
-const mockServices = [
-    { id: 1, name: "In-bound Services", description: "Receiving calls from customers" },
-    { id: 2, name: "Out-bound Services", description: "Staff proactively calling customers" },
-    { id: 3, name: "Tele Marketing Services", description: "Marketing and sales services via telephone" }
-];
-
-const mockEmployees = [
-    { id: 1, employeeCode: "EMP001", fullName: "John Smith", email: "john.smith@excell-on.com", phone: "+1-555-0101", position: "Customer Service Representative", serviceId: 1, departmentId: 3, hireDate: "2024-01-01T00:00:00Z", isActive: true },
-    { id: 2, employeeCode: "EMP002", fullName: "Sarah Johnson", email: "sarah.johnson@excell-on.com", phone: "+1-555-0102", position: "Sales Manager", serviceId: 2, departmentId: 3, hireDate: "2024-01-01T00:00:00Z", isActive: true },
-    { id: 3, employeeCode: "EMP003", fullName: "Michael Brown", email: "michael.brown@excell-on.com", phone: "+1-555-0103", position: "Telemarketing Specialist", serviceId: 3, departmentId: 3, hireDate: "2024-01-01T00:00:00Z", isActive: true },
-    { id: 4, employeeCode: "EMP004", fullName: "Emily Davis", email: "emily.davis@excell-on.com", phone: "+1-555-0104", position: "HR Manager", serviceId: 1, departmentId: 1, hireDate: "2024-01-01T00:00:00Z", isActive: true },
-    { id: 5, employeeCode: "EMP005", fullName: "David Wilson", email: "david.wilson@excell-on.com", phone: "+1-555-0105", position: "Administrative Assistant", serviceId: 1, departmentId: 2, hireDate: "2024-01-01T00:00:00Z", isActive: true },
-    { id: 6, employeeCode: "EMP006", fullName: "Jessica Martinez", email: "jessica.martinez@excell-on.com", phone: "+1-555-0106", position: "Training Coordinator", serviceId: 2, departmentId: 4, hireDate: "2024-01-01T00:00:00Z", isActive: true },
-    { id: 7, employeeCode: "EMP007", fullName: "Robert Taylor", email: "robert.taylor@excell-on.com", phone: "+1-555-0107", position: "Security Analyst", serviceId: 1, departmentId: 5, hireDate: "2024-01-01T00:00:00Z", isActive: true },
-    { id: 8, employeeCode: "EMP008", fullName: "Lisa Anderson", email: "lisa.anderson@excell-on.com", phone: "+1-555-0108", position: "Auditor", serviceId: 3, departmentId: 6, hireDate: "2024-01-01T00:00:00Z", isActive: true },
-    { id: 9, employeeCode: "EMP009", fullName: "James Thomas", email: "james.thomas@excell-on.com", phone: "+1-555-0109", position: "Customer Support Lead", serviceId: 1, departmentId: 3, hireDate: "2024-01-01T00:00:00Z", isActive: true },
-    { id: 10, employeeCode: "EMP010", fullName: "Amanda White", email: "amanda.white@excell-on.com", phone: "+1-555-0110", position: "Sales Representative", serviceId: 2, departmentId: 3, hireDate: "2024-01-01T00:00:00Z", isActive: true },
-    { id: 11, employeeCode: "EMP011", fullName: "Christopher Lee", email: "christopher.lee@excell-on.com", phone: "+1-555-0111", position: "Marketing Specialist", serviceId: 3, departmentId: 3, hireDate: "2024-01-01T00:00:00Z", isActive: true },
-    { id: 12, employeeCode: "EMP012", fullName: "Michelle Harris", email: "michelle.harris@excell-on.com", phone: "+1-555-0112", position: "HR Coordinator", serviceId: 1, departmentId: 1, hireDate: "2024-01-01T00:00:00Z", isActive: true }
-];
-
-const mockServiceFees = [
-    { serviceId: 1, feePerDayPerEmployee: 50 },
-    { serviceId: 2, feePerDayPerEmployee: 75 },
-    { serviceId: 3, feePerDayPerEmployee: 60 }
-];
-
-// Initialize mock client services
-function initializeMockClientServices() {
-    const baseDate = new Date('2024-01-01T00:00:00Z');
-    window.ClientServicesPage.clientServices = [
-        { id: 1, clientId: 1, serviceId: 1, employeeId: 1, numberOfEmployees: 3, startDate: new Date(baseDate.getTime() - 150 * 24 * 60 * 60 * 1000).toISOString(), endDate: null, isActive: true, createdAt: new Date(baseDate.getTime() - 150 * 24 * 60 * 60 * 1000).toISOString() },
-        { id: 2, clientId: 2, serviceId: 2, employeeId: 2, numberOfEmployees: 5, startDate: new Date(baseDate.getTime() - 120 * 24 * 60 * 60 * 1000).toISOString(), endDate: null, isActive: true, createdAt: new Date(baseDate.getTime() - 120 * 24 * 60 * 60 * 1000).toISOString() },
-        { id: 3, clientId: 3, serviceId: 3, employeeId: 3, numberOfEmployees: 2, startDate: new Date(baseDate.getTime() - 100 * 24 * 60 * 60 * 1000).toISOString(), endDate: new Date(baseDate.getTime() - 10 * 24 * 60 * 60 * 1000).toISOString(), isActive: false, createdAt: new Date(baseDate.getTime() - 100 * 24 * 60 * 60 * 1000).toISOString() },
-        { id: 4, clientId: 4, serviceId: 1, employeeId: 4, numberOfEmployees: 4, startDate: new Date(baseDate.getTime() - 180 * 24 * 60 * 60 * 1000).toISOString(), endDate: null, isActive: true, createdAt: new Date(baseDate.getTime() - 180 * 24 * 60 * 60 * 1000).toISOString() },
-        { id: 5, clientId: 5, serviceId: 2, employeeId: 5, numberOfEmployees: 6, startDate: new Date(baseDate.getTime() - 80 * 24 * 60 * 60 * 1000).toISOString(), endDate: null, isActive: true, createdAt: new Date(baseDate.getTime() - 80 * 24 * 60 * 60 * 1000).toISOString() },
-        { id: 6, clientId: 6, serviceId: 3, employeeId: 6, numberOfEmployees: 3, startDate: new Date(baseDate.getTime() - 60 * 24 * 60 * 60 * 1000).toISOString(), endDate: null, isActive: true, createdAt: new Date(baseDate.getTime() - 60 * 24 * 60 * 60 * 1000).toISOString() },
-        { id: 7, clientId: 7, serviceId: 1, employeeId: 7, numberOfEmployees: 2, startDate: new Date(baseDate.getTime() - 200 * 24 * 60 * 60 * 1000).toISOString(), endDate: null, isActive: true, createdAt: new Date(baseDate.getTime() - 200 * 24 * 60 * 60 * 1000).toISOString() },
-        { id: 8, clientId: 8, serviceId: 2, employeeId: 8, numberOfEmployees: 4, startDate: new Date(baseDate.getTime() - 90 * 24 * 60 * 60 * 1000).toISOString(), endDate: new Date(baseDate.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString(), isActive: false, createdAt: new Date(baseDate.getTime() - 90 * 24 * 60 * 60 * 1000).toISOString() },
-        { id: 9, clientId: 9, serviceId: 3, employeeId: 9, numberOfEmployees: 5, startDate: new Date(baseDate.getTime() - 70 * 24 * 60 * 60 * 1000).toISOString(), endDate: null, isActive: true, createdAt: new Date(baseDate.getTime() - 70 * 24 * 60 * 60 * 1000).toISOString() },
-        { id: 10, clientId: 10, serviceId: 1, employeeId: 10, numberOfEmployees: 3, startDate: new Date(baseDate.getTime() - 40 * 24 * 60 * 60 * 1000).toISOString(), endDate: null, isActive: true, createdAt: new Date(baseDate.getTime() - 40 * 24 * 60 * 60 * 1000).toISOString() },
-        { id: 11, clientId: 11, serviceId: 2, employeeId: 11, numberOfEmployees: 4, startDate: new Date(baseDate.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString(), endDate: null, isActive: true, createdAt: new Date(baseDate.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString() },
-        { id: 12, clientId: 12, serviceId: 3, employeeId: 12, numberOfEmployees: 2, startDate: new Date(baseDate.getTime() - 20 * 24 * 60 * 60 * 1000).toISOString(), endDate: null, isActive: true, createdAt: new Date(baseDate.getTime() - 20 * 24 * 60 * 60 * 1000).toISOString() },
-        { id: 13, clientId: 1, serviceId: 2, employeeId: 2, numberOfEmployees: 3, startDate: new Date(baseDate.getTime() - 50 * 24 * 60 * 60 * 1000).toISOString(), endDate: null, isActive: true, createdAt: new Date(baseDate.getTime() - 50 * 24 * 60 * 60 * 1000).toISOString() },
-        { id: 14, clientId: 2, serviceId: 1, employeeId: 1, numberOfEmployees: 4, startDate: new Date(baseDate.getTime() - 110 * 24 * 60 * 60 * 1000).toISOString(), endDate: null, isActive: true, createdAt: new Date(baseDate.getTime() - 110 * 24 * 60 * 60 * 1000).toISOString() },
-        { id: 15, clientId: 3, serviceId: 1, employeeId: 4, numberOfEmployees: 2, startDate: new Date(baseDate.getTime() - 85 * 24 * 60 * 60 * 1000).toISOString(), endDate: null, isActive: true, createdAt: new Date(baseDate.getTime() - 85 * 24 * 60 * 60 * 1000).toISOString() }
-    ];
-}
-
 window.loadClientServices = async function() {
     console.log('Loading Client Services page...');
     // Check authentication before loading client services
@@ -130,56 +65,107 @@ window.loadClientServices = async function() {
         </div>
     `;
 
-    // Initialize mock data
-    initializeMockClientServices();
-    window.ClientServicesPage.clients = mockClients;
-    window.ClientServicesPage.services = mockServices;
-    window.ClientServicesPage.employees = mockEmployees;
-    
-    const filterClient = document.getElementById('filterClient');
-    const costClientId = document.getElementById('costClientId');
-    
-    if (filterClient && window.ClientServicesPage.clients && window.ClientServicesPage.clients.length > 0) {
-        window.ClientServicesPage.clients.forEach(c => {
-            filterClient.innerHTML += `<option value="${c.id}">${c.companyName}</option>`;
-        });
-    }
-    
-    if (costClientId && window.ClientServicesPage.clients && window.ClientServicesPage.clients.length > 0) {
-        window.ClientServicesPage.clients.forEach(c => {
-            costClientId.innerHTML += `<option value="${c.id}">${c.companyName}</option>`;
-        });
-    }
-
-    loadClientServicesData();
+    // Load data from API
+    await loadClientServicesPageData();
 }
 
-window.loadClientServicesData = function loadClientServicesData() {
+async function loadClientServicesPageData() {
     try {
-        // Ensure data is initialized
-        if (!window.ClientServicesPage.clientServices || window.ClientServicesPage.clientServices.length === 0) {
-            initializeMockClientServices();
+        // Load clients, services, employees, and client services from API
+        const [clients, services, employees, clientServices] = await Promise.all([
+            api.get('/clients').catch(() => []),
+            api.get('/services').catch(() => []),
+            api.get('/employees').catch(() => []),
+            api.get('/client-services').catch(() => [])
+        ]);
+        
+        // Store in namespace
+        window.ClientServicesPage.clients = Array.isArray(clients) ? clients : [];
+        window.ClientServicesPage.services = Array.isArray(services) ? services : [];
+        window.ClientServicesPage.employees = Array.isArray(employees) ? employees : [];
+        window.ClientServicesPage.clientServices = Array.isArray(clientServices) ? clientServices : [];
+        
+        // Populate filter dropdowns
+        const filterClient = document.getElementById('filterClient');
+        const costClientId = document.getElementById('costClientId');
+        
+        if (filterClient && window.ClientServicesPage.clients && window.ClientServicesPage.clients.length > 0) {
+            window.ClientServicesPage.clients.forEach(c => {
+                const clientId = c.id ?? c.Id ?? 0;
+                const companyName = c.companyName ?? c.CompanyName ?? 'N/A';
+                filterClient.innerHTML += `<option value="${clientId}">${companyName}</option>`;
+            });
         }
         
+        if (costClientId && window.ClientServicesPage.clients && window.ClientServicesPage.clients.length > 0) {
+            window.ClientServicesPage.clients.forEach(c => {
+                const clientId = c.id ?? c.Id ?? 0;
+                const companyName = c.companyName ?? c.CompanyName ?? 'N/A';
+                costClientId.innerHTML += `<option value="${clientId}">${companyName}</option>`;
+            });
+        }
+
+        loadClientServicesData();
+    } catch (error) {
+        console.error('Error loading client services page data:', error);
+        const tbody = document.querySelector('#clientServicesTable tbody');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--danger-color);">Error loading data. Please refresh the page.</td></tr>';
+        }
+    }
+}
+
+window.loadClientServicesData = async function loadClientServicesData() {
+    try {
         const clientId = document.getElementById('filterClient')?.value;
-        let clientServices = window.ClientServicesPage.clientServices || [];
+        const url = clientId ? `/client-services?clientId=${clientId}` : '/client-services';
         
-        // Filter by client if selected
-        if (clientId) {
-            clientServices = clientServices.filter(cs => cs.clientId === parseInt(clientId));
-        }
+        // Load client services from API
+        const clientServices = await api.get(url);
+        const clientServicesArray = Array.isArray(clientServices) ? clientServices : [];
         
-        // Enrich with related data
-        const enrichedServices = clientServices.map(cs => {
-            const client = mockClients.find(c => c.id === cs.clientId);
-            const service = mockServices.find(s => s.id === cs.serviceId);
-            const employee = mockEmployees.find(e => e.id === cs.employeeId);
+        // Helper function to safely get property value
+        const getProp = (obj, ...keys) => {
+            for (const key of keys) {
+                if (obj && (obj[key] !== undefined && obj[key] !== null)) {
+                    return obj[key];
+                }
+            }
+            return null;
+        };
+        
+        // Enrich with related data (data should already include related entities from API)
+        const enrichedServices = clientServicesArray.map(cs => {
+            const clientId = getProp(cs, 'clientId', 'ClientId');
+            const serviceId = getProp(cs, 'serviceId', 'ServiceId');
+            const employeeId = getProp(cs, 'employeeId', 'EmployeeId');
+            
+            // Get related data from included entities or from stored data
+            const client = cs.client || cs.Client || 
+                (window.ClientServicesPage.clients || []).find(c => (c.id ?? c.Id) === clientId);
+            const service = cs.service || cs.Service || 
+                (window.ClientServicesPage.services || []).find(s => (s.id ?? s.Id) === serviceId);
+            const employee = cs.employee || cs.Employee || 
+                (window.ClientServicesPage.employees || []).find(e => (e.id ?? e.Id) === employeeId);
             
             return {
-                ...cs,
-                client: client ? { companyName: client.companyName } : null,
-                service: service ? { name: service.name } : null,
-                employee: employee ? { fullName: employee.fullName } : null
+                id: getProp(cs, 'id', 'Id'),
+                clientId: clientId,
+                serviceId: serviceId,
+                employeeId: employeeId,
+                numberOfEmployees: getProp(cs, 'numberOfEmployees', 'NumberOfEmployees') ?? 0,
+                startDate: getProp(cs, 'startDate', 'StartDate'),
+                endDate: getProp(cs, 'endDate', 'EndDate'),
+                isActive: getProp(cs, 'isActive', 'IsActive') === true || getProp(cs, 'isActive', 'IsActive') === 'true',
+                client: client ? { 
+                    companyName: getProp(client, 'companyName', 'CompanyName') ?? 'N/A' 
+                } : null,
+                service: service ? { 
+                    name: getProp(service, 'name', 'Name') ?? 'N/A' 
+                } : null,
+                employee: employee ? { 
+                    fullName: getProp(employee, 'fullName', 'FullName') ?? 'N/A' 
+                } : null
             };
         });
         
@@ -230,74 +216,148 @@ async function calculateCost() {
         return;
     }
     
-    const clientServices = window.ClientServicesPage.clientServices.filter(cs => 
-        cs.clientId === parseInt(clientId) && cs.isActive
-    );
-    
-    let totalCost = 0;
-    const details = [];
-    
-    clientServices.forEach(cs => {
-        const service = mockServices.find(s => s.id === cs.serviceId);
-        const serviceFee = mockServiceFees.find(sf => sf.serviceId === cs.serviceId);
+    try {
+        // Use API endpoint to calculate cost
+        const costData = await api.get(`/client-services/calculate-cost/${clientId}`);
         
-        if (service && serviceFee) {
-            const startDate = new Date(cs.startDate);
-            const endDate = cs.endDate ? new Date(cs.endDate) : new Date();
-            const days = Math.max(1, Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1);
-            const cost = serviceFee.feePerDayPerEmployee * cs.numberOfEmployees * days;
-            totalCost += cost;
+        if (costData && costData.totalCost !== undefined) {
+            const totalCost = costData.totalCost || 0;
+            const details = costData.details || [];
             
-            details.push({
-                serviceName: service.name,
-                numberOfEmployees: cs.numberOfEmployees,
-                days: days,
-                feePerDayPerEmployee: serviceFee.feePerDayPerEmployee,
-                cost: cost
+            document.getElementById('costResult').innerHTML = `
+                <h3>Total Cost: $${totalCost.toLocaleString()}</h3>
+                ${details.length > 0 ? `
+                <table style="width: 100%; margin-top: 1rem;">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Employee Count</th>
+                            <th>Days</th>
+                            <th>Fee/Day/Employee</th>
+                            <th>Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${details.map(d => `
+                            <tr>
+                                <td>${d.serviceName || 'N/A'}</td>
+                                <td>${d.numberOfEmployees || 0}</td>
+                                <td>${d.days || 0}</td>
+                                <td>$${(d.feePerDayPerEmployee || 0).toLocaleString()}</td>
+                                <td>$${(d.cost || 0).toLocaleString()}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                ` : '<p>No active services found for this client.</p>'}
+            `;
+        } else {
+            // Fallback: Calculate manually if API doesn't return expected format
+            const clientServices = await api.get(`/client-services?clientId=${clientId}`);
+            const services = await api.get('/services');
+            const serviceFees = await api.get('/services/fees');
+            
+            const activeServices = (Array.isArray(clientServices) ? clientServices : []).filter(cs => {
+                const isActive = cs.isActive ?? cs.IsActive;
+                return isActive === true || isActive === 'true';
             });
+            
+            let totalCost = 0;
+            const details = [];
+            
+            activeServices.forEach(cs => {
+                const serviceId = cs.serviceId ?? cs.ServiceId;
+                const service = (Array.isArray(services) ? services : []).find(s => (s.id ?? s.Id) === serviceId);
+                const serviceFee = (Array.isArray(serviceFees) ? serviceFees : []).find(sf => (sf.serviceId ?? sf.ServiceId) === serviceId);
+                
+                if (service && serviceFee) {
+                    const startDate = new Date(cs.startDate ?? cs.StartDate);
+                    const endDate = cs.endDate ?? cs.EndDate ? new Date(cs.endDate ?? cs.EndDate) : new Date();
+                    const days = Math.max(1, Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1);
+                    const numberOfEmployees = cs.numberOfEmployees ?? cs.NumberOfEmployees ?? 1;
+                    const feePerDay = serviceFee.feePerDayPerEmployee ?? serviceFee.FeePerDayPerEmployee ?? 0;
+                    const cost = feePerDay * numberOfEmployees * days;
+                    totalCost += cost;
+                    
+                    details.push({
+                        serviceName: service.name ?? service.Name ?? 'N/A',
+                        numberOfEmployees: numberOfEmployees,
+                        days: days,
+                        feePerDayPerEmployee: feePerDay,
+                        cost: cost
+                    });
+                }
+            });
+            
+            document.getElementById('costResult').innerHTML = `
+                <h3>Total Cost: $${totalCost.toLocaleString()}</h3>
+                ${details.length > 0 ? `
+                <table style="width: 100%; margin-top: 1rem;">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Employee Count</th>
+                            <th>Days</th>
+                            <th>Fee/Day/Employee</th>
+                            <th>Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${details.map(d => `
+                            <tr>
+                                <td>${d.serviceName}</td>
+                                <td>${d.numberOfEmployees}</td>
+                                <td>${d.days}</td>
+                                <td>$${d.feePerDayPerEmployee.toLocaleString()}</td>
+                                <td>$${d.cost.toLocaleString()}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                ` : '<p>No active services found for this client.</p>'}
+            `;
         }
-    });
-    
-    document.getElementById('costResult').innerHTML = `
-        <h3>Total Cost: $${totalCost.toLocaleString()}</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Service</th>
-                    <th>Employee Count</th>
-                    <th>Days</th>
-                    <th>Fee/Day/Employee</th>
-                    <th>Cost</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${details.map(d => `
-                    <tr>
-                        <td>${d.serviceName}</td>
-                        <td>${d.numberOfEmployees}</td>
-                        <td>${d.days}</td>
-                        <td>$${d.feePerDayPerEmployee.toLocaleString()}</td>
-                        <td>$${d.cost.toLocaleString()}</td>
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
-    `;
+    } catch (error) {
+        console.error('Error calculating cost:', error);
+        document.getElementById('costResult').innerHTML = 
+            '<p style="color: var(--danger-color);">Error calculating cost. Please try again.</p>';
+    }
 }
 
 async function showClientServiceModal(csId = null) {
-    // Ensure data is loaded
+    // Ensure data is loaded from API
     if (!window.ClientServicesPage.clients || window.ClientServicesPage.clients.length === 0) {
-        window.ClientServicesPage.clients = mockClients;
+        const clients = await api.get('/clients').catch(() => []);
+        window.ClientServicesPage.clients = Array.isArray(clients) ? clients : [];
     }
     if (!window.ClientServicesPage.services || window.ClientServicesPage.services.length === 0) {
-        window.ClientServicesPage.services = mockServices;
+        const services = await api.get('/services').catch(() => []);
+        window.ClientServicesPage.services = Array.isArray(services) ? services : [];
     }
     if (!window.ClientServicesPage.employees || window.ClientServicesPage.employees.length === 0) {
-        window.ClientServicesPage.employees = mockEmployees;
+        const employees = await api.get('/employees').catch(() => []);
+        window.ClientServicesPage.employees = Array.isArray(employees) ? employees : [];
     }
     
-    const cs = csId ? window.ClientServicesPage.clientServices.find(c => c.id === csId) : null;
+    // Load client service if editing
+    let cs = null;
+    if (csId) {
+        try {
+            cs = await api.get(`/client-services/${csId}`);
+        } catch (error) {
+            console.error('Error loading client service:', error);
+        }
+    }
+    
+    // Helper function to safely get property value
+    const getProp = (obj, ...keys) => {
+        for (const key of keys) {
+            if (obj && (obj[key] !== undefined && obj[key] !== null)) {
+                return obj[key];
+            }
+        }
+        return null;
+    };
     const modal = createModal('clientServiceModal', csId ? 'Edit Client Service' : 'Add Client Service', `
         <form id="clientServiceForm">
             <div class="form-row">
@@ -305,14 +365,24 @@ async function showClientServiceModal(csId = null) {
                     <label>Client</label>
                     <select id="csClientId" required>
                         <option value="">Select Client</option>
-                        ${window.ClientServicesPage.clients.map(c => `<option value="${c.id}" ${cs?.clientId === c.id ? 'selected' : ''}>${c.companyName}</option>`).join('')}
+                        ${(window.ClientServicesPage.clients || []).map(c => {
+                            const clientId = getProp(c, 'id', 'Id');
+                            const companyName = getProp(c, 'companyName', 'CompanyName') ?? 'N/A';
+                            const currentClientId = getProp(cs, 'clientId', 'ClientId');
+                            return `<option value="${clientId}" ${currentClientId === clientId ? 'selected' : ''}>${companyName}</option>`;
+                        }).join('')}
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Service</label>
                     <select id="csServiceId" required>
                         <option value="">Select Service</option>
-                        ${window.ClientServicesPage.services.map(s => `<option value="${s.id}" ${cs?.serviceId === s.id ? 'selected' : ''}>${s.name}</option>`).join('')}
+                        ${(window.ClientServicesPage.services || []).map(s => {
+                            const serviceId = getProp(s, 'id', 'Id');
+                            const serviceName = getProp(s, 'name', 'Name') ?? 'N/A';
+                            const currentServiceId = getProp(cs, 'serviceId', 'ServiceId');
+                            return `<option value="${serviceId}" ${currentServiceId === serviceId ? 'selected' : ''}>${serviceName}</option>`;
+                        }).join('')}
                     </select>
                 </div>
             </div>
@@ -321,27 +391,32 @@ async function showClientServiceModal(csId = null) {
                     <label>Employee</label>
                     <select id="csEmployeeId">
                         <option value="">No Selection</option>
-                        ${window.ClientServicesPage.employees.map(e => `<option value="${e.id}" ${cs?.employeeId === e.id ? 'selected' : ''}>${e.fullName}</option>`).join('')}
+                        ${(window.ClientServicesPage.employees || []).map(e => {
+                            const employeeId = getProp(e, 'id', 'Id');
+                            const fullName = getProp(e, 'fullName', 'FullName') ?? 'N/A';
+                            const currentEmployeeId = getProp(cs, 'employeeId', 'EmployeeId');
+                            return `<option value="${employeeId}" ${currentEmployeeId === employeeId ? 'selected' : ''}>${fullName}</option>`;
+                        }).join('')}
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Number of Employees</label>
-                    <input type="number" id="csNumberOfEmployees" value="${cs?.numberOfEmployees || 1}" min="1" required>
+                    <input type="number" id="csNumberOfEmployees" value="${getProp(cs, 'numberOfEmployees', 'NumberOfEmployees') || 1}" min="1" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>Start Date</label>
-                    <input type="date" id="csStartDate" value="${cs ? new Date(cs.startDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}" required>
+                    <input type="date" id="csStartDate" value="${cs ? (getProp(cs, 'startDate', 'StartDate') ? new Date(getProp(cs, 'startDate', 'StartDate')).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]) : new Date().toISOString().split('T')[0]}" required>
                 </div>
                 <div class="form-group">
                     <label>End Date (Optional)</label>
-                    <input type="date" id="csEndDate" value="${cs?.endDate ? new Date(cs.endDate).toISOString().split('T')[0] : ''}">
+                    <input type="date" id="csEndDate" value="${cs && getProp(cs, 'endDate', 'EndDate') ? new Date(getProp(cs, 'endDate', 'EndDate')).toISOString().split('T')[0] : ''}">
                 </div>
             </div>
             <div class="form-group">
                 <label>
-                    <input type="checkbox" id="csIsActive" ${cs?.isActive !== false ? 'checked' : ''}>
+                    <input type="checkbox" id="csIsActive" ${getProp(cs, 'isActive', 'IsActive') !== false ? 'checked' : ''}>
                     Active
                 </label>
             </div>
@@ -369,30 +444,20 @@ async function showClientServiceModal(csId = null) {
         
         try {
             if (csId) {
-                // Update existing
-                const index = window.ClientServicesPage.clientServices.findIndex(c => c.id === csId);
-                if (index !== -1) {
-                    window.ClientServicesPage.clientServices[index] = {
-                        ...data,
-                        createdAt: window.ClientServicesPage.clientServices[index].createdAt
-                    };
-                }
+                // Update existing via API
+                await api.put(`/client-services/${csId}`, data);
             } else {
-                // Create new
-                const newId = Math.max(...window.ClientServicesPage.clientServices.map(c => c.id), 0) + 1;
-                window.ClientServicesPage.clientServices.push({
-                    ...data,
-                    id: newId,
-                    createdAt: new Date().toISOString()
-                });
+                // Create new via API
+                await api.post('/client-services', data);
             }
             closeModal('clientServiceModal');
-            loadClientServicesData();
+            await loadClientServicesData();
             if (window.showToast) {
                 window.showToast(csId ? 'Client service updated successfully' : 'Client service created successfully', 'success');
             }
         } catch (error) {
-            alert('Error: ' + error.message);
+            console.error('Error saving client service:', error);
+            alert('Error: ' + (error.message || 'Failed to save client service'));
         }
     });
 }
@@ -404,16 +469,14 @@ async function editClientService(id) {
 async function deleteClientService(id) {
     if (!confirm('Are you sure you want to delete this client service?')) return;
     try {
-        const index = window.ClientServicesPage.clientServices.findIndex(c => c.id === id);
-        if (index !== -1) {
-            window.ClientServicesPage.clientServices.splice(index, 1);
-        }
-        loadClientServicesData();
+        await api.delete(`/client-services/${id}`);
+        await loadClientServicesData();
         if (window.showToast) {
             window.showToast('Client service deleted successfully', 'success');
         }
     } catch (error) {
-        alert('Error: ' + error.message);
+        console.error('Error deleting client service:', error);
+        alert('Error: ' + (error.message || 'Failed to delete client service'));
     }
 }
 
